@@ -2,6 +2,7 @@
 *.d
 
 # Folders
+/Debug
 /x64
 /.vs
 
@@ -35,3 +36,4 @@
 *.out
 *.app
 *.ppm
+*.bmp
