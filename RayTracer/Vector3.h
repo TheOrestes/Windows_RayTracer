@@ -22,8 +22,7 @@ public:
 
 	inline float length() const { return sqrt(x * x + y * y + z * z); }
 	inline float squaredLength() const { return(x*x + y * y + z * z); }
-	inline void  MakeUnitVector();
-
+	
 	float x, y, z;
 };
 

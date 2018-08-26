@@ -63,6 +63,9 @@
     <ClInclude Include="RayTracer\Vector3.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracer\Triangle.h">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowsRayTracer.cpp">
