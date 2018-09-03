@@ -39,9 +39,6 @@
     <ClInclude Include="RayTracer\Hitable.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
-    <ClInclude Include="RayTracer\HitableList.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
     <ClInclude Include="RayTracer\Lambertian.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
@@ -66,12 +63,30 @@
     <ClInclude Include="RayTracer\Triangle.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracer\Scene.h">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowsRayTracer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RayTracer\Vector3.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Scene.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Sphere.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Lambertian.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Metal.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Triangle.cpp">
       <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
   </ItemGroup>

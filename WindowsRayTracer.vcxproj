@@ -154,11 +154,11 @@
     <ClInclude Include="RayTracer\Camera.h" />
     <ClInclude Include="RayTracer\Helper.h" />
     <ClInclude Include="RayTracer\Hitable.h" />
-    <ClInclude Include="RayTracer\HitableList.h" />
     <ClInclude Include="RayTracer\Lambertian.h" />
     <ClInclude Include="RayTracer\Material.h" />
     <ClInclude Include="RayTracer\Metal.h" />
     <ClInclude Include="RayTracer\Ray.h" />
+    <ClInclude Include="RayTracer\Scene.h" />
     <ClInclude Include="RayTracer\Sphere.h" />
     <ClInclude Include="RayTracer\Transparent.h" />
     <ClInclude Include="RayTracer\Triangle.h" />
@@ -168,6 +168,11 @@
     <ClInclude Include="WindowsRayTracer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="RayTracer\Lambertian.cpp" />
+    <ClCompile Include="RayTracer\Metal.cpp" />
+    <ClCompile Include="RayTracer\Scene.cpp" />
+    <ClCompile Include="RayTracer\Sphere.cpp" />
+    <ClCompile Include="RayTracer\Triangle.cpp" />
     <ClCompile Include="RayTracer\Vector3.cpp" />
     <ClCompile Include="WindowsRayTracer.cpp" />
   </ItemGroup>

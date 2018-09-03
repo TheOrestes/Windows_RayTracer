@@ -3,7 +3,6 @@
 #include "Ray.h"
 #include "Hitable.h"
 #include "Material.h"
-#include "Helper.h"
 
 class Metal : public Material
 {
@@ -16,13 +15,7 @@ public:
 			fuzz = 1;
 	}
 
-	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Vector3& attenuation, Ray& scatterd) const
-	{
-		Vector3 target = Helper::Reflect(unit_vector(r_in.GetRayDirection()), rec.N);
-		scatterd = Ray(rec.P, target + fuzz * Helper::RandomInUnitSphere());
-		attenuation = Albedo;
-		return (dot(scatterd.GetRayDirection(), rec.N) > 0);
-	}
+	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Vector3& attenuation, Ray& scatterd) const;
 
 private:
 	Vector3 Albedo;
