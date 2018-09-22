@@ -9,7 +9,8 @@
 Scene::Scene()
 {
 	vecHitables.clear();
-	InitScene();
+	//InitScene();
+	InitRandomScene();
 }
 
 void Scene::InitScene()
@@ -36,6 +37,53 @@ void Scene::InitScene()
 	vecHitables.push_back(pSphere3);
 	vecHitables.push_back(pSphere4);
 	vecHitables.push_back(pTriangle0);
+}
+
+void Scene::InitRandomScene()
+{
+	Sphere* pSphere0 = new Sphere(Vector3(0, -1000, 0), 1000, new Lambertian(Vector3(0.5, 0.5, 0.5)));
+	vecHitables.push_back(pSphere0);
+
+	int i = 1;
+
+	for (int a = -11; a < 11; a++)
+	{
+		for (int b = -11; b < 11; b++)
+		{
+			float choose_mat = Helper::GetRandom01();
+
+			Vector3 center(a + 0.9f * Helper::GetRandom01(), 0.2, b + 0.9 * Helper::GetRandom01());
+			if ((center - Vector3(4, 0.2, 0)).length() > 0.9f)
+			{
+				if (choose_mat < 0.8f)
+				{
+					// diffuse
+					Sphere* temp = new Sphere(center, 0.2f, new Lambertian(Vector3(Helper::GetRandom01() * Helper::GetRandom01(), Helper::GetRandom01() * Helper::GetRandom01(), Helper::GetRandom01() * Helper::GetRandom01())));
+					vecHitables.push_back(temp);
+				}
+				else if (choose_mat < 0.95f)
+				{
+					// Metal
+					Sphere* temp = new Sphere(center, 0.2f, new Metal(Vector3(0.5f*(1 + Helper::GetRandom01()), 0.5f*(1 + Helper::GetRandom01()), 0.5f*(1 + Helper::GetRandom01())), Helper::GetRandom01()));
+					vecHitables.push_back(temp);
+				}
+				else
+				{
+					// glass
+					Sphere* temp = new Sphere(center, 0.2f, new Transparent(1.5f));
+					vecHitables.push_back(temp);
+				}
+			}
+		}
+	}
+
+	Sphere* pSphere1 = new Sphere(Vector3(0, 1, 0), 1.0f, new Transparent(1.5f));
+	Sphere* pSphere2 = new Sphere(Vector3(-4, 1, 0), 1.0f, new Lambertian(Vector3(0.4f, 0.2f, 0.1f)));
+	Sphere* pSphere3 = new Sphere(Vector3(4, 1, 0), 1.0f, new Metal(Vector3(0.7f, 0.6f, 0.5f), 0.0f));
+
+	vecHitables.push_back(pSphere1);
+	vecHitables.push_back(pSphere2);
+	vecHitables.push_back(pSphere3);
 }
 
 bool Scene::Trace(const Ray& r, float tmin, float tmax, HitRecord& rec)

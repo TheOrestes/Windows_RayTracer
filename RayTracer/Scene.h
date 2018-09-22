@@ -13,11 +13,13 @@ public:
 		return instance;
 	}
 
-	void InitScene();
+	
 	bool Trace(const Ray& r, float tmin, float tmax, HitRecord& rec);
 
 private:
 	Scene();
+	void InitScene();
+	void InitRandomScene();
 
 	std::vector<Hitable*> vecHitables;
 };
