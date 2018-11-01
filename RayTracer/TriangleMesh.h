@@ -1,0 +1,30 @@
+#pragma once
+
+#include <vector>
+#include <string>
+#include "assimp\Importer.hpp"
+#include "assimp\postprocess.h"
+#include "assimp\scene.h"
+
+#include "Triangle.h"
+
+class Material;
+
+class TriangleMesh : public Hitable
+{
+public:
+	TriangleMesh();
+	~TriangleMesh();
+	TriangleMesh(const std::string& path, Material* ptr_mat);
+
+	virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
+
+private:
+
+	void LoadModel(const std::string& path);
+	void ProcessNode(aiNode* node, const aiScene* scene);
+	void ProcessMesh(aiMesh* mesh, const aiScene* scene);
+
+	std::vector<Triangle*> m_vecTriangles;
+	Material* m_ptrMaterial;
+};

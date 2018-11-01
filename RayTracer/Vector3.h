@@ -1,98 +1,65 @@
 #pragma once
 
 #include <math.h>
-#include <stdlib.h>
-#include <iostream>
 
 class Vector3
 {
 public:
-	Vector3() {}
-	Vector3(float _x, float _y, float _z) { x = _x; y = _y; z = _z; }
+	union
+	{
+		struct { float x, y, z; };
+		struct { float r, g, b; };
 
-	inline const Vector3& operator+() const { return *this; }
-	inline Vector3 operator-() { return Vector3(-x, -y, -z); }
+		float e[3];
+	};
 
-	inline Vector3& operator+=(const Vector3& v2);
-	inline Vector3& operator-=(const Vector3& v2);
-	inline Vector3& operator*=(const Vector3& v2);
-	inline Vector3& operator/=(const Vector3& v2);
-	inline Vector3& operator*=(const float t);
-	inline Vector3& operator/=(const float t);
+	Vector3(float e1, float e2, float e3) { e[0] = e1; e[1] = e2; e[2] = e3; }
+	Vector3() { e[0] = e[1] = e[2] = 0; };
 
-	inline float length() const { return sqrt(x * x + y * y + z * z); }
-	inline float squaredLength() const { return(x*x + y * y + z * z); }
-	
-	float x, y, z;
+	inline float operator[](int i) const { return e[i]; }
+	friend Vector3 operator+(const Vector3 &lhs, const Vector3 &rhs);
+	friend Vector3 operator-(const Vector3 &lhs, const Vector3 &rhs);
+	friend Vector3 operator-(const Vector3 &vec);
+	friend Vector3 operator*(const Vector3 &lhs, const Vector3 &rhs);
+	friend Vector3 operator/(const Vector3 &lhs, const Vector3 &rhs);
+	friend Vector3 operator*(const Vector3 &vec, const float value);
+	friend Vector3 operator*(const float value, const Vector3 &vec);
+	friend Vector3 operator/(const Vector3 &vec, const float value);
+
+	Vector3& operator+=(const Vector3 &v2);
+	Vector3& operator-=(const Vector3 &v2);
+	Vector3& operator*=(const Vector3 &v2);
+	Vector3& operator/=(const Vector3 &v2);
+	Vector3& operator*=(const float value);
+	Vector3& operator/=(const float value);
+
+	float Length() const;
+	float LengthSquared() const;
 };
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-inline std::ostream& operator<<(std::ostream& os, const Vector3& v)
+inline float Dot(const Vector3 &v1, const Vector3 &v2)
 {
-	os << v.x << " " << v.y << " " << v.z;
-	return os;
+	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-inline std::istream& operator>>(std::istream &is, Vector3 &v) 
+inline Vector3 Reflect(const Vector3 &v, const Vector3 &n)
 {
-	is >> v.x >> v.y >> v.z;
-	return is;
+	return v - 2 * Dot(v, n) * n;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-inline Vector3 operator+(const Vector3& v1, const Vector3& v2)
+inline Vector3 UnitVector(const Vector3 &vec)
 {
-	return Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+	return vec / vec.Length();
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-inline Vector3 operator-(const Vector3& v1, const Vector3& v2)
+inline Vector3 Cross(const Vector3 &v1, const Vector3 &v2)
 {
-	return Vector3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+	return Vector3((v1.y * v2.z - v1.z * v2.y),
+		(-(v1.x * v2.z - v1.z * v2.x)),
+		(v1.x * v2.y - v1.y * v2.x));
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-inline Vector3 operator*(const Vector3& v1, const Vector3& v2)
+inline Vector3 Lerp(const Vector3 &v1, const Vector3 &v2, float t)
 {
-	return Vector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
+	return (1.0f - t) * v1 + (t * v2);
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-inline Vector3 operator/(const Vector3& v1, const Vector3& v2)
-{
-	return Vector3(v1.x / v2.x, v1.y / v2.y, v1.z / v2.z);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-inline Vector3 operator*(float t, const Vector3& v2)
-{
-	return Vector3(t * v2.x, t * v2.y, t * v2.z);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-inline Vector3 operator/(const Vector3& v2, float t)
-{
-	return Vector3(v2.x / t, v2.y / t, v2.z / t);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-inline float dot(const Vector3& v1, const Vector3& v2)
-{
-	return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-inline Vector3 cross(const Vector3& v1, const Vector3& v2)
-{
-	return Vector3((v1.y*v2.z - v1.z*v2.y), (-(v1.x*v2.z - v1.z*v2.x)), (v1.x*v2.y-v1.y*v2.x));
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-inline Vector3 unit_vector(Vector3 v)
-{
-	return v / v.length();
-}
-
-
-

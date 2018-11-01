@@ -12,9 +12,9 @@ public:
 		direction = B; 
 	}
 
-	Vector3 GetRayOrigin() const { return origin; }
-	Vector3 GetRayDirection() const { return direction; }
-	Vector3 GetPointAt(float t) const { return origin + t * direction; }
+	inline Vector3 GetRayOrigin() const { return origin; }
+	inline Vector3 GetRayDirection() const { return direction; }
+	inline Vector3 GetPointAt(float t) const { return origin + t * direction; }
 
 private:
 	Vector3 origin;

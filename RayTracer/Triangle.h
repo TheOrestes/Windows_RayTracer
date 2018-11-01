@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include "Hitable.h"
 
 class Material;

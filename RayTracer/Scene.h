@@ -3,9 +3,12 @@
 #include <vector>
 #include "Hitable.h"
 
+class Camera;
+
 class Scene
 {
 public:
+	~Scene();
 	
 	static Scene& getInstance()
 	{
@@ -13,7 +16,6 @@ public:
 		return instance;
 	}
 
-	
 	bool Trace(const Ray& r, float tmin, float tmax, HitRecord& rec);
 
 private:

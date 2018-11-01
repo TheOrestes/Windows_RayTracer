@@ -23,17 +23,17 @@ public:
 		float reflect_prob;
 		float cosine;
 
-		if (dot(ray_direction, rec.N) > 0)
+		if (Dot(ray_direction, rec.N) > 0)
 		{
 			outward_normal = -1 * rec.N;  // because we want inverted image for refraction? 
 			ni_over_nt = refr_index;
-			cosine = refr_index * dot(ray_direction, rec.N) / ray_direction.length();
+			cosine = refr_index * Dot(ray_direction, rec.N) / ray_direction.Length();
 		}
 		else
 		{
 			outward_normal = rec.N;
 			ni_over_nt = 1 / refr_index;
-			cosine = -dot(ray_direction, rec.N) / ray_direction.length();
+			cosine = -Dot(ray_direction, rec.N) / ray_direction.Length();
 		}
 
 		if (Helper::Refract(ray_direction, outward_normal, ni_over_nt, refracted))

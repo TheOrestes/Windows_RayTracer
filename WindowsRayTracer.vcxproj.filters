@@ -66,6 +66,9 @@
     <ClInclude Include="RayTracer\Scene.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracer\TriangleMesh.h">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowsRayTracer.cpp">
@@ -87,6 +90,12 @@
       <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
     <ClCompile Include="RayTracer\Triangle.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\TriangleMesh.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Camera.cpp">
       <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
   </ItemGroup>
