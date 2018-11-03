@@ -1,13 +1,15 @@
 #pragma once
 
-#include "Vector3.h"
+#include "glm/glm.hpp"
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/norm.hpp"
 #include <cstdlib>
 
 const float PI = 3.14159265358f;
 
 namespace Helper
 {
-	inline Vector3 LerpVector(const Vector3& vec1, const Vector3& vec2, float t)
+	inline glm::vec3 LerpVector(const glm::vec3& vec1, const glm::vec3& vec2, float t)
 	{
 		return (1.0f - t) * vec1 + t * vec2;
 	}
@@ -17,38 +19,33 @@ namespace Helper
 		return ((double)rand() / (RAND_MAX + 1));
 	}
 
-	inline Vector3 GetRandomInUnitDisk()
+	inline glm::vec3 GetRandomInUnitDisk()
 	{
-		Vector3 p;
+		glm::vec3 p;
 		do
 		{
-			p = 2.0f * Vector3(GetRandom01(), GetRandom01(), 0.0f) - Vector3(1, 1, 0);
-		} while (Dot(p, p) >= 1.0f);
+			p = 2.0f * glm::vec3(GetRandom01(), GetRandom01(), 0.0f) - glm::vec3(1, 1, 0);
+		} while (glm::dot(p, p) >= 1.0f);
 		
 		return p;
 	}
 
-	inline Vector3 RandomInUnitSphere()
+	inline glm::vec3 RandomInUnitSphere()
 	{
-		Vector3 P;
+		glm::vec3 P;
 
 		do
 		{
-			P = 2.0f * Vector3(GetRandom01(), GetRandom01(), GetRandom01()) - Vector3(1, 1, 1);
-		} while (P.LengthSquared() >= 1.0f);
+			P = 2.0f * glm::vec3(GetRandom01(), GetRandom01(), GetRandom01()) - glm::vec3(1, 1, 1);
+		} while (glm::length2(P) >= 1.0f);
 
 		return P;
 	}
 
-	inline Vector3 Reflect(const Vector3& v, const Vector3& n)
+	inline bool Refract(const glm::vec3& v, const glm::vec3& n, float ni_over_nt, glm::vec3& refracted)
 	{
-		return v - 2 * Dot(v, n) * n;
-	}
-
-	inline bool Refract(const Vector3& v, const Vector3& n, float ni_over_nt, Vector3& refracted)
-	{
-		Vector3 unit_v = UnitVector(v);
-		float NDotV = Dot(unit_v, n);
+		glm::vec3 unit_v = glm::normalize(v);
+		float NDotV = glm::dot(unit_v, n);
 		float discriminant = 1.0 - ni_over_nt * ni_over_nt * (1 - NDotV * NDotV);
 
 		if (discriminant > 0)

@@ -4,10 +4,13 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 bool Sphere::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 {
-	Vector3 oc = r.GetRayOrigin() - center;
-	float a = Dot(r.GetRayDirection(), r.GetRayDirection());
-	float b = 2.0f * Dot(oc, r.GetRayDirection());
-	float c = Dot(oc, oc) - radius * radius;
+	glm::vec3 rayDirection = r.GetRayDirection();
+	glm::vec3 rayOrigin = r.GetRayOrigin();
+
+	glm::vec3 oc = rayOrigin - center;
+	float a = glm::dot(rayDirection, rayDirection);
+	float b = 2.0f * glm::dot(oc, rayDirection);
+	float c = glm::dot(oc, oc) - radius * radius;
 	float discriminant = b * b - 4 * a* c;
 
 	float t;

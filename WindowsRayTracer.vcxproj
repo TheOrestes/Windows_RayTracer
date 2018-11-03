@@ -104,7 +104,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes;$(SolutionDir)\external\glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -129,6 +129,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -141,7 +142,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes;$(SolutionDir)\external\glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -150,6 +151,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\external\assimp\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -166,7 +168,6 @@
     <ClInclude Include="RayTracer\Transparent.h" />
     <ClInclude Include="RayTracer\Triangle.h" />
     <ClInclude Include="RayTracer\TriangleMesh.h" />
-    <ClInclude Include="RayTracer\Vector3.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WindowsRayTracer.h" />
@@ -179,7 +180,6 @@
     <ClCompile Include="RayTracer\Sphere.cpp" />
     <ClCompile Include="RayTracer\Triangle.cpp" />
     <ClCompile Include="RayTracer\TriangleMesh.cpp" />
-    <ClCompile Include="RayTracer\Vector3.cpp" />
     <ClCompile Include="WindowsRayTracer.cpp" />
   </ItemGroup>
   <ItemGroup>

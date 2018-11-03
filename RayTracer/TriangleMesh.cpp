@@ -1,4 +1,5 @@
 
+#include "glm\glm.hpp"
 #include "TriangleMesh.h"
 #include <Windows.h>
 
@@ -67,9 +68,9 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		unsigned int index1 = face->mIndices[1]; 
 		unsigned int index2 = face->mIndices[2];
 
-		Vector3 pos0(vecVertices.at(index0).x, vecVertices.at(index0).y, vecVertices.at(index0).z);
-		Vector3 pos1(vecVertices.at(index1).x, vecVertices.at(index1).y, vecVertices.at(index1).z);
-		Vector3 pos2(vecVertices.at(index2).x, vecVertices.at(index2).y, vecVertices.at(index2).z);
+		glm::vec3 pos0(vecVertices.at(index0).x, vecVertices.at(index0).y, vecVertices.at(index0).z);
+		glm::vec3 pos1(vecVertices.at(index1).x, vecVertices.at(index1).y, vecVertices.at(index1).z);
+		glm::vec3 pos2(vecVertices.at(index2).x, vecVertices.at(index2).y, vecVertices.at(index2).z);
 
 		Triangle* tri = new Triangle(pos0, pos1, pos2, m_ptrMaterial);
 

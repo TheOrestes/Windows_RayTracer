@@ -10,30 +10,30 @@ class Transparent : public Material
 public:
 	Transparent(float ri) : refr_index(ri) {}
 
-	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Vector3& attenuation, Ray& scattered) const
+	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, glm::vec3& attenuation, Ray& scattered) const
 	{
-		Vector3 outward_normal;
-		Vector3 ray_direction = r_in.GetRayDirection();
+		glm::vec3 outward_normal;
+		glm::vec3 ray_direction = r_in.GetRayDirection();
 		
-		Vector3 reflected = Helper::Reflect(ray_direction, rec.N);
+		glm::vec3 reflected = glm::reflect(ray_direction, rec.N);
 		float ni_over_nt;
-		attenuation = Vector3(1, 1, 1);
+		attenuation = glm::vec3(1, 1, 1);
 
-		Vector3 refracted;
+		glm::vec3 refracted = glm::vec3(0);
 		float reflect_prob;
 		float cosine;
 
-		if (Dot(ray_direction, rec.N) > 0)
+		if (glm::dot(ray_direction, rec.N) > 0)
 		{
-			outward_normal = -1 * rec.N;  // because we want inverted image for refraction? 
+			outward_normal = -rec.N;  // because we want inverted image for refraction? 
 			ni_over_nt = refr_index;
-			cosine = refr_index * Dot(ray_direction, rec.N) / ray_direction.Length();
+			cosine = refr_index * glm::dot(ray_direction, rec.N) / ray_direction.length();
 		}
 		else
 		{
 			outward_normal = rec.N;
 			ni_over_nt = 1 / refr_index;
-			cosine = -Dot(ray_direction, rec.N) / ray_direction.Length();
+			cosine = -glm::dot(ray_direction, rec.N) / ray_direction.length();
 		}
 
 		if (Helper::Refract(ray_direction, outward_normal, ni_over_nt, refracted))

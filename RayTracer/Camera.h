@@ -19,11 +19,11 @@ public:
 
 private:
 	Camera();
-	Vector3 lookFrom, lookAt, Up;
-	Vector3 origin;
-	Vector3 lower_left_corner;
-	Vector3 horizontal;
-	Vector3 vertical;
-	Vector3 u, v, w;
+	glm::vec3 lookFrom, lookAt, Up;
+	glm::vec3 origin;
+	glm::vec3 lower_left_corner;
+	glm::vec3 horizontal;
+	glm::vec3 vertical;
+	glm::vec3 u, v, w;
 	float lens_radius, aperture, vfov, focus_dist;
 };

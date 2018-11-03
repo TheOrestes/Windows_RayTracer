@@ -16,9 +16,9 @@ Camera::~Camera()
 
 void Camera::InitCamera(float screenWidth, float screenHeight)
 {
-	lookFrom = Vector3(4.0f, 4.0f, 7.0f);
-	lookAt = Vector3(0.0f, 2.0f, 0.0f);
-	Up = Vector3(0.0f, 1.0f, 0.0f);
+	lookFrom = glm::vec3(4.0f, 4.0f, 7.0f);
+	lookAt = glm::vec3(0.0f, 2.0f, 0.0f);
+	Up = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	lens_radius = aperture / 2.0f;
 	 
@@ -27,9 +27,9 @@ void Camera::InitCamera(float screenWidth, float screenHeight)
 	float half_width = (screenWidth / screenHeight) * half_height;
 
 	origin = lookFrom;
-	w = UnitVector(lookFrom - lookAt);
-	u = UnitVector(Cross(Up, w));
-	v = Cross(w, u);
+	w = glm::normalize(lookFrom - lookAt);
+	u = glm::normalize(glm::cross(Up, w));
+	v = glm::cross(w, u);
 
 	lower_left_corner = origin - half_width * focus_dist * u - half_height * focus_dist * v - focus_dist * w;
 	horizontal = 2 * half_width * focus_dist * u;
@@ -38,8 +38,8 @@ void Camera::InitCamera(float screenWidth, float screenHeight)
 
 Ray Camera::get_ray(float s, float t)
 {
-	Vector3 rd = lens_radius * Helper::GetRandomInUnitDisk();
-	Vector3 offset = rd.x * u + rd.y * v;
+	glm::vec3 rd = lens_radius * Helper::GetRandomInUnitDisk();
+	glm::vec3 offset = rd.x * u + rd.y * v;
 	return Ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset);
 }
 

@@ -57,9 +57,6 @@
     <ClInclude Include="RayTracer\Transparent.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
-    <ClInclude Include="RayTracer\Vector3.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
     <ClInclude Include="RayTracer\Triangle.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
@@ -73,9 +70,6 @@
   <ItemGroup>
     <ClCompile Include="WindowsRayTracer.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RayTracer\Vector3.cpp">
-      <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
     <ClCompile Include="RayTracer\Scene.cpp">
       <Filter>Source Files\RayTracer</Filter>

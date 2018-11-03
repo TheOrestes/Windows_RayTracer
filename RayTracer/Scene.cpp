@@ -22,23 +22,23 @@ Scene::~Scene()
 
 void Scene::InitScene()
 {
-	Vector3 center0(-3.0f, 0, 0);
-	Vector3 albedo0(1, 0, 0);
+	glm::vec3 center0(-3.0f, 0, 0);
+	glm::vec3 albedo0(1, 0, 0);
 	Material* pMatSphere0 = new Metal(albedo0, 0.2f);
 	Sphere* pSphere0 = new Sphere(center0, 0.5f, pMatSphere0);
 
 	// Sphere2
-	Vector3 center1(0, -100.5, 0);
-	Vector3 albedo1(0.3, 0.3, 0.3);
+	glm::vec3 center1(0, -100.5, 0);
+	glm::vec3 albedo1(0.3, 0.3, 0.3);
 	Material* pMatSphere1 = new Lambertian(albedo1);
 	Sphere* pSphere1 = new Sphere(center1, 100.0f, pMatSphere1);
 
-	Sphere* pSphere2 = new Sphere(Vector3(0, 0.0f, 2.05f), 0.5f, new Transparent(1.5f));
-	Sphere* pSphere3 = new Sphere(Vector3(1.05f, 0.5f, -2.05), 1, new Metal(Vector3(1.0, 0.2, 0.0), 0));
-	Sphere* pSphere4 = new Sphere(Vector3(2.05f, 0.0f, 0), 0.5, new Lambertian(Vector3(0.0f, 0.4f, 1.0f)));
-	Triangle* pTriangle0  = new Triangle(Vector3(-2.0f, 0.0f, -1.0f), Vector3(2.0f, 0.0f, -1.0f), Vector3(0.0f, 2.0f, -1.0f), new Metal(Vector3(0.0, 1.0f, 0.0f), 0.5f));
+	Sphere* pSphere2 = new Sphere(glm::vec3(0, 0.0f, 2.05f), 0.5f, new Transparent(1.5f));
+	Sphere* pSphere3 = new Sphere(glm::vec3(1.05f, 0.5f, -2.05), 1, new Metal(glm::vec3(1.0, 0.2, 0.0), 0));
+	Sphere* pSphere4 = new Sphere(glm::vec3(2.05f, 0.0f, 0), 0.5, new Lambertian(glm::vec3(0.0f, 0.4f, 1.0f)));
+	Triangle* pTriangle0  = new Triangle(glm::vec3(-2.0f, 0.0f, -1.0f), glm::vec3(2.0f, 0.0f, -1.0f), glm::vec3(0.0f, 2.0f, -1.0f), new Metal(glm::vec3(0.0, 1.0f, 0.0f), 0.5f));
 
-	TriangleMesh* pMesh0 = new TriangleMesh("models/deer.obj", new Metal(Vector3(0.0f, 0.85f, 0.25f), 0.2f));
+	TriangleMesh* pMesh0 = new TriangleMesh("models/deer.obj", new Metal(glm::vec3(0.0f, 0.85f, 0.25f), 0.2f));
 
 	vecHitables.push_back(pSphere0);
 	vecHitables.push_back(pSphere1);
@@ -51,7 +51,7 @@ void Scene::InitScene()
 
 void Scene::InitRandomScene()
 {
-	Sphere* pSphere0 = new Sphere(Vector3(0, -1000, 0), 1000, new Lambertian(Vector3(0.5, 0.5, 0.5)));
+	Sphere* pSphere0 = new Sphere(glm::vec3(0, -1000, 0), 1000, new Lambertian(glm::vec3(0.5, 0.5, 0.5)));
 	vecHitables.push_back(pSphere0);
 
 	int i = 1;
@@ -62,19 +62,19 @@ void Scene::InitRandomScene()
 		{
 			float choose_mat = Helper::GetRandom01();
 
-			Vector3 center(a + 0.9f * Helper::GetRandom01(), 0.2, b + 0.9 * Helper::GetRandom01());
-			if ((center - Vector3(4, 0.2, 0)).Length() > 0.9f)
+			glm::vec3 center(a + 0.9f * Helper::GetRandom01(), 0.2, b + 0.9 * Helper::GetRandom01());
+			if ((center - glm::vec3(4, 0.2, 0)).length() > 0.9f)
 			{
 				if (choose_mat < 0.8f)
 				{
 					// diffuse
-					Sphere* temp = new Sphere(center, 0.2f, new Lambertian(Vector3(Helper::GetRandom01() * Helper::GetRandom01(), Helper::GetRandom01() * Helper::GetRandom01(), Helper::GetRandom01() * Helper::GetRandom01())));
+					Sphere* temp = new Sphere(center, 0.2f, new Lambertian(glm::vec3(Helper::GetRandom01() * Helper::GetRandom01(), Helper::GetRandom01() * Helper::GetRandom01(), Helper::GetRandom01() * Helper::GetRandom01())));
 					vecHitables.push_back(temp);
 				}
 				else if (choose_mat < 0.95f)
 				{
 					// Metal
-					Sphere* temp = new Sphere(center, 0.2f, new Metal(Vector3(0.5f*(1 + Helper::GetRandom01()), 0.5f*(1 + Helper::GetRandom01()), 0.5f*(1 + Helper::GetRandom01())), Helper::GetRandom01()));
+					Sphere* temp = new Sphere(center, 0.2f, new Metal(glm::vec3(0.5f*(1 + Helper::GetRandom01()), 0.5f*(1 + Helper::GetRandom01()), 0.5f*(1 + Helper::GetRandom01())), Helper::GetRandom01()));
 					vecHitables.push_back(temp);
 				}
 				else
@@ -87,9 +87,9 @@ void Scene::InitRandomScene()
 		}
 	}
 
-	Sphere* pSphere1 = new Sphere(Vector3(0, 1, 0), 1.0f, new Transparent(1.5f));
-	Sphere* pSphere2 = new Sphere(Vector3(-4, 1, 0), 1.0f, new Lambertian(Vector3(0.4f, 0.2f, 0.1f)));
-	Sphere* pSphere3 = new Sphere(Vector3(4, 1, 0), 1.0f, new Metal(Vector3(0.7f, 0.6f, 0.5f), 0.0f));
+	Sphere* pSphere1 = new Sphere(glm::vec3(0, 1, 0), 1.0f, new Transparent(1.5f));
+	Sphere* pSphere2 = new Sphere(glm::vec3(-4, 1, 0), 1.0f, new Lambertian(glm::vec3(0.4f, 0.2f, 0.1f)));
+	Sphere* pSphere3 = new Sphere(glm::vec3(4, 1, 0), 1.0f, new Metal(glm::vec3(0.7f, 0.6f, 0.5f), 0.0f));
 
 	vecHitables.push_back(pSphere1);
 	vecHitables.push_back(pSphere2);
