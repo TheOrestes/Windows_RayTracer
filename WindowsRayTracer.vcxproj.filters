@@ -16,6 +16,9 @@
     <Filter Include="Source Files\RayTracer">
       <UniqueIdentifier>{23593972-7f80-4ecd-9330-a6f8cbe796bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Main">
+      <UniqueIdentifier>{77c5be77-8167-4710-9516-9feb85cfa444}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header.h">
@@ -66,11 +69,14 @@
     <ClInclude Include="RayTracer\TriangleMesh.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
+    <ClInclude Include="Main\GLSLShader.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\ScreenAlignedQuad.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WindowsRayTracer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RayTracer\Scene.cpp">
       <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
@@ -91,6 +97,15 @@
     </ClCompile>
     <ClCompile Include="RayTracer\Camera.cpp">
       <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\GLSLShader.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\ScreenAlignedQuad.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Main.cpp">
+      <Filter>Source Files\Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
