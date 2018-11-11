@@ -46,7 +46,7 @@ void Scene::InitScene()
 	vecHitables.push_back(pSphere3);
 	vecHitables.push_back(pSphere4);
 	//vecHitables.push_back(pTriangle0);
-	//vecHitables.push_back(pMesh0);
+	vecHitables.push_back(pMesh0);
 }
 
 void Scene::InitRandomScene()
