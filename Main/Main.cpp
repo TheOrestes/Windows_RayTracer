@@ -25,8 +25,8 @@
 #include "ScreenAlignedQuad.h"
 
 const int COLOR_CHANNELS = 3; // RGB
-const int gBackbufferWidth = 480;
-const int gBackbufferHeight = 270;
+const int gBackbufferWidth = 960;
+const int gBackbufferHeight = 540;
 const int nSamples = 1;
 
 unsigned long long int numRays = 0;

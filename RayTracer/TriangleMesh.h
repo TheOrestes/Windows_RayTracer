@@ -9,6 +9,7 @@
 #include "Triangle.h"
 
 class Material;
+class AABB;
 
 class TriangleMesh : public Hitable
 {
@@ -26,5 +27,6 @@ private:
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene);
 
 	std::vector<Triangle*> m_vecTriangles;
-	Material* m_ptrMaterial;
+	AABB*				   m_ptrAABB;
+	Material*			   m_ptrMaterial;
 };

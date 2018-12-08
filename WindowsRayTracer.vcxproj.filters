@@ -75,6 +75,9 @@
     <ClInclude Include="Main\ScreenAlignedQuad.h">
       <Filter>Source Files\Main</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracer\AABB.h">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RayTracer\Scene.cpp">
@@ -106,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="Main\Main.cpp">
       <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\AABB.cpp">
+      <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
