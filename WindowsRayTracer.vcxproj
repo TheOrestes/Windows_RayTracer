@@ -151,11 +151,12 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\external\assimp\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <Profile>true</Profile>
+      <Profile>false</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="header.h" />
+    <ClInclude Include="RayTracer\AABB.h" />
     <ClInclude Include="RayTracer\Camera.h" />
     <ClInclude Include="RayTracer\Helper.h" />
     <ClInclude Include="RayTracer\Hitable.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="WindowsRayTracer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="RayTracer\AABB.cpp" />
     <ClCompile Include="RayTracer\Camera.cpp" />
     <ClCompile Include="RayTracer\Lambertian.cpp" />
     <ClCompile Include="RayTracer\Metal.cpp" />

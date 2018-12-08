@@ -1,6 +1,7 @@
 
 #include "glm\glm.hpp"
 #include "TriangleMesh.h"
+#include "AABB.h"
 #include <Windows.h>
 
 TriangleMesh::TriangleMesh()
@@ -12,6 +13,8 @@ TriangleMesh::TriangleMesh(const std::string& path, Material* ptr_mat)
 {
 	m_vecTriangles.clear();
 	m_ptrMaterial = ptr_mat;
+
+	m_ptrAABB = new AABB();
 
 	LoadModel(path);
 }
@@ -57,6 +60,7 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
 		vecVertices.push_back(mesh->mVertices[i]);
+		m_ptrAABB->UpdateBB(glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
 	}
 
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -84,14 +88,17 @@ bool TriangleMesh::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) con
 	bool isIntersection = false;
 	float closestSoFar = tmax;
 
-	for (int i = 0; i < m_vecTriangles.size(); i++)
+	if (m_ptrAABB->hit(r, tmin, tmax))
 	{
-		if (m_vecTriangles[i]->hit(r, tmin, closestSoFar, rec))
+		for (int i = 0; i < m_vecTriangles.size(); i++)
 		{
-			isIntersection = true;
-			closestSoFar = rec.t;
+			if (m_vecTriangles[i]->hit(r, tmin, closestSoFar, rec))
+			{
+				isIntersection = true;
+				closestSoFar = rec.t;
+			}
 		}
 	}
-
+	
 	return isIntersection;
 }
