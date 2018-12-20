@@ -166,6 +166,7 @@
     <ClInclude Include="RayTracer\Ray.h" />
     <ClInclude Include="RayTracer\Scene.h" />
     <ClInclude Include="RayTracer\Sphere.h" />
+    <ClInclude Include="RayTracer\Texture.h" />
     <ClInclude Include="RayTracer\Transparent.h" />
     <ClInclude Include="RayTracer\Triangle.h" />
     <ClInclude Include="RayTracer\TriangleMesh.h" />
