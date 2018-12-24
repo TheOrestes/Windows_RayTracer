@@ -6,6 +6,6 @@ bool Lambertian::Scatter(const Ray& r_in, const HitRecord& rec, glm::vec3& atten
 {
 	glm::vec3 target = rec.P + rec.N + Helper::RandomInUnitSphere();
 	scatterd = Ray(rec.P, target - rec.P);
-	attenuation = Albedo->value(0,0);
+	attenuation = Albedo->value(rec.uv);
 	return true;
 }

@@ -9,6 +9,7 @@ struct HitRecord
 	float t;
 	glm::vec3 P;
 	glm::vec3 N;
+	glm::vec2 uv;
 	Material* mat_ptr;
 };
 

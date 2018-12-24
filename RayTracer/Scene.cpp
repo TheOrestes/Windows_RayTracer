@@ -36,10 +36,12 @@ void Scene::InitScene()
 
 	Sphere* pSphere2 = new Sphere(glm::vec3(0, 0.0f, 2.05f), 0.5f, new Transparent(1.5f));
 	Sphere* pSphere3 = new Sphere(glm::vec3(1.05f, 0.5f, -2.05), 1, new Metal(new ConstantTexture(glm::vec3(1.0, 0.2, 0.0)), 0));
-	Sphere* pSphere4 = new Sphere(glm::vec3(2.05f, 0.0f, 0), 0.5, new Lambertian(new ConstantTexture(glm::vec3(0.0f, 0.4f, 1.0f))));
+	Sphere* pSphere4 = new Sphere(glm::vec3(2.05f, 0.0f, 0), 0.5, new Lambertian(new ImageTexture("models/earth.jpg")));
 	Triangle* pTriangle0  = new Triangle(glm::vec3(-2.0f, 0.0f, -1.0f), glm::vec3(2.0f, 0.0f, -1.0f), glm::vec3(0.0f, 2.0f, -1.0f), new Metal(new ConstantTexture(glm::vec3(0.0, 1.0f, 0.0f)), 0.5f));
 
-	TriangleMesh* pMesh0 = new TriangleMesh("models/deer.obj", new Metal(new ConstantTexture(glm::vec3(0.0f, 0.85f, 0.25f)), 0.2f));
+	Texture* metalTexture = new ImageTexture("models/512.jpg");
+	Material* pMatMesh = new Metal(metalTexture, 0.2f);
+	TriangleMesh* pMesh0 = new TriangleMesh("models/deer.obj", pMatMesh);
 
 	vecHitables.push_back(pSphere0);
 	vecHitables.push_back(pSphere1);

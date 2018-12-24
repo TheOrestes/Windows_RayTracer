@@ -104,7 +104,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes;$(SolutionDir)\external\glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes;$(SolutionDir)\external\glm;$(SolutionDir)\external\stb</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -142,7 +142,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes;$(SolutionDir)\external\glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes;$(SolutionDir)\external\glm;$(SolutionDir)\external\stb</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="external\stb\stb_image.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="RayTracer\AABB.h" />
     <ClInclude Include="RayTracer\Camera.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="RayTracer\Transparent.h" />
     <ClInclude Include="RayTracer\Triangle.h" />
     <ClInclude Include="RayTracer\TriangleMesh.h" />
+    <ClInclude Include="RayTracer\VertexStructures.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WindowsRayTracer.h" />
@@ -181,6 +183,7 @@
     <ClCompile Include="RayTracer\Metal.cpp" />
     <ClCompile Include="RayTracer\Scene.cpp" />
     <ClCompile Include="RayTracer\Sphere.cpp" />
+    <ClCompile Include="RayTracer\Texture.cpp" />
     <ClCompile Include="RayTracer\Triangle.cpp" />
     <ClCompile Include="RayTracer\TriangleMesh.cpp" />
     <ClCompile Include="WindowsRayTracer.cpp" />

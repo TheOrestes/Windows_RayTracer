@@ -4,6 +4,7 @@
 #include "Hitable.h"
 
 class Material;
+struct VertexPNT;
 
 class Triangle : public Hitable
 {

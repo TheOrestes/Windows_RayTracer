@@ -9,7 +9,13 @@ bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 	glm::vec3 edge1 = V2 - V1;
 	glm::vec3 edge2 = V0 - V2;
 
-	glm::vec3 N = glm::normalize(glm::cross(edge0, edge1));
+	// NOTE that we are not normalizing the normal vector
+	// as we need to take it's area.
+	glm::vec3 NormalWithMagnitude = glm::cross(edge0, edge1);
+	float area = NormalWithMagnitude.length() / 2;
+
+	// Normalize normal now!
+	glm::vec3 N = glm::normalize(NormalWithMagnitude);
 
 	glm::vec3 rayDirection = r.GetRayDirection();
 	glm::vec3 rayOrigin = r.GetRayOrigin();
@@ -37,12 +43,18 @@ bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 	glm::vec3 P1 = P - V1;
 	glm::vec3 P2 = P - V2;
 
-	if (glm::dot(N, glm::cross(edge0, P0)) >= 0 && glm::dot(N, glm::cross(edge1, P1)) >= 0 && glm::dot(N, glm::cross(edge2, P2)) >= 0)
+	glm::vec3 C0 = glm::cross(edge0, P0);
+	glm::vec3 C1 = glm::cross(edge1, P1);
+	glm::vec3 C2 = glm::cross(edge2, P2);
+
+	if (glm::dot(N, C0) >= 0 && glm::dot(N, C1) >= 0 && glm::dot(N, C2) >= 0)
 	{
 		// Record hit data!!!
 		rec.t = t;
 		rec.P = P;
 		rec.N = N;
+		rec.uv.x = (C1.length() * 0.5f) / area;
+		rec.uv.y = (C2.length() * 0.5f) / area;
 		rec.mat_ptr = mat_ptr;
 
 		return true;
