@@ -54,29 +54,40 @@ void TriangleMesh::ProcessNode(aiNode* node, const aiScene* scene)
 
 void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 {
-	std::vector<aiVector3D> vecVertices;
+	std::vector<VertexPNT> vecVertices;
 	vecVertices.reserve(mesh->mNumVertices);
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
-		vecVertices.push_back(mesh->mVertices[i]);
-		m_ptrAABB->UpdateBB(glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
+		VertexPNT vertex;
+
+		vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+		vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+
+		if (mesh->mTextureCoords[0])
+		{
+			//vertex.uv = glm::clamp(glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y), 0.0f, 1.0f);
+			vertex.uv = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+		}
+		
+		vecVertices.push_back(vertex);
+		m_ptrAABB->UpdateBB(vertex.position);
 	}
 
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 	{
-		aiFace* face = &(mesh->mFaces[i]);
-		int numIndices = face->mNumIndices;
+		aiFace face = mesh->mFaces[i];
+		int numIndices = face.mNumIndices;
 
-		unsigned int index0 = face->mIndices[0];
-		unsigned int index1 = face->mIndices[1]; 
-		unsigned int index2 = face->mIndices[2];
+		unsigned int index0 = face.mIndices[0];
+		unsigned int index1 = face.mIndices[1]; 
+		unsigned int index2 = face.mIndices[2];
 
-		glm::vec3 pos0(vecVertices.at(index0).x, vecVertices.at(index0).y, vecVertices.at(index0).z);
-		glm::vec3 pos1(vecVertices.at(index1).x, vecVertices.at(index1).y, vecVertices.at(index1).z);
-		glm::vec3 pos2(vecVertices.at(index2).x, vecVertices.at(index2).y, vecVertices.at(index2).z);
+		VertexPNT vert0 = vecVertices.at(index0);
+		VertexPNT vert1 = vecVertices.at(index1);
+		VertexPNT vert2 = vecVertices.at(index2);
 
-		Triangle* tri = new Triangle(pos0, pos1, pos2, m_ptrMaterial);
+		Triangle* tri = new Triangle(vert0, vert1, vert2, m_ptrMaterial);
 
 		m_vecTriangles.push_back(tri);
 	}

@@ -1,5 +1,6 @@
 
 #include "Sphere.h"
+#include "Helper.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////
 bool Sphere::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
@@ -23,6 +24,8 @@ bool Sphere::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 			rec.t = t;
 			rec.P = r.GetPointAt(t);
 			rec.N = (rec.P - center) / radius;
+			rec.uv = GetSphereUV((rec.P - center) / radius);
+
 			rec.mat_ptr = mat_ptr;
 			return true;
 		}
@@ -33,10 +36,24 @@ bool Sphere::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 			rec.t = t;
 			rec.P = r.GetPointAt(t);
 			rec.N = (rec.P - center) / radius;
+			rec.uv = GetSphereUV((rec.P - center) / radius);
+
 			rec.mat_ptr = mat_ptr;
 			return true;
 		}
 	}
 
 	return false;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+glm::vec2 Sphere::GetSphereUV(const glm::vec3& p) const
+{
+	float phi = std::atan2(p.z, p.x);
+	float theta = std::asin(p.y);
+
+	float x = 1 - (phi + PI) / (2 * PI);
+	float y = (theta + PI / 2) / PI;
+
+	return glm::vec2(x, y);
 }

@@ -30,9 +30,6 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WindowsRayTracer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RayTracer\Camera.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
@@ -78,6 +75,12 @@
     <ClInclude Include="RayTracer\AABB.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracer\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\VertexStructures.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RayTracer\Scene.cpp">
@@ -111,6 +114,9 @@
       <Filter>Source Files\Main</Filter>
     </ClCompile>
     <ClCompile Include="RayTracer\AABB.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Texture.cpp">
       <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
   </ItemGroup>

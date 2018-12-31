@@ -27,7 +27,7 @@ bool AABB::hit(const Ray & r, float tmin, float tmax)
 	glm::vec3 rayDirection = r.GetRayDirection();
 	glm::vec3 rayInvDirection = r.GetInvRayDirection();
 	
-	// X Direction
+	// Direction X
 	float t0x = (minBound.x - rayOrigin.x) * rayInvDirection.x;
 	float t1x = (maxBound.x - rayOrigin.x) * rayInvDirection.x;
 	if (rayInvDirection.x < 0.0f)

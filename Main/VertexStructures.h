@@ -48,18 +48,41 @@ struct VertexPT
 	glm::vec2 uv;
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////
-struct VertexPTN
+/////////////////////////////////////////////////////////////////////////////////////////
+struct VertexPN
 {
-	VertexPTN() :
-		position(0.0f), uv(0.0f), normal(1.0f) {}
+	VertexPN()
+	{
+		position = glm::vec3(0);
+		normal = glm::vec3(0);
+	}
 
-	VertexPTN(const glm::vec3& _p, const glm::vec2& _uv, const glm::vec3& _n) :
-		position(_p), uv(_uv), normal(_n) {}
+	VertexPN(const glm::vec3& _pos, const glm::vec3& _normal) :
+		position(_pos),
+		normal(_normal) {}
 
-	glm::vec3	position;
-	glm::vec2	uv;
-	glm::vec3	normal;
+	glm::vec3 position;
+	glm::vec3 normal;
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+struct VertexPNT
+{
+	VertexPNT()
+	{
+		position = glm::vec3(0);
+		normal = glm::vec3(0);
+		uv = glm::vec2(0);
+	}
+
+	VertexPNT(const glm::vec3& _pos, const glm::vec3& _normal, const glm::vec2 _uv) :
+		position(_pos),
+		normal(_normal),
+		uv(_uv) {}
+
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec2 uv;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -84,40 +107,6 @@ struct VertexPTNBT
 	glm::vec3	normal;
 	glm::vec3   tangent;
 	glm::vec3   binormal;
-	
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////
-struct Texture
-{
-	GLuint		id;
-	std::string name;
-	aiString	path;
-};
 
-//////////////////////////////////////////////////////////////////////////////////////////
-struct StaticObjectData
-{
-	StaticObjectData()
-	{
-		path.clear();
-		shader.clear();
-
-		position  = glm::vec3(0);
-		rotation  = glm::vec3(0,1,0);
-		angle	  = 0.0f;
-		scale     = glm::vec3(1);
-
-		showBBox  = false;
-	}
-
-	std::string path;
-	std::string shader;
-
-	glm::vec3	position;
-	glm::vec3	rotation;
-	float		angle;
-	glm::vec3	scale;
-
-	bool		showBBox;
-};
