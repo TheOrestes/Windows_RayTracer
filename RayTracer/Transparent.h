@@ -27,13 +27,13 @@ public:
 		{
 			outward_normal = -rec.N;  // because we want inverted image for refraction? 
 			ni_over_nt = refr_index;
-			cosine = refr_index * glm::dot(ray_direction, rec.N) / ray_direction.length();
+			cosine = refr_index * glm::dot(ray_direction, rec.N) / glm::length(ray_direction);
 		}
 		else
 		{
 			outward_normal = rec.N;
 			ni_over_nt = 1 / refr_index;
-			cosine = -glm::dot(ray_direction, rec.N) / ray_direction.length();
+			cosine = -glm::dot(ray_direction, rec.N) / glm::length(ray_direction);
 		}
 
 		if (Helper::Refract(ray_direction, outward_normal, ni_over_nt, refracted))

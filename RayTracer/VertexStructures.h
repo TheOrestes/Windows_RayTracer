@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 struct VertexP
 {
-	VertexP() {}
+	VertexP() { position = glm::vec3(0); }
 	VertexP(const glm::vec3& _pos) : position(_pos) {}
 
 	glm::vec3 position;
@@ -14,7 +14,12 @@ struct VertexP
 /////////////////////////////////////////////////////////////////////////////////////////
 struct VertexPN
 {
-	VertexPN() {}
+	VertexPN()
+	{ 
+		position = glm::vec3(0);
+		normal = glm::vec3(0);
+	}
+
 	VertexPN(const glm::vec3& _pos, const glm::vec3& _normal) :	
 		position(_pos),
 		normal(_normal) {}
@@ -26,13 +31,19 @@ struct VertexPN
 /////////////////////////////////////////////////////////////////////////////////////////
 struct VertexPNT
 {
-	VertexPNT() {}
-	VertexPNT(const glm::vec3& _pos, const glm::vec3& _normal, const glm::vec3 _uv) :
+	VertexPNT() 
+	{
+		position = glm::vec3(0);
+		normal = glm::vec3(0);
+		uv = glm::vec2(0);
+	}
+
+	VertexPNT(const glm::vec3& _pos, const glm::vec3& _normal, const glm::vec2 _uv) :
 		position(_pos),
 		normal(_normal),
 		uv(_uv) {}
 
 	glm::vec3 position;
 	glm::vec3 normal;
-	glm::vec3 uv;
+	glm::vec2 uv;
 };

@@ -16,7 +16,7 @@ glm::vec3 ImageTexture::value(glm::vec2 uv) const
 	if (channels > 3)
 		return glm::vec3(1, 0, 0.8f);
 
-	int i = uv.x * width;
+	int i = (uv.x) * width;
 	int j = (1 - uv.y) * height;
 
 	if (i < 0) i = 0;

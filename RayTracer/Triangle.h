@@ -2,25 +2,23 @@
 
 #include "glm\glm.hpp"
 #include "Hitable.h"
+#include "VertexStructures.h"
 
 class Material;
-struct VertexPNT;
 
 class Triangle : public Hitable
 {
 public:
 	Triangle() {}
-	Triangle(const glm::vec3& _v0, const glm::vec3& _v1, const glm::vec3& _v2, Material* ptr_mat) :
-		V0(_v0),
-		V1(_v1),
-		V2(_v2),
+	Triangle(const VertexPNT& _v0, const VertexPNT& _v1, const VertexPNT& _v2, Material* ptr_mat) :
+		v0(_v0), v1(_v1), v2(_v2),
 		mat_ptr(ptr_mat) {};
 
 	virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
 
 private:
-	glm::vec3 V0;
-	glm::vec3 V1;
-	glm::vec3 V2;
+	VertexPNT v0;
+	VertexPNT v1;
+	VertexPNT v2;
 	Material* mat_ptr;
 };

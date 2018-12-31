@@ -23,29 +23,29 @@ Scene::~Scene()
 
 void Scene::InitScene()
 {
-	glm::vec3 center0(-3.0f, 0, 0);
+	glm::vec3 center0(-3.0f, 0.15f, 0);
 	glm::vec3 albedo0(1, 0, 0);
-	Material* pMatSphere0 = new Metal(new ConstantTexture(albedo0), 0.2f);
-	Sphere* pSphere0 = new Sphere(center0, 0.5f, pMatSphere0);
+	Material* pMatSphere0 = new Metal(new ConstantTexture(glm::vec3(1.0, 0.3, 0.0)), 0);
+	Sphere* pSphere0 = new Sphere(center0, 0.8f, pMatSphere0);
 
 	// Sphere2
 	glm::vec3 center1(0, -100.5, 0);
-	glm::vec3 albedo1(0.3, 0.3, 0.3);
+	glm::vec3 albedo1(0.2);
 	Material* pMatSphere1 = new Lambertian(new ConstantTexture(albedo1));
 	Sphere* pSphere1 = new Sphere(center1, 100.0f, pMatSphere1);
 
-	Sphere* pSphere2 = new Sphere(glm::vec3(0, 0.0f, 2.05f), 0.5f, new Transparent(1.5f));
-	Sphere* pSphere3 = new Sphere(glm::vec3(1.05f, 0.5f, -2.05), 1, new Metal(new ConstantTexture(glm::vec3(1.0, 0.2, 0.0)), 0));
-	Sphere* pSphere4 = new Sphere(glm::vec3(2.05f, 0.0f, 0), 0.5, new Lambertian(new ImageTexture("models/earth.jpg")));
-	Triangle* pTriangle0  = new Triangle(glm::vec3(-2.0f, 0.0f, -1.0f), glm::vec3(2.0f, 0.0f, -1.0f), glm::vec3(0.0f, 2.0f, -1.0f), new Metal(new ConstantTexture(glm::vec3(0.0, 1.0f, 0.0f)), 0.5f));
+	Sphere* pSphere2 = new Sphere(glm::vec3(-1.0, 0.0f, 1.5f), 0.5f, new Transparent(1.5f));
+	Sphere* pSphere3 = new Sphere(glm::vec3(-4.0f, 0.4f, 0.0f), 1.0f, new Metal(new ConstantTexture(glm::vec3(1.0, 0.1, 0.0)), 0));
+	Sphere* pSphere4 = new Sphere(glm::vec3(2.5f, 0.0f, 0), 0.5, new Lambertian(new ImageTexture("models/earth.jpg")));
+	//Triangle* pTriangle0  = new Triangle(glm::vec3(-2.0f, 0.0f, -1.0f), glm::vec3(2.0f, 0.0f, -1.0f), glm::vec3(0.0f, 2.0f, -1.0f), new Metal(new ConstantTexture(glm::vec3(0.0, 1.0f, 0.0f)), 0.5f));
+	Texture* baseTexture = new ImageTexture("models/car.jpg");
+	Material* pMatMesh = new Lambertian(baseTexture);
+	//TriangleMesh* pMesh0 = new TriangleMesh("models/UVCube5.fbx", pMatMesh);
+	TriangleMesh* pMesh0 = new TriangleMesh("models/car.fbx", pMatMesh);
 
-	Texture* metalTexture = new ImageTexture("models/512.jpg");
-	Material* pMatMesh = new Metal(metalTexture, 0.2f);
-	TriangleMesh* pMesh0 = new TriangleMesh("models/deer.obj", pMatMesh);
-
-	vecHitables.push_back(pSphere0);
+	//vecHitables.push_back(pSphere0);
 	vecHitables.push_back(pSphere1);
-	vecHitables.push_back(pSphere2);
+	//vecHitables.push_back(pSphere2);
 	vecHitables.push_back(pSphere3);
 	vecHitables.push_back(pSphere4);
 	//vecHitables.push_back(pTriangle0);
@@ -66,7 +66,7 @@ void Scene::InitRandomScene()
 			float choose_mat = Helper::GetRandom01();
 
 			glm::vec3 center(a + 0.9f * Helper::GetRandom01(), 0.2, b + 0.9 * Helper::GetRandom01());
-			if ((center - glm::vec3(4, 0.2, 0)).length() > 0.9f)
+			if (glm::length((center - glm::vec3(4, 0.2, 0))) > 0.9f)
 			{
 				if (choose_mat < 0.8f)
 				{
