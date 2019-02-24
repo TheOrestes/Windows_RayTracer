@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "Sphere.h"
+#include "FlatColor.h"
 #include "Lambertian.h"
 #include "Metal.h"
 #include "Transparent.h"
@@ -40,12 +41,13 @@ void Scene::InitScene()
 	//Triangle* pTriangle0  = new Triangle(glm::vec3(-2.0f, 0.0f, -1.0f), glm::vec3(2.0f, 0.0f, -1.0f), glm::vec3(0.0f, 2.0f, -1.0f), new Metal(new ConstantTexture(glm::vec3(0.0, 1.0f, 0.0f)), 0.5f));
 	Texture* baseTexture = new ImageTexture("models/car.jpg");
 	Material* pMatMesh = new Lambertian(baseTexture);
+	//Material* pMatMesh = new FlatColor (new ConstantTexture(glm::vec3(1,1,0)));
 	//TriangleMesh* pMesh0 = new TriangleMesh("models/UVCube5.fbx", pMatMesh);
 	TriangleMesh* pMesh0 = new TriangleMesh("models/car.fbx", pMatMesh);
 
-	//vecHitables.push_back(pSphere0);
+	vecHitables.push_back(pSphere0);
 	vecHitables.push_back(pSphere1);
-	//vecHitables.push_back(pSphere2);
+	vecHitables.push_back(pSphere2);
 	vecHitables.push_back(pSphere3);
 	vecHitables.push_back(pSphere4);
 	//vecHitables.push_back(pTriangle0);
@@ -99,8 +101,10 @@ void Scene::InitRandomScene()
 	vecHitables.push_back(pSphere3);
 }
 
-bool Scene::Trace(const Ray& r, float tmin, float tmax, HitRecord& rec)
+bool Scene::Trace(const Ray& r, int& rayCount, float tmin, float tmax, HitRecord& rec)
 {
+	++rayCount;
+
 	bool hit_anything = false;
 	HitRecord temp_rec;
 	double closest_so_far = tmax;

@@ -37,3 +37,7 @@
 *.app
 *.ppm
 *.bmp
+/models
+/RenderImage1.jpg
+/carRender.jpg
+/carReflection.jpg

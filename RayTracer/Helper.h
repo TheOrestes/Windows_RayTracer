@@ -46,7 +46,7 @@ namespace Helper
 	{
 		glm::vec3 unit_v = glm::normalize(v);
 		float NDotV = glm::dot(unit_v, n);
-		float discriminant = 1.0 - ni_over_nt * ni_over_nt * (1 - NDotV * NDotV);
+		float discriminant = 1.0f - ni_over_nt * ni_over_nt * (1 - NDotV * NDotV);
 
 		if (discriminant > 0)
 		{

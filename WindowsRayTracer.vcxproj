@@ -155,10 +155,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Application.h" />
     <ClInclude Include="external\stb\stb_image.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="RayTracer\AABB.h" />
     <ClInclude Include="RayTracer\Camera.h" />
+    <ClInclude Include="RayTracer\FlatColor.h" />
     <ClInclude Include="RayTracer\Helper.h" />
     <ClInclude Include="RayTracer\Hitable.h" />
     <ClInclude Include="RayTracer\Lambertian.h" />
@@ -177,8 +179,10 @@
     <ClInclude Include="WindowsRayTracer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="RayTracer\AABB.cpp" />
     <ClCompile Include="RayTracer\Camera.cpp" />
+    <ClCompile Include="RayTracer\FlatColor.cpp" />
     <ClCompile Include="RayTracer\Lambertian.cpp" />
     <ClCompile Include="RayTracer\Metal.cpp" />
     <ClCompile Include="RayTracer\Scene.cpp" />

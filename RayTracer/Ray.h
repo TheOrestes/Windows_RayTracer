@@ -5,7 +5,13 @@
 class Ray
 {
 public:
-	Ray() {}
+	Ray() 
+	{
+		origin = glm::vec3(0);
+		direction = glm::vec3(1);
+		invDirection = glm::vec3(1);
+	}
+
 	Ray(const glm::vec3& A, const glm::vec3& B) 
 	{ 
 		origin = A;
