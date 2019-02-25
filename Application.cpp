@@ -44,7 +44,7 @@ void Application::Initialize(HWND hwnd, bool _threaded)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void Application::Execute(HDC _hdc)
+void Application::Execute()
 {
 	int percentageDone = 0.0f;
 

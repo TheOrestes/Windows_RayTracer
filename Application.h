@@ -15,7 +15,7 @@ public:
 	~Application();
 
 	void			Initialize(HWND hwnd, bool _threaded);
-	void			Execute(HDC _hdc);
+	void			Execute();
 	void			SaveImage();
 
 	inline int		GetBufferWidth() { return m_iBackbufferWidth; }
