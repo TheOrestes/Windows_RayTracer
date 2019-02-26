@@ -16,12 +16,12 @@ public:
 		return instance;
 	}
 
-	bool Trace(const Ray& r, float tmin, float tmax, HitRecord& rec);
+	bool Trace(const Ray& r, int& rayCount, float tmin, float tmax, HitRecord& rec);
 
 private:
 	Scene();
 	void InitScene();
 	void InitRandomScene();
-
+	
 	std::vector<Hitable*> vecHitables;
 };

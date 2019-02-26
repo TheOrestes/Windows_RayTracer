@@ -10,7 +10,7 @@ class Transparent : public Material
 public:
 	Transparent(float ri) : refr_index(ri) {}
 
-	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, glm::vec3& attenuation, Ray& scattered) const
+	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& attenuation, Ray& scattered) const
 	{
 		glm::vec3 outward_normal;
 		glm::vec3 ray_direction = r_in.GetRayDirection();
@@ -54,6 +54,8 @@ public:
 		{
 			scattered = Ray(rec.P, refracted);
 		}
+
+		++rayCount;
 
 		return true;
 	}

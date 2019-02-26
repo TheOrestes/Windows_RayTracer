@@ -37,3 +37,4 @@
 *.app
 *.ppm
 *.bmp
+/models

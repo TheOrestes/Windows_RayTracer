@@ -81,6 +81,9 @@
     <ClInclude Include="Main\VertexStructures.h">
       <Filter>Source Files\Main</Filter>
     </ClInclude>
+    <ClInclude Include="Main\Application.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RayTracer\Scene.cpp">
@@ -118,6 +121,9 @@
     </ClCompile>
     <ClCompile Include="RayTracer\Texture.cpp">
       <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Application.cpp">
+      <Filter>Source Files\Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
