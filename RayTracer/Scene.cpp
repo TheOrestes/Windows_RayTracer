@@ -9,6 +9,7 @@
 #include "Texture.h"
 #include "Triangle.h"
 #include "TriangleMesh.h"
+#include "../Profiler.h"
 
 Scene::Scene()
 {
@@ -42,8 +43,10 @@ void Scene::InitScene()
 	Texture* baseTexture = new ImageTexture("models/car.jpg");
 	Material* pMatMesh = new Lambertian(baseTexture);
 	//Material* pMatMesh = new FlatColor (new ConstantTexture(glm::vec3(1,1,0)));
-	//TriangleMesh* pMesh0 = new TriangleMesh("models/UVCube5.fbx", pMatMesh);
-	TriangleMesh* pMesh0 = new TriangleMesh("models/car.fbx", pMatMesh);
+	TriangleMesh* pMesh0 = new TriangleMesh("models/UVCube5.fbx", pMatMesh);
+	//TriangleMesh* pMesh0 = new TriangleMesh("models/car.fbx", pMatMesh);
+
+	Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
 	vecHitables.push_back(pSphere0);
 	vecHitables.push_back(pSphere1);

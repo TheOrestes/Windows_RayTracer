@@ -16,6 +16,8 @@ TriangleMesh::TriangleMesh(const std::string& path, Material* ptr_mat)
 
 	m_ptrAABB = new AABB();
 
+	m_iTriangleCount = 0;
+
 	LoadModel(path);
 }
 
@@ -91,6 +93,9 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 
 		m_vecTriangles.push_back(tri);
 	}
+
+	// Hold count for triangles...
+	m_iTriangleCount = m_vecTriangles.size();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +104,7 @@ bool TriangleMesh::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) con
 	bool isIntersection = false;
 	float closestSoFar = tmax;
 
-	if (m_ptrAABB->hit(r, tmin, tmax))
+	if (m_ptrAABB->hit(r, tmin, tmax, rec))
 	{
 		for (int i = 0; i < m_vecTriangles.size(); i++)
 		{

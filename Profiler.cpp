@@ -1,0 +1,49 @@
+#include "Profiler.h"
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+Profiler::Profiler()
+{
+	m_strInfo.clear();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+Profiler::~Profiler()
+{
+	m_strInfo.clear();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Profiler::WriteToProfiler(const std::string & _inputStr)
+{
+	m_strInfo.append("\n" + _inputStr);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Profiler::WriteToProfiler(const std::string & _inputStr, float _value)
+{
+	char buffer[64];
+	sprintf(buffer, "%.2f", _value);
+
+	m_strInfo.append("\n" + _inputStr);
+	m_strInfo.append(buffer);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Profiler::WriteToProfiler(const std::string & _inputStr, double _value)
+{
+	char buffer[64];
+	sprintf(buffer, "%.2f", _value);
+
+	m_strInfo.append("\n" + _inputStr);
+	m_strInfo.append(buffer);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Profiler::WriteToProfiler(const std::string & _inputStr, int _value)
+{
+	char buffer[64];
+	sprintf(buffer, "%d", _value);
+
+	m_strInfo.append("\n" + _inputStr);
+	m_strInfo.append(buffer);
+}

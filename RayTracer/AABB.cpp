@@ -1,4 +1,5 @@
 
+#include "Hitable.h"
 #include "AABB.h"
 #include <algorithm>
 
@@ -21,8 +22,10 @@ void AABB::UpdateBB(const glm::vec3& _pos)
 	if (_pos.z > maxBound.z) { maxBound.z = _pos.z; }
 }
 
-bool AABB::hit(const Ray & r, float tmin, float tmax)
+bool AABB::hit(const Ray & r, float tmin, float tmax, HitRecord& rec)
 {
+	++rec.rayBoxTestCount;
+
 	glm::vec3 rayOrigin = r.GetRayOrigin();
 	glm::vec3 rayDirection = r.GetRayDirection();
 	glm::vec3 rayInvDirection = r.GetInvRayDirection();

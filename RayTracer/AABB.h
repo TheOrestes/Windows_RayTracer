@@ -3,6 +3,8 @@
 #include "glm\glm.hpp"
 #include "Ray.h"
 
+struct HitRecord;
+
 class AABB
 {
 public:
@@ -13,7 +15,7 @@ public:
 		maxBound(_max) {}
 
 	void UpdateBB(const glm::vec3& _pos);
-	bool hit(const Ray& r, float tmin, float tmax);
+	bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec);
 
 private:
 	glm::vec3 minBound;

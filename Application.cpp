@@ -9,6 +9,7 @@
 #include "RayTracer/Scene.h"
 #include "RayTracer/Helper.h"
 #include "RayTracer/Camera.h"
+#include "Profiler.h"
 #include "Application.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,6 +22,10 @@ Application::Application()
 	m_bThreaded = false;
 
 	m_iRayCount = 0;
+	m_iRayTriangleTest = 0;
+	m_iRayTriangleIntersections = 0;
+	m_iRayBoxTest = 0;
+	m_iTriangleCount = 0;
 
 	m_hWnd = NULL;
 }
@@ -37,7 +42,7 @@ void Application::Initialize(HWND hwnd, bool _threaded)
 	m_bThreaded = _threaded;
 	m_hWnd = hwnd;
 
-	_threaded ? m_iMaxThreads = std::thread::hardware_concurrency() : 0;
+	_threaded ? m_iMaxThreads = std::thread::hardware_concurrency() - 2 : 0;
 
 	m_pCamera = &(Camera::getInstance());
 	m_pCamera->InitCamera(m_iBackbufferWidth, m_iBackbufferHeight);
@@ -56,12 +61,12 @@ void Application::Execute()
 	const clock_t end_time = clock();
 	m_dTotalRenderTime = (end_time - begin_time) / (double)CLOCKS_PER_SEC;
 
-	int rayCount = m_iRayCount;
-
-	const size_t len = 256;
-	wchar_t buffer[len] = {};
-	swprintf(buffer, L"[Time : %0.2f seconds!] [Ray Count : %d rays]", m_dTotalRenderTime, rayCount);
-	SetWindowText(m_hWnd, buffer);
+	// Write into Profiler...
+	Profiler::getInstance().WriteToProfiler("Total Render Time: ", m_dTotalRenderTime);
+	Profiler::getInstance().WriteToProfiler("Ray Count: ", m_iRayCount);
+	Profiler::getInstance().WriteToProfiler("Ray Triangle Tests : ", m_iRayTriangleTest);
+	Profiler::getInstance().WriteToProfiler("Ray Triangle Intersections : ", m_iRayTriangleIntersections);
+	Profiler::getInstance().WriteToProfiler("Ray Box Tests : ", m_iRayBoxTest);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,6 +118,7 @@ void Application::SaveImage()
 glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 {
 	HitRecord rec;
+	glm::vec3 traceColor = glm::vec3(0);
 
 	if (Scene::getInstance().Trace(r, rayCount, 0.001f, FLT_MAX, rec))
 	{
@@ -122,21 +128,24 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, attenuation, scatteredRay))
 		{
 			if (glm::distance(scatteredRay.GetRayOrigin(), scatteredRay.GetRayDirection()) < 0.0000001f)
-				return attenuation;
+				traceColor = attenuation;
 			else
-				return attenuation * TraceColor(scatteredRay, depth + 1, rayCount);
-		}
-		else
-		{
-			return glm::vec3(0, 0, 0);
+				traceColor = attenuation * TraceColor(scatteredRay, depth + 1, rayCount);
 		}
 	}
 	else
 	{
 		glm::vec3 unit_direction = glm::normalize(r.GetRayDirection());
 		float t = 0.5f * (unit_direction.y + 1.0f);
-		return Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
+		traceColor = Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
 	}
+
+	// debug info...
+	m_iRayTriangleTest += rec.rayTriangleTestCount;
+	m_iRayTriangleIntersections += rec.rayTriangleIntersectionCount;
+	m_iRayBoxTest += rec.rayBoxTestCount;
+
+	return traceColor;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,10 +161,22 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i)
 	int backBufferHeight = m_iBackbufferHeight;
 	int backBufferWidth = m_iBackbufferWidth;
 	int quarterHeight = m_iBackbufferHeight / m_iMaxThreads;
+	
 	int startWidth = 0;
-	int startHeight = i * quarterHeight;
 	int endWidth = m_iBackbufferWidth;
-	int endHeight = (i + 1) * quarterHeight;
+	
+	int startHeight, endHeight;
+	
+	if (i == 0)
+		startHeight = (i * quarterHeight);
+	else
+		startHeight = (i * quarterHeight) + i;
+
+	if (i < m_iMaxThreads - 1)
+		endHeight = startHeight + quarterHeight;
+	else
+		endHeight = backBufferHeight;
+
 	int ns = m_iNumSamples;
 	HDC hdc = GetDC(m_hWnd);
 
@@ -166,7 +187,7 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i)
 	// Error check for bounds!
 	if (startWidth < endWidth && startHeight < endHeight)
 	{
-		for (int j = startHeight; j <= endHeight; j++)
+		for (int j = startHeight ; j <= endHeight; j++)
 		{
 			for (int i = startWidth; i <= endWidth; i++)
 			{

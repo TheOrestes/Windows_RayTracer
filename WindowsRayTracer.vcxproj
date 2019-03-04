@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes;$(SolutionDir)\external\glm;$(SolutionDir)\external\stb</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,6 +144,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes;$(SolutionDir)\external\glm;$(SolutionDir)\external\stb</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -158,6 +160,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="external\stb\stb_image.h" />
     <ClInclude Include="header.h" />
+    <ClInclude Include="Profiler.h" />
     <ClInclude Include="RayTracer\AABB.h" />
     <ClInclude Include="RayTracer\Camera.h" />
     <ClInclude Include="RayTracer\FlatColor.h" />
@@ -180,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Profiler.cpp" />
     <ClCompile Include="RayTracer\AABB.cpp" />
     <ClCompile Include="RayTracer\Camera.cpp" />
     <ClCompile Include="RayTracer\FlatColor.cpp" />

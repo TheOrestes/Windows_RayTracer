@@ -20,6 +20,8 @@ public:
 
 	virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
 
+	inline int GetTriangleCount() { return m_iTriangleCount; }
+
 private:
 
 	void LoadModel(const std::string& path);
@@ -29,4 +31,6 @@ private:
 	std::vector<Triangle*> m_vecTriangles;
 	AABB*				   m_ptrAABB;
 	Material*			   m_ptrMaterial;
+
+	int					   m_iTriangleCount;
 };

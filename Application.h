@@ -36,6 +36,10 @@ private:
 	bool			m_bThreaded;
 
 	std::atomic<int>	m_iRayCount;
+	std::atomic<int>    m_iRayTriangleTest;
+	std::atomic<int>    m_iRayTriangleIntersections;
+	std::atomic<int>    m_iRayBoxTest;
+	std::atomic<int>    m_iTriangleCount;
 
 	HWND			m_hWnd;
 	Camera*			m_pCamera;
