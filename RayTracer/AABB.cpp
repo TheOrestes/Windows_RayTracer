@@ -24,7 +24,11 @@ void AABB::UpdateBB(const glm::vec3& _pos)
 
 bool AABB::hit(const Ray & r, float tmin, float tmax, HitRecord& rec)
 {
-	++rec.rayBoxTestCount;
+	++rec.rayBoxQuery;
+
+	bool xHit = true; 
+	bool yHit = true;
+	bool zHit = true;
 
 	glm::vec3 rayOrigin = r.GetRayOrigin();
 	glm::vec3 rayDirection = r.GetRayDirection();
@@ -39,7 +43,7 @@ bool AABB::hit(const Ray & r, float tmin, float tmax, HitRecord& rec)
 	tmin = (t0x > tmin) ? t0x : tmin;
 	tmax = (t1x < tmax) ? t1x : tmax;
 	if (tmax <= tmin)
-		return false;
+		xHit = false;
 	
 	// Y Direction
 	float t0y = (minBound.y - rayOrigin.y) * rayInvDirection.y;
@@ -50,7 +54,7 @@ bool AABB::hit(const Ray & r, float tmin, float tmax, HitRecord& rec)
 	tmin = (t0y > tmin) ? t0y : tmin;
 	tmax = (t1y < tmax) ? t1y : tmax;
 	if (tmax <= tmin)
-		return false;
+		yHit = false;
 	
 	// Z Direction
 	float t0z = (minBound.z - rayOrigin.z) * rayInvDirection.z;
@@ -61,7 +65,13 @@ bool AABB::hit(const Ray & r, float tmin, float tmax, HitRecord& rec)
 	tmin = (t0z > tmin) ? t0z : tmin;
 	tmax = (t1z < tmax) ? t1z : tmax;
 	if (tmax <= tmin)
-		return false;
+		zHit = false;
 
-	return true;
+	if (xHit && yHit && zHit)
+	{
+		++rec.rayBoxSuccess;
+		return true;
+	}
+	else
+		return false;
 }

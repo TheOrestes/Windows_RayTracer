@@ -1,3 +1,5 @@
+
+#include <inttypes.h>
 #include "Profiler.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,10 +41,10 @@ void Profiler::WriteToProfiler(const std::string & _inputStr, double _value)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void Profiler::WriteToProfiler(const std::string & _inputStr, int _value)
+void Profiler::WriteToProfiler(const std::string & _inputStr, uint64_t _value)
 {
 	char buffer[64];
-	sprintf(buffer, "%d", _value);
+	sprintf(buffer, "%" PRId64, _value);
 
 	m_strInfo.append("\n" + _inputStr);
 	m_strInfo.append(buffer);

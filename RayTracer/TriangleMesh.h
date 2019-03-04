@@ -20,7 +20,7 @@ public:
 
 	virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
 
-	inline int GetTriangleCount() { return m_iTriangleCount; }
+	inline uint64_t GetTriangleCount() { return m_iTriangleCount; }
 
 private:
 
@@ -32,5 +32,5 @@ private:
 	AABB*				   m_ptrAABB;
 	Material*			   m_ptrMaterial;
 
-	int					   m_iTriangleCount;
+	uint64_t			   m_iTriangleCount;
 };

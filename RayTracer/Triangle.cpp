@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 {
-	++rec.rayTriangleTestCount;
+	++rec.rayTriangleQuery;
 
 	glm::vec3 rayDirection = r.GetRayDirection();
 	glm::vec3 rayOrigin = r.GetRayOrigin();
@@ -104,7 +104,7 @@ bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 		rec.uv = barycentric.x * v2.uv + barycentric.y * v0.uv + barycentric.z * v1.uv;
 		rec.mat_ptr = mat_ptr;
 
-		++rec.rayTriangleIntersectionCount;
+		++rec.rayTriangleSuccess;
 
 		return true;
 	}

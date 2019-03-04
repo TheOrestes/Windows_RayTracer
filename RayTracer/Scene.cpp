@@ -43,8 +43,8 @@ void Scene::InitScene()
 	Texture* baseTexture = new ImageTexture("models/car.jpg");
 	Material* pMatMesh = new Lambertian(baseTexture);
 	//Material* pMatMesh = new FlatColor (new ConstantTexture(glm::vec3(1,1,0)));
-	TriangleMesh* pMesh0 = new TriangleMesh("models/UVCube5.fbx", pMatMesh);
-	//TriangleMesh* pMesh0 = new TriangleMesh("models/car.fbx", pMatMesh);
+	//TriangleMesh* pMesh0 = new TriangleMesh("models/UVCube5.fbx", pMatMesh);
+	TriangleMesh* pMesh0 = new TriangleMesh("models/car.fbx", pMatMesh);
 
 	Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
@@ -118,6 +118,13 @@ bool Scene::Trace(const Ray& r, int& rayCount, float tmin, float tmax, HitRecord
 		{
 			hit_anything = true;
 			closest_so_far = temp_rec.t;
+			rec = temp_rec;
+		}
+		else
+		{
+			// This is needed for Profile information
+			// If ray doesn't hit anything, still it could have done BBox query or
+			// Traiangle Query which needs to be accumulated..!
 			rec = temp_rec;
 		}
 	}

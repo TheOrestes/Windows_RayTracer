@@ -14,9 +14,10 @@ struct HitRecord
 		uv = glm::vec2(0);
 		mat_ptr = nullptr;
 
-		rayTriangleTestCount = 0;
-		rayTriangleIntersectionCount = 0;
-		rayBoxTestCount = 0;
+		rayTriangleQuery = 0;
+		rayTriangleSuccess = 0;
+		rayBoxQuery = 0;
+		rayBoxSuccess = 0;
 	}
 
 	float t;
@@ -26,9 +27,10 @@ struct HitRecord
 	Material* mat_ptr;
 
 	// Debug...
-	int rayTriangleTestCount;
-	int rayTriangleIntersectionCount;
-	int rayBoxTestCount;
+	uint64_t rayTriangleQuery;
+	uint64_t rayTriangleSuccess;
+	uint64_t rayBoxQuery;
+	uint64_t rayBoxSuccess;
 };
 
 class Hitable

@@ -104,7 +104,7 @@ bool TriangleMesh::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) con
 	bool isIntersection = false;
 	float closestSoFar = tmax;
 
-	if (m_ptrAABB->hit(r, tmin, tmax, rec))
+	//if (m_ptrAABB->hit(r, tmin, tmax, rec))
 	{
 		for (int i = 0; i < m_vecTriangles.size(); i++)
 		{

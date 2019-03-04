@@ -22,9 +22,10 @@ Application::Application()
 	m_bThreaded = false;
 
 	m_iRayCount = 0;
-	m_iRayTriangleTest = 0;
-	m_iRayTriangleIntersections = 0;
-	m_iRayBoxTest = 0;
+	m_iRayTriangleQuery = 0;
+	m_iRayTriangleSuccess = 0;
+	m_iRayBoxQuery = 0;
+	m_iRayBoxSuccess = 0;
 	m_iTriangleCount = 0;
 
 	m_hWnd = NULL;
@@ -64,9 +65,10 @@ void Application::Execute()
 	// Write into Profiler...
 	Profiler::getInstance().WriteToProfiler("Total Render Time: ", m_dTotalRenderTime);
 	Profiler::getInstance().WriteToProfiler("Ray Count: ", m_iRayCount);
-	Profiler::getInstance().WriteToProfiler("Ray Triangle Tests : ", m_iRayTriangleTest);
-	Profiler::getInstance().WriteToProfiler("Ray Triangle Intersections : ", m_iRayTriangleIntersections);
-	Profiler::getInstance().WriteToProfiler("Ray Box Tests : ", m_iRayBoxTest);
+	Profiler::getInstance().WriteToProfiler("Ray Triangle Queries : ", m_iRayTriangleQuery);
+	Profiler::getInstance().WriteToProfiler("Ray Triangle Success : ", m_iRayTriangleSuccess);
+	Profiler::getInstance().WriteToProfiler("Ray Box Queries : ", m_iRayBoxQuery);
+	Profiler::getInstance().WriteToProfiler("Ray Box Success : ", m_iRayBoxSuccess);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,9 +143,10 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 	}
 
 	// debug info...
-	m_iRayTriangleTest += rec.rayTriangleTestCount;
-	m_iRayTriangleIntersections += rec.rayTriangleIntersectionCount;
-	m_iRayBoxTest += rec.rayBoxTestCount;
+	m_iRayTriangleQuery += rec.rayTriangleQuery;
+	m_iRayTriangleSuccess += rec.rayTriangleSuccess;
+	m_iRayBoxQuery += rec.rayBoxQuery;
+	m_iRayBoxSuccess += rec.rayBoxSuccess;
 
 	return traceColor;
 }
