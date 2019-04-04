@@ -15,9 +15,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 480;
-	m_iBackbufferHeight = 270;
-	m_iNumSamples = 1;
+	m_iBackbufferWidth = 960;
+	m_iBackbufferHeight = 540;
+	m_iNumSamples = 10;
 	m_dTotalRenderTime = 0;
 	m_bThreaded = false;
 
@@ -55,12 +55,12 @@ void Application::Execute()
 	int percentageDone = 0.0f;
 
 	const clock_t begin_time = clock();
-	double counter = 0;
+	float counter = 0;
 
 	Trace();
 
 	const clock_t end_time = clock();
-	m_dTotalRenderTime = (end_time - begin_time) / (double)CLOCKS_PER_SEC;
+	m_dTotalRenderTime = (end_time - begin_time) / (float)CLOCKS_PER_SEC;
 
 	// Write into Profiler...
 	Profiler::getInstance().WriteToProfiler("Total Render Time: ", m_dTotalRenderTime);
@@ -120,25 +120,25 @@ void Application::SaveImage()
 glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 {
 	HitRecord rec;
-	glm::vec3 traceColor = glm::vec3(0);
+	glm::vec3 traceColor = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	if (Scene::getInstance().Trace(r, rayCount, 0.001f, FLT_MAX, rec))
 	{
 		Ray scatteredRay;
-		glm::vec3 attenuation = glm::vec3(0);
+		glm::vec3 attenuation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, attenuation, scatteredRay))
 		{
-			if (glm::distance(scatteredRay.GetRayOrigin(), scatteredRay.GetRayDirection()) < 0.0000001f)
+			if (glm::length(scatteredRay.GetRayOrigin() - scatteredRay.GetRayDirection()) < 0.0000001f)
 				traceColor = attenuation;
 			else
-				traceColor = attenuation * TraceColor(scatteredRay, depth + 1, rayCount);
+				traceColor = attenuation * (TraceColor(scatteredRay, depth + 1, rayCount));
 		}
 	}
 	else
 	{
 		glm::vec3 unit_direction = glm::normalize(r.GetRayDirection());
-		float t = 0.5f * (unit_direction.y + 1.0f);
+		float t = 0.5f * (unit_direction[1] + 1.0f);
 		traceColor = Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
 	}
 
@@ -207,11 +207,11 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i)
 				}
 
 				color = color / float(ns);
-				color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
+				color = glm::vec3(sqrt(color[0]), sqrt(color[1]), sqrt(color[2]));
 
-				float ir = (255.99f * color.x);
-				float ig = (255.99f * color.y);
-				float ib = (255.99f * color.z);
+				float ir = (255.99f * color[0]);
+				float ig = (255.99f * color[1]);
+				float ib = (255.99f * color[2]);
 
 				SetPixel(hdc, backBufferWidth - i, backBufferHeight - j, RGB(ir, ig, ib));
 				//++counter;
@@ -272,11 +272,11 @@ void Application::Trace()
 				}
 
 				color = color / float(m_iNumSamples);
-				color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
+				color = glm::vec3(sqrt(color[0]), sqrt(color[1]), sqrt(color[2]));
 
-				float ir = (255.99f*color.x);
-				float ig = (255.99f*color.y);
-				float ib = (255.99f*color.z);
+				float ir = (255.99f*color[0]);
+				float ig = (255.99f*color[1]);
+				float ib = (255.99f*color[2]);
 
 				//float ir = 255.99f;
 				//float ig = 128.99f;

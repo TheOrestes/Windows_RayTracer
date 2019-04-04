@@ -17,7 +17,6 @@ public:
 
 	void WriteToProfiler(const std::string& _inputStr);
 	void WriteToProfiler(const std::string& _inputStr, float _value);
-	void WriteToProfiler(const std::string& _inputStr, double _value);
 	void WriteToProfiler(const std::string& _inputStr, uint64_t _value);
 
 private:

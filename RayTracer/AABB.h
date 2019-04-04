@@ -1,9 +1,16 @@
 #pragma once
 
-#include "glm\glm.hpp"
+#include "glm/glm.hpp"
 #include "Ray.h"
 
 struct HitRecord;
+
+enum eLongestAxis
+{
+	X_AXIS = 0,
+	Y_AXIS,
+	Z_AXIS
+};
 
 class AABB
 {
@@ -14,10 +21,14 @@ public:
 		minBound(_min),
 		maxBound(_max) {}
 
-	void UpdateBB(const glm::vec3& _pos);
-	bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec);
+	int			GetLongestAxis();
+	glm::vec3	GetCentroidPoint();
 
-private:
-	glm::vec3 minBound;
-	glm::vec3 maxBound;
+	void		ExpandBoundingBox(const AABB& _box);
+	AABB		GetSurroundingBBox(const AABB& _box0, const AABB& _box1);
+
+	bool		hit(const Ray& r, float tmin, float tmax, HitRecord& rec);
+
+	glm::vec3	minBound;		// top back left
+	glm::vec3	maxBound;		// bottom right front
 };

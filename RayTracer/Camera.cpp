@@ -29,7 +29,7 @@ void Camera::InitCamera(float screenWidth, float screenHeight)
 	origin = lookFrom;
 	w = glm::normalize(lookFrom - lookAt);
 	u = glm::normalize(glm::cross(Up, w));
-	v = glm::cross(w, u);
+	v = glm::normalize(glm::cross(w, u));
 
 	lower_left_corner = origin - half_width * focus_dist * u - half_height * focus_dist * v - focus_dist * w;
 	horizontal = 2 * half_width * focus_dist * u;
@@ -39,7 +39,7 @@ void Camera::InitCamera(float screenWidth, float screenHeight)
 Ray Camera::get_ray(float s, float t)
 {
 	glm::vec3 rd = lens_radius * Helper::GetRandomInUnitDisk();
-	glm::vec3 offset = rd.x * u + rd.y * v;
+	glm::vec3 offset = rd[0] * u + rd[1] * v;
 	return Ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset);
 }
 

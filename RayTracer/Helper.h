@@ -14,9 +14,9 @@ namespace Helper
 		return (1.0f - t) * vec1 + t * vec2;
 	}
 
-	inline double GetRandom01()
+	inline float GetRandom01()
 	{
-		return ((double)rand() / (RAND_MAX + 1));
+		return ((float)rand() / (RAND_MAX + 1));
 	}
 
 	inline glm::vec3 GetRandomInUnitDisk()
@@ -40,6 +40,11 @@ namespace Helper
 		} while (glm::length2(P) >= 1.0f);
 
 		return P;
+	}
+
+	inline glm::vec3 Reflect(const glm::vec3& dir, const glm::vec3& normal)
+	{
+		return (dir - 2.0f * glm::dot(dir, normal) * normal);
 	}
 
 	inline bool Refract(const glm::vec3& v, const glm::vec3& n, float ni_over_nt, glm::vec3& refracted)

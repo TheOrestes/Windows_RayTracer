@@ -3,15 +3,16 @@
 #include "Ray.h"
 
 class Material;
+class AABB;
 
 struct HitRecord
 {
 	HitRecord()
 	{
 		t = 0.0f;
-		P = glm::vec3(0);
-		N = glm::vec3(0);
-		uv = glm::vec2(0);
+		P = glm::vec3(0.0f, 0.0f, 0.0f);
+		N = glm::vec3(0.0f, 0.0f, 0.0f);
+		uv = glm::vec2(0.0f, 0.0f);
 		mat_ptr = nullptr;
 
 		rayTriangleQuery = 0;
@@ -37,4 +38,5 @@ class Hitable
 {
 public:
 	virtual bool hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const = 0;
+	virtual void BoundingBox(AABB& box) const = 0;
 };

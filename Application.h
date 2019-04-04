@@ -20,7 +20,7 @@ public:
 
 	inline int		GetBufferWidth() { return m_iBackbufferWidth; }
 	inline int		GetBufferHeight() { return m_iBackbufferHeight; }
-	inline double	GetTotalRenderTime() { return m_dTotalRenderTime; }
+	inline float	GetTotalRenderTime() { return m_dTotalRenderTime; }
 
 private:
 	glm::vec3		TraceColor(const Ray& r, int depth, int& rayCount);
@@ -32,7 +32,7 @@ private:
 	int				m_iBackbufferHeight;
 	int				m_iNumSamples;
 	int				m_iMaxThreads;
-	double			m_dTotalRenderTime;
+	float			m_dTotalRenderTime;
 	bool			m_bThreaded;
 
 	std::atomic<uint64_t>	m_iRayCount;

@@ -10,15 +10,17 @@
 
 class Material;
 class AABB;
+class BVHTree;
 
 class TriangleMesh : public Hitable
 {
 public:
 	TriangleMesh();
-	~TriangleMesh() {}
+	~TriangleMesh();
 	TriangleMesh(const std::string& path, Material* ptr_mat);
 
 	virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
+	virtual void BoundingBox(AABB& box) const;
 
 	inline uint64_t GetTriangleCount() { return m_iTriangleCount; }
 
@@ -31,6 +33,8 @@ private:
 	std::vector<Triangle*> m_vecTriangles;
 	AABB*				   m_ptrAABB;
 	Material*			   m_ptrMaterial;
+
+	BVHTree*			   m_ptrBVH;
 
 	uint64_t			   m_iTriangleCount;
 };

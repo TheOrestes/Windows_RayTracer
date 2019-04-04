@@ -102,10 +102,12 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;GLM_FORCE_CTOR_INIT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes;$(SolutionDir)\external\glm;$(SolutionDir)\external\stb</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes;$(SolutionDir)\external\glm;$(SolutionDir)\external\stb;$(SolutionDir)\external\eigen3</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,7 +145,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes;$(SolutionDir)\external\glm;$(SolutionDir)\external\stb</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\assimp\includes;$(SolutionDir)\external\glm;$(SolutionDir)\external\stb;$(SolutionDir)\external\eigen3</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
@@ -167,6 +169,7 @@
     <ClInclude Include="RayTracer\Helper.h" />
     <ClInclude Include="RayTracer\Hitable.h" />
     <ClInclude Include="RayTracer\Lambertian.h" />
+    <ClInclude Include="RayTracer\LameBVH.h" />
     <ClInclude Include="RayTracer\Material.h" />
     <ClInclude Include="RayTracer\Metal.h" />
     <ClInclude Include="RayTracer\Ray.h" />
@@ -188,6 +191,7 @@
     <ClCompile Include="RayTracer\Camera.cpp" />
     <ClCompile Include="RayTracer\FlatColor.cpp" />
     <ClCompile Include="RayTracer\Lambertian.cpp" />
+    <ClCompile Include="RayTracer\LameBVH.cpp" />
     <ClCompile Include="RayTracer\Metal.cpp" />
     <ClCompile Include="RayTracer\Scene.cpp" />
     <ClCompile Include="RayTracer\Sphere.cpp" />

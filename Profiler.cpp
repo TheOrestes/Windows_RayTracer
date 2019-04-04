@@ -31,16 +31,6 @@ void Profiler::WriteToProfiler(const std::string & _inputStr, float _value)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void Profiler::WriteToProfiler(const std::string & _inputStr, double _value)
-{
-	char buffer[64];
-	sprintf(buffer, "%.2f", _value);
-
-	m_strInfo.append("\n" + _inputStr);
-	m_strInfo.append(buffer);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 void Profiler::WriteToProfiler(const std::string & _inputStr, uint64_t _value)
 {
 	char buffer[64];

@@ -16,6 +16,18 @@
     <Filter Include="Source Files\RayTracer">
       <UniqueIdentifier>{23593972-7f80-4ecd-9330-a6f8cbe796bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\RayTracer\Materials">
+      <UniqueIdentifier>{abc93cfa-4874-4fcd-a850-2224660d7096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RayTracer\Accelerators">
+      <UniqueIdentifier>{679ebeab-91c0-40c6-840e-80610210f2da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RayTracer\Geometry">
+      <UniqueIdentifier>{404fa157-7f04-4750-a22c-f93ab8f878f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RayTracer\Core">
+      <UniqueIdentifier>{a6b61088-fa4c-4de9-8995-a6c37b554ed9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header.h">
@@ -30,103 +42,109 @@
     <ClInclude Include="WindowsRayTracer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RayTracer\Camera.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
     <ClInclude Include="RayTracer\Helper.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
-    <ClInclude Include="RayTracer\Hitable.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
-    <ClInclude Include="RayTracer\Lambertian.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
-    <ClInclude Include="RayTracer\Material.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
-    <ClInclude Include="RayTracer\Metal.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
-    <ClInclude Include="RayTracer\Ray.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
-    <ClInclude Include="RayTracer\Sphere.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
-    <ClInclude Include="RayTracer\Transparent.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
-    <ClInclude Include="RayTracer\Triangle.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
     <ClInclude Include="RayTracer\Scene.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
-    <ClInclude Include="RayTracer\TriangleMesh.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
-    <ClInclude Include="RayTracer\AABB.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
-    <ClInclude Include="RayTracer\Texture.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
     <ClInclude Include="external\stb\stb_image.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RayTracer\VertexStructures.h">
-      <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RayTracer\FlatColor.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
     <ClInclude Include="Profiler.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\FlatColor.h">
+      <Filter>Source Files\RayTracer\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\Lambertian.h">
+      <Filter>Source Files\RayTracer\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\Material.h">
+      <Filter>Source Files\RayTracer\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\Metal.h">
+      <Filter>Source Files\RayTracer\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\Transparent.h">
+      <Filter>Source Files\RayTracer\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\AABB.h">
+      <Filter>Source Files\RayTracer\Accelerators</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\VertexStructures.h">
+      <Filter>Source Files\RayTracer\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\TriangleMesh.h">
+      <Filter>Source Files\RayTracer\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\Triangle.h">
+      <Filter>Source Files\RayTracer\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\Sphere.h">
+      <Filter>Source Files\RayTracer\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\Hitable.h">
+      <Filter>Source Files\RayTracer\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\Texture.h">
+      <Filter>Source Files\RayTracer\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\Ray.h">
+      <Filter>Source Files\RayTracer\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\Camera.h">
+      <Filter>Source Files\RayTracer\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\LameBVH.h">
+      <Filter>Source Files\RayTracer\Accelerators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RayTracer\Scene.cpp">
       <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
-    <ClCompile Include="RayTracer\Sphere.cpp">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClCompile>
-    <ClCompile Include="RayTracer\Lambertian.cpp">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClCompile>
-    <ClCompile Include="RayTracer\Metal.cpp">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClCompile>
-    <ClCompile Include="RayTracer\Triangle.cpp">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClCompile>
-    <ClCompile Include="RayTracer\TriangleMesh.cpp">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClCompile>
-    <ClCompile Include="RayTracer\Camera.cpp">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClCompile>
     <ClCompile Include="WindowsRayTracer.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RayTracer\AABB.cpp">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClCompile>
-    <ClCompile Include="RayTracer\Texture.cpp">
-      <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RayTracer\FlatColor.cpp">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClCompile>
     <ClCompile Include="Profiler.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\FlatColor.cpp">
+      <Filter>Source Files\RayTracer\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Lambertian.cpp">
+      <Filter>Source Files\RayTracer\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Metal.cpp">
+      <Filter>Source Files\RayTracer\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\AABB.cpp">
+      <Filter>Source Files\RayTracer\Accelerators</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\TriangleMesh.cpp">
+      <Filter>Source Files\RayTracer\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Triangle.cpp">
+      <Filter>Source Files\RayTracer\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Sphere.cpp">
+      <Filter>Source Files\RayTracer\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Texture.cpp">
+      <Filter>Source Files\RayTracer\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Camera.cpp">
+      <Filter>Source Files\RayTracer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\LameBVH.cpp">
+      <Filter>Source Files\RayTracer\Accelerators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
