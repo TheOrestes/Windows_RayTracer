@@ -49,52 +49,21 @@ bool AABB::hit(const Ray & r, float tmin, float tmax, HitRecord& rec)
 {
 	++rec.rayBoxQuery;
 
-	bool xHit = true; 
-	bool yHit = true;
-	bool zHit = true;
-
-	glm::vec3 rayOrigin = r.GetRayOrigin();
-	glm::vec3 rayDirection = r.GetRayDirection();
-	glm::vec3 rayInvDirection = r.GetInvRayDirection();
-	
-	// Direction X
-	float t0x = (minBound[0] - rayOrigin[0]) * rayInvDirection[0];
-	float t1x = (maxBound[0] - rayOrigin[0]) * rayInvDirection[0];
-	if (rayInvDirection[0] < 0.0f)
-		std::swap(t0x, t1x);
-	
-	tmin = (t0x > tmin) ? t0x : tmin;
-	tmax = (t1x < tmax) ? t1x : tmax;
-	if (tmax <= tmin)
-		xHit = false;
-	
-	// Y Direction
-	float t0y = (minBound[1] - rayOrigin[1]) * rayInvDirection[1];
-	float t1y = (maxBound[1] - rayOrigin[1]) * rayInvDirection[1];
-	if (rayInvDirection[1] < 0.0f)
-		std::swap(t0y, t1y);
-	
-	tmin = (t0y > tmin) ? t0y : tmin;
-	tmax = (t1y < tmax) ? t1y : tmax;
-	if (tmax <= tmin)
-		yHit = false;
-	
-	// Z Direction
-	float t0z = (minBound[2] - rayOrigin[2]) * rayInvDirection[2];
-	float t1z = (maxBound[2] - rayOrigin[2]) * rayInvDirection[2];
-	if (rayInvDirection[1] < 0.0f)
-		std::swap(t0z, t1z);
-	
-	tmin = (t0z > tmin) ? t0z : tmin;
-	tmax = (t1z < tmax) ? t1z : tmax;
-	if (tmax <= tmin)
-		zHit = false;
-
-	if (xHit && yHit && zHit)
+	for (int a = 0; a < 3; a++)
 	{
-		++rec.rayBoxSuccess;
-		return true;
+		float t0 = fminf((minBound[a] - r.GetRayOrigin()[a]) / r.GetRayDirection()[a],
+						 (maxBound[a] - r.GetRayOrigin()[a]) / r.GetRayDirection()[a]);
+
+		float t1 = fmaxf((minBound[a] - r.GetRayOrigin()[a]) / r.GetRayDirection()[a],
+						 (maxBound[a] - r.GetRayOrigin()[a]) / r.GetRayDirection()[a]);
+
+		tmin = fmaxf(t0, tmin);
+		tmax = fminf(t1, tmax);
+
+		if (tmax <= tmin)
+			return false;
 	}
-	else
-		return false;
+
+	++rec.rayBoxSuccess;
+	return true;
 }

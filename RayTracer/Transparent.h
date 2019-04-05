@@ -33,7 +33,7 @@ public:
 		{
 			outward_normal = rec.N;
 			ni_over_nt = 1 / refr_index;
-			cosine = glm::dot(-ray_direction, rec.N) / glm::length(ray_direction);
+			cosine = -glm::dot(ray_direction, rec.N) / glm::length(ray_direction);
 		}
 
 		if (Helper::Refract(ray_direction, outward_normal, ni_over_nt, refracted))

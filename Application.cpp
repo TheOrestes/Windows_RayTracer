@@ -15,9 +15,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 960;
-	m_iBackbufferHeight = 540;
-	m_iNumSamples = 10;
+	m_iBackbufferWidth = 480;
+	m_iBackbufferHeight = 270;
+	m_iNumSamples = 1;
 	m_dTotalRenderTime = 0;
 	m_bThreaded = false;
 
@@ -129,7 +129,7 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 
 		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, attenuation, scatteredRay))
 		{
-			if (glm::length(scatteredRay.GetRayOrigin() - scatteredRay.GetRayDirection()) < 0.0000001f)
+			if (glm::distance(scatteredRay.GetRayOrigin(), scatteredRay.GetRayDirection()) < 0.0000001f)
 				traceColor = attenuation;
 			else
 				traceColor = attenuation * (TraceColor(scatteredRay, depth + 1, rayCount));

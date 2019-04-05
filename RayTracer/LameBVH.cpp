@@ -57,8 +57,8 @@ bool BVHTree::Hit(BVHNode * node, const Ray & ray, float & tMin, float & tMax, H
 
 		BVHNode *firstNode = 0;
 		BVHNode *secondNode = 0;
-		BVHNode *leftNode = node->leftNode;
 
+		BVHNode *leftNode = node->leftNode;
 		if (leftNode)
 		{
 			bool intersectedL = leftNode->bbox.hit(ray, tL0, tL1, rec);

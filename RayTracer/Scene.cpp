@@ -25,35 +25,30 @@ Scene::~Scene()
 
 void Scene::InitScene()
 {
-	glm::vec3 center0(-3.0f, 0.15f, 0);
-	glm::vec3 albedo0(1.0f, 0.0f, 0.0f);
-	Material* pMatSphere0 = new Metal(new ConstantTexture(glm::vec3(1.0f, 0.3f, 0.0f)), 0);
-	Sphere* pSphere0 = new Sphere(center0, 0.8f, pMatSphere0);
-
-	// Sphere2
+	// Sphere Ground
 	glm::vec3 center1(0.0f, -100.5f, 0.0f);
 	glm::vec3 albedo1(0.2f, 0.2f, 0.2f);
-	Material* pMatSphere1 = new Lambertian(new ConstantTexture(albedo1));
-	Sphere* pSphere1 = new Sphere(center1, 100.0f, pMatSphere1);
+	Material* pMatSphereGround = new Lambertian(new ConstantTexture(albedo1));
+	Sphere* pSphereGround = new Sphere(center1, 100.0f, pMatSphereGround);
 
-	Sphere* pSphere2 = new Sphere(glm::vec3(-1.0f, 0.0f, 1.5f), 0.5f, new Transparent(1.5f));
-	Sphere* pSphere3 = new Sphere(glm::vec3(-4.0f, 0.4f, 0.0f), 1.0f, new Metal(new ConstantTexture(glm::vec3(1.0f, 0.1f, 0.0f)), 0));
-	Sphere* pSphere4 = new Sphere(glm::vec3(2.5f, 0.0f, 0.0f), 0.5, new Lambertian(new ImageTexture("models/earth.jpg")));
+	Sphere* pSphereGlass1 = new Sphere(glm::vec3(-4.0f, 0.4f, 0.0f), 1.0f, new Transparent(1.3f));
+	Sphere* pSphereMetal = new Sphere(glm::vec3(0.0f, 0.7f, -3.5f), 1.4f, new Metal(new ConstantTexture(glm::vec3(1.0f, 0.1f, 0.0f)), 0));
+	Sphere* pSphereEarth = new Sphere(glm::vec3(2.5f, 0.0f, 0.0f), 0.5, new Lambertian(new ImageTexture("models/earth.jpg")));
+
 	//Triangle* pTriangle0  = new Triangle(glm::vec3(-2.0f, 0.0f, -1.0f), glm::vec3(2.0f, 0.0f, -1.0f), glm::vec3(0.0f, 2.0f, -1.0f), new Metal(new ConstantTexture(glm::vec3(0.0, 1.0f, 0.0f)), 0.5f));
-	Texture* baseTexture = new ImageTexture("models/Body_Color.jpg");
-	Material* pMatMesh = new Lambertian(baseTexture);
 	//Material* pMatMesh = new FlatColor (new ConstantTexture(glm::vec3(1,1,0)));
 	//TriangleMesh* pMesh0 = new TriangleMesh("models/UVCube5.fbx", pMatSphere0);
+
+	Texture* baseTexture = new ImageTexture("models/Body_Color.jpg");
+	Material* pMatMesh = new Lambertian(baseTexture);
 	TriangleMesh* pMesh0 = new TriangleMesh("models/barb1.fbx", pMatMesh);
 
 	Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
-	//vecHitables.push_back(pSphere0);
-	vecHitables.push_back(pSphere1);
-	//vecHitables.push_back(pSphere2);
-	//vecHitables.push_back(pSphere3);
-	vecHitables.push_back(pSphere4);
-	//vecHitables.push_back(pTriangle0);
+	vecHitables.push_back(pSphereGround);
+	vecHitables.push_back(pSphereGlass1);
+	vecHitables.push_back(pSphereMetal);
+	vecHitables.push_back(pSphereEarth);
 	vecHitables.push_back(pMesh0);
 }
 
