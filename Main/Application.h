@@ -40,7 +40,12 @@ private:
 	double				m_dTotalRenderTime;
 	bool				m_bThreaded;
 
-	std::atomic<int>	m_iRayCount;
+	std::atomic<uint64_t>	m_iRayCount;
+	std::atomic<uint64_t>    m_iRayTriangleQuery;
+	std::atomic<uint64_t>    m_iRayTriangleSuccess;
+	std::atomic<uint64_t>    m_iRayBoxQuery;
+	std::atomic<uint64_t>	m_iRayBoxSuccess;
+	std::atomic<uint64_t>    m_iTriangleCount;
 
 	Camera*				m_pCamera;
 

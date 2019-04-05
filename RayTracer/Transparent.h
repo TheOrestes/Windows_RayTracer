@@ -15,11 +15,11 @@ public:
 		glm::vec3 outward_normal;
 		glm::vec3 ray_direction = r_in.GetRayDirection();
 		
-		glm::vec3 reflected = glm::reflect(ray_direction, rec.N);
+		glm::vec3 reflected = Helper::Reflect(ray_direction, rec.N);
 		float ni_over_nt;
-		attenuation = glm::vec3(1, 1, 1);
+		attenuation = glm::vec3(1.0f, 1.0f, 1.0f);
 
-		glm::vec3 refracted = glm::vec3(0);
+		glm::vec3 refracted = glm::vec3(0.0f, 0.0f, 0.0f);
 		float reflect_prob;
 		float cosine;
 

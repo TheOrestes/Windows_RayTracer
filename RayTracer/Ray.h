@@ -7,9 +7,9 @@ class Ray
 public:
 	Ray() 
 	{
-		origin = glm::vec3(0);
-		direction = glm::vec3(1);
-		invDirection = glm::vec3(1);
+		origin = glm::vec3(0.0f, 0.0f, 0.0f);
+		direction = glm::vec3(1.0f, 1.0f, 1.0f);
+		invDirection = glm::vec3(1.0f, 1.0f, 1.0f);
 	}
 
 	Ray(const glm::vec3& A, const glm::vec3& B) 
@@ -17,7 +17,7 @@ public:
 		origin = A;
 		direction = B; 
 
-		invDirection = glm::vec3(1 / direction.x, 1/direction.y, 1/direction.z);
+		invDirection = glm::vec3(1.0f / direction.x, 1.0f/direction.y, 1.0f/direction.z);
 	}
 
 	inline glm::vec3 GetRayOrigin() const { return origin; }

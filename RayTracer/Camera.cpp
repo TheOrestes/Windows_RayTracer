@@ -29,7 +29,7 @@ void Camera::InitCamera(float screenWidth, float screenHeight)
 	origin = lookFrom;
 	w = glm::normalize(lookFrom - lookAt);
 	u = glm::normalize(glm::cross(Up, w));
-	v = glm::cross(w, u);
+	v = glm::normalize(glm::cross(w, u));
 
 	lower_left_corner = origin - half_width * focus_dist * u - half_height * focus_dist * v - focus_dist * w;
 	horizontal = 2 * half_width * focus_dist * u;

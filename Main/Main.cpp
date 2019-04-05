@@ -10,6 +10,7 @@
 #include <mutex>
 
 #include "Application.h"
+#include "Profiler.h"
 
 GLFWwindow* InitGLFW(Application* pApp)
 {

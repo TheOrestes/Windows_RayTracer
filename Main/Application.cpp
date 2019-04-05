@@ -2,6 +2,7 @@
 #include <thread>
 #include <time.h>
 #include <vector>
+#include <iostream>
 #include <fstream>
 #include "glm/glm.hpp"
 #include "glm\gtc\type_ptr.hpp"
@@ -11,6 +12,7 @@
 #include "../RayTracer/Scene.h"
 #include "../RayTracer/Helper.h"
 #include "../RayTracer/Camera.h"
+#include "Profiler.h"
 #include "ScreenAlignedQuad.h"
 #include "Application.h"
 
@@ -24,6 +26,11 @@ Application::Application()
 	m_bThreaded = false;
 
 	m_iRayCount = 0;
+	m_iRayTriangleQuery = 0;
+	m_iRayTriangleSuccess = 0;
+	m_iRayBoxQuery = 0;
+	m_iRayBoxSuccess = 0;
+	m_iTriangleCount = 0;
 
 	m_pCamera = nullptr;
 	m_pQuad = nullptr;
@@ -69,12 +76,15 @@ void Application::Execute(GLFWwindow* window)
 	const clock_t end_time = clock();
 	m_dTotalRenderTime = (end_time - begin_time) / (double)CLOCKS_PER_SEC;
 
-	int rayCount = m_iRayCount;
+	// Write into Profiler...
+	Profiler::getInstance().WriteToProfiler("Total Render Time: ", (float)m_dTotalRenderTime);
+	Profiler::getInstance().WriteToProfiler("Ray Count: ", m_iRayCount);
+	Profiler::getInstance().WriteToProfiler("Ray Triangle Queries : ", m_iRayTriangleQuery);
+	Profiler::getInstance().WriteToProfiler("Ray Triangle Success : ", m_iRayTriangleSuccess);
+	Profiler::getInstance().WriteToProfiler("Ray Box Queries : ", m_iRayBoxQuery);
+	Profiler::getInstance().WriteToProfiler("Ray Box Success : ", m_iRayBoxSuccess);
 
-	const size_t len = 256;
-	char buffer[len] = {};
-	sprintf(buffer, "[Time : %0.2f seconds!] [Ray Count : %d rays]", m_dTotalRenderTime, rayCount);
-	glfwSetWindowTitle(window, buffer);
+	std::cout << "------------------- Profile Information -------------------" << Profiler::getInstance().GetProfilerTexts().c_str();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,30 +136,35 @@ void Application::SaveImage()
 glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 {
 	HitRecord rec;
+	glm::vec3 traceColor = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	if (Scene::getInstance().Trace(r, rayCount, 0.001f, FLT_MAX, rec))
 	{
 		Ray scatteredRay;
-		glm::vec3 attenuation = glm::vec3(0);
+		glm::vec3 attenuation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, attenuation, scatteredRay))
 		{
-			if (glm::distance(scatteredRay.GetRayOrigin(), scatteredRay.GetRayDirection()) < 0.0000001f)
-				return attenuation;
+			if (glm::length(scatteredRay.GetRayOrigin() - scatteredRay.GetRayDirection()) < 0.0000001f)
+				traceColor = attenuation;
 			else
-				return attenuation * TraceColor(scatteredRay, depth + 1, rayCount);
-		}
-		else
-		{
-			return glm::vec3(0, 0, 0);
+				traceColor = attenuation * (TraceColor(scatteredRay, depth + 1, rayCount));
 		}
 	}
 	else
 	{
 		glm::vec3 unit_direction = glm::normalize(r.GetRayDirection());
-		float t = 0.5f * (unit_direction.y + 1.0f);
-		return Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
+		float t = 0.5f * (unit_direction[1] + 1.0f);
+		traceColor = Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
 	}
+
+	// debug info...
+	m_iRayTriangleQuery += rec.rayTriangleQuery;
+	m_iRayTriangleSuccess += rec.rayTriangleSuccess;
+	m_iRayBoxQuery += rec.rayBoxQuery;
+	m_iRayBoxSuccess += rec.rayBoxSuccess;
+
+	return traceColor;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,10 +182,23 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 	int backBufferHeight = m_iBackbufferHeight;
 	int backBufferWidth = m_iBackbufferWidth;
 	int quarterHeight = m_iBackbufferHeight / m_iMaxThreads;
+	
 	int startWidth = 0;
-	int startHeight = i * quarterHeight;
 	int endWidth = m_iBackbufferWidth;
-	int endHeight = (i + 1) * quarterHeight;
+	
+  	
+	int startHeight, endHeight;
+	
+	if (i == 0)
+		startHeight = (i * quarterHeight);
+	else
+		startHeight = (i * quarterHeight) + i;
+
+	if (i < m_iMaxThreads - 1)
+		endHeight = startHeight + quarterHeight;
+	else
+		endHeight = backBufferHeight;
+
 	int ns = m_iNumSamples;
 	GLFWwindow* hWindow = window;
 

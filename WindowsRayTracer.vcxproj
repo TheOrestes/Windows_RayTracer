@@ -158,6 +158,7 @@
     <ClInclude Include="header.h" />
     <ClInclude Include="Main\Application.h" />
     <ClInclude Include="Main\GLSLShader.h" />
+    <ClInclude Include="Main\Profiler.h" />
     <ClInclude Include="Main\ScreenAlignedQuad.h" />
     <ClInclude Include="Main\VertexStructures.h" />
     <ClInclude Include="RayTracer\AABB.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="RayTracer\Helper.h" />
     <ClInclude Include="RayTracer\Hitable.h" />
     <ClInclude Include="RayTracer\Lambertian.h" />
+    <ClInclude Include="RayTracer\LameBVH.h" />
     <ClInclude Include="RayTracer\Material.h" />
     <ClInclude Include="RayTracer\Metal.h" />
     <ClInclude Include="RayTracer\Ray.h" />
@@ -181,10 +183,12 @@
     <ClCompile Include="Main\Application.cpp" />
     <ClCompile Include="Main\GLSLShader.cpp" />
     <ClCompile Include="Main\Main.cpp" />
+    <ClCompile Include="Main\Profiler.cpp" />
     <ClCompile Include="Main\ScreenAlignedQuad.cpp" />
     <ClCompile Include="RayTracer\AABB.cpp" />
     <ClCompile Include="RayTracer\Camera.cpp" />
     <ClCompile Include="RayTracer\Lambertian.cpp" />
+    <ClCompile Include="RayTracer\LameBVH.cpp" />
     <ClCompile Include="RayTracer\Metal.cpp" />
     <ClCompile Include="RayTracer\Scene.cpp" />
     <ClCompile Include="RayTracer\Sphere.cpp" />

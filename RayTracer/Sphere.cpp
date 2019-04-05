@@ -1,8 +1,9 @@
 
 #include "Sphere.h"
 #include "Helper.h"
+#include "AABB.h"
 
-/////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool Sphere::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 {
 	glm::vec3 rayDirection = r.GetRayDirection();
@@ -18,7 +19,7 @@ bool Sphere::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 
 	if (discriminant > 0)
 	{
-		t = (-b - sqrt(discriminant)) / (2.0 * a);
+		t = (-b - sqrt(discriminant)) / (2.0f * a);
 		if (t < tmax && t > tmin)
 		{
 			rec.t = t;
@@ -30,7 +31,7 @@ bool Sphere::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 			return true;
 		}
 
-		t = (-b + sqrt(discriminant)) / (2.0 * a);
+		t = (-b + sqrt(discriminant)) / (2.0f * a);
 		if (t < tmax && t > tmin)
 		{
 			rec.t = t;
@@ -46,7 +47,13 @@ bool Sphere::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 	return false;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Sphere::BoundingBox(AABB & box) const
+{
+	box = AABB(center - glm::vec3(radius, radius, radius), center + glm::vec3(radius, radius, radius));
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 glm::vec2 Sphere::GetSphereUV(const glm::vec3& p) const
 {
 	float phi = std::atan2(p.z, p.x);

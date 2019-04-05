@@ -1,14 +1,37 @@
 
-#include "glm\glm.hpp"
+#include "glm/glm.hpp"
+
+#include "LameBVH.h"
 #include "TriangleMesh.h"
 #include "AABB.h"
 #include <Windows.h>
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 TriangleMesh::TriangleMesh()
 {
 
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+TriangleMesh::~TriangleMesh()
+{
+	m_vecTriangles.clear();
+	m_ptrMaterial = nullptr;
+
+	if (m_ptrAABB)
+	{
+		delete m_ptrAABB;
+		m_ptrAABB = nullptr;
+	}
+
+	if (m_ptrBVH)
+	{
+		delete m_ptrBVH;
+		m_ptrBVH = nullptr;
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 TriangleMesh::TriangleMesh(const std::string& path, Material* ptr_mat)
 {
 	m_vecTriangles.clear();
@@ -17,8 +40,14 @@ TriangleMesh::TriangleMesh(const std::string& path, Material* ptr_mat)
 	m_ptrAABB = new AABB();
 
 	LoadModel(path);
+
+	m_iTriangleCount = m_vecTriangles.size();
+
+	m_ptrBVH = new BVHTree();
+	m_ptrBVH->BuildBVHTree(&m_vecTriangles, m_iTriangleCount/8);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void TriangleMesh::LoadModel(const std::string& path)
 {
 	Assimp::Importer importer;
@@ -34,6 +63,7 @@ void TriangleMesh::LoadModel(const std::string& path)
 	ProcessNode(scene->mRootNode, scene);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void TriangleMesh::ProcessNode(aiNode* node, const aiScene* scene)
 {
 	// node only contains indices to actual objects in the scene. But scene,
@@ -52,6 +82,7 @@ void TriangleMesh::ProcessNode(aiNode* node, const aiScene* scene)
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 {
 	std::vector<VertexPNT> vecVertices;
@@ -71,7 +102,6 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		}
 		
 		vecVertices.push_back(vertex);
-		m_ptrAABB->UpdateBB(vertex.position);
 	}
 
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -91,25 +121,48 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 
 		m_vecTriangles.push_back(tri);
 	}
+
+	//AABB box;
+	//for (unsigned int i = 0; i < m_vecTriangles.size(); i++)
+	//{
+	//	m_vecTriangles[i]->BoundingBox(box);
+	//	m_ptrAABB->ExpandBoundingBox(box);
+	//}
+
+	// Hold count for triangles...
+	m_iTriangleCount = m_vecTriangles.size();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool TriangleMesh::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 {
 	bool isIntersection = false;
 	float closestSoFar = tmax;
 
-	if (m_ptrAABB->hit(r, tmin, tmax))
+	if (m_ptrBVH->hit(r, tmin, tmax, rec))
 	{
-		for (int i = 0; i < m_vecTriangles.size(); i++)
-		{
-			if (m_vecTriangles[i]->hit(r, tmin, closestSoFar, rec))
-			{
-				isIntersection = true;
-				closestSoFar = rec.t;
-			}
-		}
+		rec.mat_ptr = m_ptrMaterial;
+		//closestSoFar = rec.t;
+		isIntersection = true;
 	}
+
+	//if (m_ptrAABB->hit(r, tmin, tmax, rec))
+	//{
+	//	for (int i = 0; i < m_vecTriangles.size(); i++)
+	//	{
+	//		if (m_vecTriangles[i]->hit(r, tmin, closestSoFar, rec))
+	//		{
+	//			isIntersection = true;
+	//			closestSoFar = rec.t;
+	//		}
+	//	}
+	//}
 	
 	return isIntersection;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void TriangleMesh::BoundingBox(AABB & box) const
+{
+	box = *m_ptrAABB;
 }

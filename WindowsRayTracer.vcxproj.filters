@@ -84,6 +84,12 @@
     <ClInclude Include="Main\Application.h">
       <Filter>Source Files\Main</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracer\LameBVH.h">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\Profiler.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RayTracer\Scene.cpp">
@@ -123,6 +129,12 @@
       <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
     <ClCompile Include="Main\Application.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\LameBVH.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Profiler.cpp">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
   </ItemGroup>

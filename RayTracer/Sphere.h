@@ -14,6 +14,8 @@ public:
 		mat_ptr(ptr_mat) {};
 
 	virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
+	virtual void BoundingBox(AABB& box) const;
+
 	glm::vec2 GetSphereUV(const glm::vec3& p) const;
 
 private:

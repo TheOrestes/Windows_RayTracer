@@ -1,11 +1,28 @@
 
+#include "AABB.h"
 #include "Triangle.h"
 
 //#define MOLLER_TRUMBORE
 
+Triangle::Triangle(const VertexPNT & _v0, const VertexPNT & _v1, const VertexPNT & _v2, Material * ptr_mat)
+{
+	v0 = _v0; v1 = _v1; v2 = _v2;
+	mat_ptr = ptr_mat;
+
+	// calculate centroid...
+	centroid = v0.position + v1.position + v2.position;
+	centroid /= 3.0f;
+	//float x = (v0.position[0] + v1.position[0] + v2.position[0]) / 3.0f;
+	//float y = (v0.position[1] + v1.position[1] + v2.position[1]) / 3.0f;
+	//float z = (v0.position[2] + v1.position[2] + v2.position[2]) / 3.0f;
+	//centroid = glm::vec3(x, y, z);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 {
+	++rec.rayTriangleQuery;
+
 	glm::vec3 rayDirection = r.GetRayDirection();
 	glm::vec3 rayOrigin = r.GetRayOrigin();
 
@@ -78,7 +95,6 @@ bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 	glm::vec3 P = rayOrigin + (t * rayDirection);
 
 	// Perform tests if this P is inside triangle or outside
-	glm::vec3 C;
 	glm::vec3 P0 = P - v0.position;
 	glm::vec3 P1 = P - v1.position;
 	glm::vec3 P2 = P - v2.position;
@@ -101,6 +117,8 @@ bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 		rec.N = N;
 		rec.uv = barycentric.x * v2.uv + barycentric.y * v0.uv + barycentric.z * v1.uv;
 		rec.mat_ptr = mat_ptr;
+
+		++rec.rayTriangleSuccess;
 
 		return true;
 	}
@@ -139,3 +157,16 @@ bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 	//}
 	//return false;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Triangle::BoundingBox(AABB &box) const
+{
+	box.minBound = glm::vec3(fminf(fminf(v0.position[0], v1.position[0]), v2.position[0]),
+							fminf(fminf(v0.position[1], v1.position[1]), v2.position[1]),
+							fminf(fminf(v0.position[2], v1.position[2]), v2.position[2]));
+
+	box.maxBound = glm::vec3(fmaxf(fmaxf(v0.position[0], v1.position[0]), v2.position[0]),
+							fmaxf(fmaxf(v0.position[1], v1.position[1]), v2.position[1]),
+							fmaxf(fmaxf(v0.position[2], v1.position[2]), v2.position[2]));
+}
+
