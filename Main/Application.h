@@ -40,17 +40,16 @@ private:
 	double				m_dTotalRenderTime;
 	bool				m_bThreaded;
 
-	std::atomic<uint64_t>	m_iRayCount;
+	std::atomic<uint64_t>	 m_iRayCount;
 	std::atomic<uint64_t>    m_iRayTriangleQuery;
 	std::atomic<uint64_t>    m_iRayTriangleSuccess;
 	std::atomic<uint64_t>    m_iRayBoxQuery;
-	std::atomic<uint64_t>	m_iRayBoxSuccess;
+	std::atomic<uint64_t>	 m_iRayBoxSuccess;
 	std::atomic<uint64_t>    m_iTriangleCount;
 
 	Camera*				m_pCamera;
 
 	ScreenAlignedQuad*	m_pQuad;
 
-	std::vector<glm::vec3>	copyBuffer;
 	std::vector<glm::vec3>  vecBuffer;
 };

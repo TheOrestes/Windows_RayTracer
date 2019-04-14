@@ -76,7 +76,12 @@ int main()
 
 	glfwSetKeyCallback(window, KeyHandler);
 
+#ifdef NDEBUG
 	pApp->Initialize(true);
+#else
+	pApp->Initialize(false);
+#endif
+
 	pApp->Execute(window);
 
 	while (!glfwWindowShouldClose(window))

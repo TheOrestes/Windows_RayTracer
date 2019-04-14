@@ -55,12 +55,11 @@ void Application::Initialize(bool _threaded)
 	m_pQuad = new ScreenAlignedQuad();
 	m_pQuad->Init(m_iBackbufferWidth, m_iBackbufferHeight);
 
-	glm::vec3 col = glm::vec3(1, 0, 0);
+	glm::vec3 col = glm::vec3(0, 0, 0);
 	for (int i = 0; i < m_iBackbufferWidth * m_iBackbufferHeight; i++)
 	{
 		vecBuffer.push_back(col);
 	}
-	std::copy(vecBuffer.begin(), vecBuffer.end(), std::back_inserter(copyBuffer));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,7 +176,7 @@ void Application::ShowProgress(int percentage)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* window)
 {
-	threadMutex->lock();
+	//threadMutex->lock();
 
 	int backBufferHeight = m_iBackbufferHeight;
 	int backBufferWidth = m_iBackbufferWidth;
@@ -204,7 +203,7 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 
 	int rayCount = 0;
 
-	threadMutex->unlock();
+	//threadMutex->unlock();
 
 	// Error check for bounds!
 	if (startWidth < endWidth && startHeight < endHeight)
@@ -228,9 +227,9 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 				color = color / float(ns);
 				color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
-				threadMutex->lock();
+				//threadMutex->lock();
 				vecBuffer[j * endWidth + i] = color;
-				threadMutex->unlock();
+				//threadMutex->unlock();
 			}
 		}
 	}
@@ -241,12 +240,9 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::UpdateGL(GLFWwindow* window)
 {
-	copyBuffer.clear();
-	std::copy(vecBuffer.begin(), vecBuffer.end(), std::back_inserter(copyBuffer));
-
 	m_pQuad->UpdateTexture(0, 0, m_iBackbufferWidth, m_iBackbufferHeight, glm::value_ptr(vecBuffer[0]));
 	m_pQuad->Render();
-
+	
 	glfwSwapBuffers(window);
 }
 
@@ -270,8 +266,7 @@ void Application::Trace(GLFWwindow* window)
 		std::vector<std::thread*>::iterator iter = ThreadGroup.begin();
 		for (; iter != ThreadGroup.end(); iter++)
 		{
-			//if((*iter)->joinable())
-			(*iter)->join();
+			(*iter)->detach();
 		}
 	}
 	else
