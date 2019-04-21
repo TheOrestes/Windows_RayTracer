@@ -102,6 +102,9 @@
     <ClInclude Include="RayTracer\LameBVH.h">
       <Filter>Source Files\RayTracer\Accelerators</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracer\DiffuseLight.h">
+      <Filter>Source Files\RayTracer\Materials</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RayTracer\Scene.cpp">

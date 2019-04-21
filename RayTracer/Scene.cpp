@@ -4,6 +4,7 @@
 #include "Sphere.h"
 #include "FlatColor.h"
 #include "Lambertian.h"
+#include "DiffuseLight.h"
 #include "Metal.h"
 #include "Transparent.h"
 #include "Texture.h"
@@ -32,7 +33,8 @@ void Scene::InitScene()
 	Sphere* pSphereGround = new Sphere(center1, 100.0f, pMatSphereGround);
 
 	Sphere* pSphereGlass1 = new Sphere(glm::vec3(-4.0f, 0.4f, 0.0f), 1.0f, new Transparent(1.3f));
-	Sphere* pSphereMetal = new Sphere(glm::vec3(0.0f, 0.7f, -3.5f), 1.4f, new Metal(new ConstantTexture(glm::vec3(1.0f, 0.1f, 0.0f)), 0));
+	Sphere* pSphereMetal = new Sphere(glm::vec3(0.0f, 0.7f, -3.5f), 1.4f, new Metal(new ConstantTexture(glm::vec3(1.0f, 0.1f, 0.0f)), 0.1f));
+	Sphere* pSphereLight = new Sphere(glm::vec3(-1.5f, 0.5f, 1.25f), 1.0f, new DiffuseLight(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
 	Sphere* pSphereEarth = new Sphere(glm::vec3(2.5f, 0.0f, 0.0f), 0.5, new Lambertian(new ImageTexture("models/earth.jpg")));
 
 	//Triangle* pTriangle0  = new Triangle(glm::vec3(-2.0f, 0.0f, -1.0f), glm::vec3(2.0f, 0.0f, -1.0f), glm::vec3(0.0f, 2.0f, -1.0f), new Metal(new ConstantTexture(glm::vec3(0.0, 1.0f, 0.0f)), 0.5f));
@@ -49,6 +51,7 @@ void Scene::InitScene()
 	vecHitables.push_back(pSphereGlass1);
 	vecHitables.push_back(pSphereMetal);
 	vecHitables.push_back(pSphereEarth);
+	vecHitables.push_back(pSphereLight);
 	vecHitables.push_back(pMesh0);
 }
 

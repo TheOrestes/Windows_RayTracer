@@ -15,9 +15,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 480;
-	m_iBackbufferHeight = 270;
-	m_iNumSamples = 1;
+	m_iBackbufferWidth = 1920;
+	m_iBackbufferHeight = 1080;
+	m_iNumSamples = 100;
 	m_dTotalRenderTime = 0;
 	m_bThreaded = false;
 
@@ -43,7 +43,7 @@ void Application::Initialize(HWND hwnd, bool _threaded)
 	m_bThreaded = _threaded;
 	m_hWnd = hwnd;
 
-	_threaded ? m_iMaxThreads = std::thread::hardware_concurrency() - 2 : 0;
+	_threaded ? m_iMaxThreads = std::thread::hardware_concurrency() : 0;
 
 	m_pCamera = &(Camera::getInstance());
 	m_pCamera->InitCamera(m_iBackbufferWidth, m_iBackbufferHeight);
@@ -125,21 +125,28 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 	if (Scene::getInstance().Trace(r, rayCount, 0.001f, FLT_MAX, rec))
 	{
 		Ray scatteredRay;
+
 		glm::vec3 attenuation = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 emitted = rec.mat_ptr->Emitted(rec.uv);
 
 		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, attenuation, scatteredRay))
 		{
 			if (glm::distance(scatteredRay.GetRayOrigin(), scatteredRay.GetRayDirection()) < 0.0000001f)
-				traceColor = attenuation;
+				traceColor = emitted + attenuation;
 			else
-				traceColor = attenuation * (TraceColor(scatteredRay, depth + 1, rayCount));
+				traceColor = emitted + (attenuation * (TraceColor(scatteredRay, depth + 1, rayCount)));
+		}
+		else
+		{
+			return emitted;
 		}
 	}
 	else
 	{
-		glm::vec3 unit_direction = glm::normalize(r.GetRayDirection());
-		float t = 0.5f * (unit_direction[1] + 1.0f);
-		traceColor = Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
+		//glm::vec3 unit_direction = glm::normalize(r.GetRayDirection());
+		//float t = 0.5f * (unit_direction[1] + 1.0f);
+		//traceColor = Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
+		return glm::vec3(0, 0, 0);
 	}
 
 	// debug info...
