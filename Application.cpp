@@ -4,6 +4,7 @@
 #include <vector>
 #include <fstream>
 #include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "RayTracer/Hitable.h"
 #include "RayTracer/Material.h"
 #include "RayTracer/Scene.h"
@@ -12,12 +13,15 @@
 #include "Profiler.h"
 #include "Application.h"
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 1920;
-	m_iBackbufferHeight = 1080;
-	m_iNumSamples = 100;
+	m_iBackbufferWidth = 960;
+	m_iBackbufferHeight = 540;
+	m_iNumSamples = 10;
 	m_dTotalRenderTime = 0;
 	m_bThreaded = false;
 
@@ -47,6 +51,11 @@ void Application::Initialize(HWND hwnd, bool _threaded)
 
 	m_pCamera = &(Camera::getInstance());
 	m_pCamera->InitCamera(m_iBackbufferWidth, m_iBackbufferHeight);
+
+	// Create Open Image Denoise Device
+	m_oidnDevice = oidn::newDevice();
+	m_oidnDevice.set("numThreads", m_iMaxThreads);
+	m_oidnDevice.commit();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,6 +126,59 @@ void Application::SaveImage()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+void Application::DenoiseImage()
+{
+	// Get pixel colors
+	HDC hdc = GetDC(m_hWnd);
+
+	float* pixelData = (float*)malloc(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float));
+	float* outData   = (float*)malloc(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float));
+	if (pixelData && outData)
+	{
+		memset(pixelData, 0, sizeof(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float)));
+		memset(outData,   0, sizeof(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float)));
+	}
+
+	// Below logic can be improved!!
+	float* origData = pixelData;
+	for (int j = 0; j < m_iBackbufferHeight; j++)
+	{
+		for (int i = 0; i < m_iBackbufferWidth; i++)
+		{
+			COLORREF refColor = GetPixel(hdc, i, j);
+			float rVal = (float)GetRValue(refColor);
+			float gVal = (float)GetGValue(refColor);
+			float bVal = (float)GetBValue(refColor);
+
+			*pixelData = rVal / 255.0f; ++pixelData;
+			*pixelData = gVal / 255.0f; ++pixelData;
+			*pixelData = bVal / 255.0f; ++pixelData;
+		}
+	}
+
+	// Write down orginal image in HDR format
+	stbi_write_hdr("debug.hdr", m_iBackbufferWidth, m_iBackbufferHeight, 3, origData);
+
+	// Create a denoising filter
+ 	m_oidnFilter = m_oidnDevice.newFilter("RT");
+	m_oidnFilter.setImage("color", origData, oidn::Format::Float3, m_iBackbufferWidth, m_iBackbufferHeight);
+	m_oidnFilter.setImage("output", outData, oidn::Format::Float3, m_iBackbufferWidth, m_iBackbufferHeight);
+	m_oidnFilter.set("hdr", true);
+	m_oidnFilter.commit();
+	m_oidnFilter.execute();
+
+	// Check for errors
+	const char* errorMessage;
+	if (m_oidnDevice.getError(errorMessage) != oidn::Error::None)
+	{
+		Profiler::getInstance().WriteToProfiler(errorMessage);
+	}
+
+	// Write down denoised image in HDR format!!
+	stbi_write_hdr("Denoise.hdr", m_iBackbufferWidth, m_iBackbufferHeight, 3, outData);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 {
 	HitRecord rec;
@@ -146,7 +208,7 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 		//glm::vec3 unit_direction = glm::normalize(r.GetRayDirection());
 		//float t = 0.5f * (unit_direction[1] + 1.0f);
 		//traceColor = Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
-		return glm::vec3(0, 0, 0);
+		return glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 
 	// debug info...

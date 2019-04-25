@@ -1,9 +1,11 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include "OpenImageDenoise/oidn.hpp"
 #include <Windows.h>
 #include <mutex>
 #include <atomic>
+#include <vector>
 
 class Ray;
 class Camera;
@@ -17,6 +19,7 @@ public:
 	void			Initialize(HWND hwnd, bool _threaded);
 	void			Execute();
 	void			SaveImage();
+	void			DenoiseImage();
 
 	inline int		GetBufferWidth() { return m_iBackbufferWidth; }
 	inline int		GetBufferHeight() { return m_iBackbufferHeight; }
@@ -44,4 +47,7 @@ private:
 
 	HWND			m_hWnd;
 	Camera*			m_pCamera;
+
+	oidn::DeviceRef	m_oidnDevice;
+	oidn::FilterRef m_oidnFilter;
 };

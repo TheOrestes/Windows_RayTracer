@@ -105,6 +105,9 @@
     <ClInclude Include="RayTracer\DiffuseLight.h">
       <Filter>Source Files\RayTracer\Materials</Filter>
     </ClInclude>
+    <ClInclude Include="external\stb\stb_image_write.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RayTracer\Scene.cpp">
