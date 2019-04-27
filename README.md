@@ -1,6 +1,7 @@
 # Windows RayTracer
 Peter Shierly's ray tracer with GDI 
 Working version for both Single threaded & multi-threaded version using SetPixel()
+Added Intel's Denoiser Support (https://openimagedenoise.github.io/)
 
 ![Render Output](https://i.ibb.co/1fxjSBL/Output1.jpg)
 ![Render Output](https://i.ibb.co/6WPVMF3/Output2.jpg)
