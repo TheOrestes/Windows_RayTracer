@@ -8,8 +8,8 @@
 #include "RayTracer/Hitable.h"
 #include "RayTracer/Material.h"
 #include "RayTracer/Scene.h"
-#include "RayTracer/Helper.h"
 #include "RayTracer/Camera.h"
+#include "RayTracer/Helper.h"
 #include "Profiler.h"
 #include "Application.h"
 
@@ -19,10 +19,11 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 960;
-	m_iBackbufferHeight = 540;
-	m_iNumSamples = 10;
+	m_iBackbufferWidth = 480;
+	m_iBackbufferHeight = 270;
+	m_iNumSamples = 50;
 	m_dTotalRenderTime = 0;
+	m_dDenoiserTime = 0;
 	m_bThreaded = false;
 
 	m_iRayCount = 0;
@@ -38,7 +39,11 @@ Application::Application()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::~Application()
 {
-	delete m_pCamera;
+	if (m_pScene)
+	{
+		delete m_pScene;
+		m_pScene = nullptr;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,8 +54,8 @@ void Application::Initialize(HWND hwnd, bool _threaded)
 
 	_threaded ? m_iMaxThreads = std::thread::hardware_concurrency() : 0;
 
-	m_pCamera = &(Camera::getInstance());
-	m_pCamera->InitCamera(m_iBackbufferWidth, m_iBackbufferHeight);
+	m_pScene = new Scene();
+	m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
 	// Create Open Image Denoise Device
 	m_oidnDevice = oidn::newDevice();
@@ -135,47 +140,58 @@ void Application::DenoiseImage()
 	float* outData   = (float*)malloc(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float));
 	if (pixelData && outData)
 	{
-		memset(pixelData, 0, sizeof(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float)));
-		memset(outData,   0, sizeof(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float)));
-	}
-
-	// Below logic can be improved!!
-	float* origData = pixelData;
-	for (int j = 0; j < m_iBackbufferHeight; j++)
-	{
-		for (int i = 0; i < m_iBackbufferWidth; i++)
+		// Below logic can be improved!!
+		float* origData = pixelData;
+		for (int j = 0; j < m_iBackbufferHeight; j++)
 		{
-			COLORREF refColor = GetPixel(hdc, i, j);
-			float rVal = (float)GetRValue(refColor);
-			float gVal = (float)GetGValue(refColor);
-			float bVal = (float)GetBValue(refColor);
+			for (int i = 0; i < m_iBackbufferWidth; i++)
+			{
+				COLORREF refColor = GetPixel(hdc, i, j);
+				float rVal = (float)GetRValue(refColor);
+				float gVal = (float)GetGValue(refColor);
+				float bVal = (float)GetBValue(refColor);
 
-			*pixelData = rVal / 255.0f; ++pixelData;
-			*pixelData = gVal / 255.0f; ++pixelData;
-			*pixelData = bVal / 255.0f; ++pixelData;
+				*pixelData = rVal / 255.0f; ++pixelData;
+				*pixelData = gVal / 255.0f; ++pixelData;
+				*pixelData = bVal / 255.0f; ++pixelData;
+			}
 		}
+
+#if defined _DEBUG
+		// Write down orginal image in HDR format
+		stbi_write_hdr("debug.hdr", m_iBackbufferWidth, m_iBackbufferHeight, 3, origData);
+#endif
+
+		// Create a denoising filter
+		m_oidnFilter = m_oidnDevice.newFilter("RT");
+		m_oidnFilter.setImage("color", origData, oidn::Format::Float3, m_iBackbufferWidth, m_iBackbufferHeight);
+		m_oidnFilter.setImage("output", outData, oidn::Format::Float3, m_iBackbufferWidth, m_iBackbufferHeight);
+		m_oidnFilter.set("hdr", true);
+		m_oidnFilter.set("numThreads", m_iMaxThreads);
+		m_oidnFilter.set("setAffinity", true);
+		m_oidnFilter.commit();
+
+
+		const clock_t begin_time = clock();
+		
+		m_oidnFilter.execute();
+
+		const clock_t end_time = clock();
+		m_dDenoiserTime = (end_time - begin_time) / (float)CLOCKS_PER_SEC;
+		Profiler::getInstance().WriteToProfiler("Denoiser Time: ", m_dDenoiserTime);
+
+#if defined _DEBUG
+		// Check for errors
+		const char* errorMessage;
+		if (m_oidnDevice.getError(errorMessage) != oidn::Error::None)
+		{
+			Profiler::getInstance().WriteToProfiler(errorMessage);
+		}
+#endif
+
+		// Write down denoised image in HDR format!!
+		stbi_write_hdr("Denoise.hdr", m_iBackbufferWidth, m_iBackbufferHeight, 3, outData);
 	}
-
-	// Write down orginal image in HDR format
-	stbi_write_hdr("debug.hdr", m_iBackbufferWidth, m_iBackbufferHeight, 3, origData);
-
-	// Create a denoising filter
- 	m_oidnFilter = m_oidnDevice.newFilter("RT");
-	m_oidnFilter.setImage("color", origData, oidn::Format::Float3, m_iBackbufferWidth, m_iBackbufferHeight);
-	m_oidnFilter.setImage("output", outData, oidn::Format::Float3, m_iBackbufferWidth, m_iBackbufferHeight);
-	m_oidnFilter.set("hdr", true);
-	m_oidnFilter.commit();
-	m_oidnFilter.execute();
-
-	// Check for errors
-	const char* errorMessage;
-	if (m_oidnDevice.getError(errorMessage) != oidn::Error::None)
-	{
-		Profiler::getInstance().WriteToProfiler(errorMessage);
-	}
-
-	// Write down denoised image in HDR format!!
-	stbi_write_hdr("Denoise.hdr", m_iBackbufferWidth, m_iBackbufferHeight, 3, outData);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +200,7 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 	HitRecord rec;
 	glm::vec3 traceColor = glm::vec3(0.0f, 0.0f, 0.0f);
 
-	if (Scene::getInstance().Trace(r, rayCount, 0.001f, FLT_MAX, rec))
+	if (m_pScene->Trace(r, rayCount, 0.001f, FLT_MAX, rec))
 	{
 		Ray scatteredRay;
 
@@ -208,7 +224,7 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 		//glm::vec3 unit_direction = glm::normalize(r.GetRayDirection());
 		//float t = 0.5f * (unit_direction[1] + 1.0f);
 		//traceColor = Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
-		return glm::vec3(0.0f, 0.0f, 0.0f);
+		return glm::vec3(0.01f);
 	}
 
 	// debug info...
@@ -270,7 +286,7 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i)
 					float u = float(i + Helper::GetRandom01()) / float(backBufferWidth);
 					float v = float(j + Helper::GetRandom01()) / float(backBufferHeight);
 
-					Ray r = m_pCamera->get_ray(u, v);
+					Ray r = m_pScene->getCamera()->get_ray(u, v);
 
 					color = color + TraceColor(r, 0, rayCount);
 				}
@@ -297,7 +313,7 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::Trace()
 {
-	if (m_pCamera == nullptr)
+	if (m_pScene == nullptr)
 		return;
 
 	if (m_bThreaded)
@@ -335,7 +351,7 @@ void Application::Trace()
 					float u = float(i + Helper::GetRandom01()) / float(m_iBackbufferWidth);
 					float v = float(j + Helper::GetRandom01()) / float(m_iBackbufferHeight);
 
-					Ray r = m_pCamera->get_ray(u, v);
+					Ray r = m_pScene->getCamera()->get_ray(u, v);
 
 					color = color + TraceColor(r, 0, rayCount);
 				}

@@ -32,7 +32,7 @@ TriangleMesh::~TriangleMesh()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-TriangleMesh::TriangleMesh(const std::string& path, Material* ptr_mat)
+TriangleMesh::TriangleMesh(const std::string& path, Material* ptr_mat, uint32_t _leafSize)
 {
 	m_vecTriangles.clear();
 	m_ptrMaterial = ptr_mat;
@@ -43,8 +43,9 @@ TriangleMesh::TriangleMesh(const std::string& path, Material* ptr_mat)
 
 	m_iTriangleCount = m_vecTriangles.size();
 
+	m_iLeafSize = _leafSize;
 	m_ptrBVH = new BVHTree();
-	m_ptrBVH->BuildBVHTree(&m_vecTriangles, m_iTriangleCount/8);
+	m_ptrBVH->BuildBVHTree(&m_vecTriangles, m_iLeafSize);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,7 @@
 #include <vector>
 
 class Ray;
-class Camera;
+class Scene;
 
 class Application
 {
@@ -36,6 +36,7 @@ private:
 	int				m_iNumSamples;
 	int				m_iMaxThreads;
 	float			m_dTotalRenderTime;
+	float			m_dDenoiserTime;
 	bool			m_bThreaded;
 
 	std::atomic<uint64_t>	m_iRayCount;
@@ -46,7 +47,7 @@ private:
 	std::atomic<uint64_t>    m_iTriangleCount;
 
 	HWND			m_hWnd;
-	Camera*			m_pCamera;
+	Scene*			m_pScene;
 
 	oidn::DeviceRef	m_oidnDevice;
 	oidn::FilterRef m_oidnFilter;

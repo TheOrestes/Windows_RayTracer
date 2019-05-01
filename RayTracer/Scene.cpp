@@ -10,22 +10,36 @@
 #include "Texture.h"
 #include "Triangle.h"
 #include "TriangleMesh.h"
+#include "Camera.h"
 #include "../Profiler.h"
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 Scene::Scene()
 {
 	vecHitables.clear();
-	InitScene();
-	//InitRandomScene();
+	m_pCamera = nullptr;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 Scene::~Scene()
 {
 	vecHitables.clear();
+	if (m_pCamera)
+	{
+		delete m_pCamera;
+		m_pCamera = nullptr;
+	}
 }
 
-void Scene::InitScene()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Scene::InitScene(float screenWidth, float screenHeight)
 {
+	// Initialize Camera first...!!!
+	glm::vec3 cameraPosition = glm::vec3(5.0f, 2.5f, 5.0f);
+	glm::vec3 cameraLookAt = glm::vec3(0.0f, 0.0f, 0.0f);
+	m_pCamera = new Camera();
+	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
+
 	// Sphere Ground
 	glm::vec3 center1(0.0f, -100.5f, 0.0f);
 	glm::vec3 albedo1(0.2f, 0.2f, 0.2f);
@@ -43,7 +57,7 @@ void Scene::InitScene()
 
 	Texture* baseTexture = new ImageTexture("models/Body_Color.jpg");
 	Material* pMatMesh = new Lambertian(baseTexture);
-	TriangleMesh* pMesh0 = new TriangleMesh("models/barb1.fbx", pMatMesh);
+	TriangleMesh* pMesh0 = new TriangleMesh("models/barb1.fbx", pMatMesh, 1024);
 
 	Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
@@ -55,8 +69,38 @@ void Scene::InitScene()
 	vecHitables.push_back(pMesh0);
 }
 
-void Scene::InitRandomScene()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Scene::InitCornellScene(float screenWidth, float screenHeight)
 {
+	// Initialize Camera first...!!!
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 2.5f, 8.5f);
+	glm::vec3 cameraLookAt = glm::vec3(0.0f, 2.5f, 0.0f);
+	m_pCamera = new Camera();
+	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
+
+	// Sphere Ground
+	
+	Sphere* pSphereLight = new Sphere(glm::vec3(0.0f, 1.0f, 1.0f), 1.0f, new DiffuseLight(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
+	
+
+	Material* pMatMesh = new Lambertian(new ConstantTexture(glm::vec3(0.8f, 0.8f, 0.8f)));
+	TriangleMesh* pMesh0 = new TriangleMesh("models/Cornell.fbx", pMatMesh, 10);
+
+	Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
+
+	vecHitables.push_back(pSphereLight);
+	vecHitables.push_back(pMesh0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Scene::InitRandomScene(float screenWidth, float screenHeight)
+{
+	// Initialize Camera first...!!!
+	glm::vec3 cameraPosition = glm::vec3(5.0f, 2.5f, 5.0f);
+	glm::vec3 cameraLookAt = glm::vec3(0.0f, 0.0f, 0.0f);
+	m_pCamera = new Camera();
+	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
+
 	Sphere* pSphere0 = new Sphere(glm::vec3(0, -1000.0f, 0), 1000, new Lambertian(new ConstantTexture (glm::vec3(0.5, 0.5, 0.5))));
 	vecHitables.push_back(pSphere0);
 
@@ -102,6 +146,7 @@ void Scene::InitRandomScene()
 	vecHitables.push_back(pSphere3);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool Scene::Trace(const Ray& r, int& rayCount, float tmin, float tmax, HitRecord& rec)
 {
 	++rayCount;

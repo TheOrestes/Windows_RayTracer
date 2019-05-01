@@ -17,7 +17,7 @@ class TriangleMesh : public Hitable
 public:
 	TriangleMesh();
 	~TriangleMesh();
-	TriangleMesh(const std::string& path, Material* ptr_mat);
+	TriangleMesh(const std::string& path, Material* ptr_mat, uint32_t _leafSize);
 
 	virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
 	virtual void BoundingBox(AABB& box) const;
@@ -36,5 +36,6 @@ private:
 
 	BVHTree*			   m_ptrBVH;
 
+	uint32_t			   m_iLeafSize;
 	uint64_t			   m_iTriangleCount;
 };
