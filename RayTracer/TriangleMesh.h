@@ -18,6 +18,7 @@ public:
 	TriangleMesh();
 	~TriangleMesh();
 	TriangleMesh(const std::string& path, Material* ptr_mat, uint32_t _leafSize);
+	TriangleMesh(const std::string & path, uint32_t _leafSize);
 
 	virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
 	virtual void BoundingBox(AABB& box) const;
@@ -31,6 +32,7 @@ private:
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene);
 
 	std::vector<Triangle*> m_vecTriangles;
+
 	AABB*				   m_ptrAABB;
 	Material*			   m_ptrMaterial;
 

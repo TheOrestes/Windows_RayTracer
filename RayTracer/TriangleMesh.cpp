@@ -3,6 +3,11 @@
 
 #include "LameBVH.h"
 #include "TriangleMesh.h"
+#include "Material.h"
+#include "Lambertian.h"
+#include "Metal.h"
+#include "Transparent.h"
+#include "Texture.h"
 #include "AABB.h"
 #include <Windows.h>
 
@@ -16,7 +21,12 @@ TriangleMesh::TriangleMesh()
 TriangleMesh::~TriangleMesh()
 {
 	m_vecTriangles.clear();
-	m_ptrMaterial = nullptr;
+
+	if (m_ptrMaterial)
+	{
+		delete m_ptrMaterial;
+		m_ptrMaterial = nullptr;
+	}
 
 	if (m_ptrAABB)
 	{
@@ -36,6 +46,23 @@ TriangleMesh::TriangleMesh(const std::string& path, Material* ptr_mat, uint32_t 
 {
 	m_vecTriangles.clear();
 	m_ptrMaterial = ptr_mat;
+
+	m_ptrAABB = new AABB();
+
+	LoadModel(path);
+
+	m_iTriangleCount = m_vecTriangles.size();
+
+	m_iLeafSize = _leafSize;
+	m_ptrBVH = new BVHTree();
+	m_ptrBVH->BuildBVHTree(&m_vecTriangles, m_iLeafSize);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+TriangleMesh::TriangleMesh(const std::string& path, uint32_t _leafSize)
+{
+	m_vecTriangles.clear();
+	m_ptrMaterial = nullptr;
 
 	m_ptrAABB = new AABB();
 
@@ -105,6 +132,41 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		vecVertices.push_back(vertex);
 	}
 
+	// process materials
+	if (mesh->mMaterialIndex >= 0)
+	{
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		aiString aiName;
+		if (AI_SUCCESS == aiGetMaterialString(material, AI_MATKEY_NAME, &aiName))
+		{
+			std::string name = aiName.C_Str();
+			if (name.find("lambert") != std::string::npos)
+			{
+				// Look if material has texture info...
+				aiString path;
+				
+				if (AI_SUCCESS == aiGetMaterialTexture(material, aiTextureType_DIFFUSE, 0, &path))
+				{
+					std::string finalPath = "models/" + std::string(path.C_Str());
+					Texture* baseTexture = new ImageTexture(finalPath);
+					Material* pMatMesh = new Lambertian(baseTexture);
+					m_ptrMaterial = pMatMesh;
+					//m_vecMaterials.push_back(pMatMesh);
+				}
+				else
+				{
+					// if no texture information is present, use color...
+					aiColor4D diffuseColor;
+					aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor);
+					Texture* baseColor = new ConstantTexture(glm::vec3(diffuseColor.r, diffuseColor.g, diffuseColor.b));
+					Material* pMatMesh = new Lambertian(baseColor);
+					m_ptrMaterial = pMatMesh;
+					//m_vecMaterials.push_back(pMatMesh);
+				}
+			}
+		}
+	}
+
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
@@ -142,7 +204,7 @@ bool TriangleMesh::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) con
 
 	if (m_ptrBVH->hit(r, tmin, tmax, rec))
 	{
-		rec.mat_ptr = m_ptrMaterial;
+		//rec.mat_ptr = m_ptrMaterial;
 		//closestSoFar = rec.t;
 		isIntersection = true;
 	}

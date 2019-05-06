@@ -55,9 +55,7 @@ void Scene::InitScene(float screenWidth, float screenHeight)
 	//Material* pMatMesh = new FlatColor (new ConstantTexture(glm::vec3(1,1,0)));
 	//TriangleMesh* pMesh0 = new TriangleMesh("models/UVCube5.fbx", pMatSphere0);
 
-	Texture* baseTexture = new ImageTexture("models/Body_Color.jpg");
-	Material* pMatMesh = new Lambertian(baseTexture);
-	TriangleMesh* pMesh0 = new TriangleMesh("models/barb1.fbx", pMatMesh, 1024);
+	TriangleMesh* pMesh0 = new TriangleMesh("models/barb1.fbx", 512);
 
 	Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
@@ -82,9 +80,7 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	
 	Sphere* pSphereLight = new Sphere(glm::vec3(0.0f, 1.0f, 1.0f), 1.0f, new DiffuseLight(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
 	
-
-	Material* pMatMesh = new Lambertian(new ConstantTexture(glm::vec3(0.8f, 0.8f, 0.8f)));
-	TriangleMesh* pMesh0 = new TriangleMesh("models/Cornell.fbx", pMatMesh, 10);
+	TriangleMesh* pMesh0 = new TriangleMesh("models/Cornell.fbx", 10);
 
 	Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 

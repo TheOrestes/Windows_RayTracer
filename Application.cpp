@@ -21,7 +21,7 @@ Application::Application()
 {
 	m_iBackbufferWidth = 480;
 	m_iBackbufferHeight = 270;
-	m_iNumSamples = 50;
+	m_iNumSamples = 5;
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
 	m_bThreaded = false;
