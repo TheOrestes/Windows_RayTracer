@@ -2,7 +2,12 @@
 * Peter Shierly's ray tracer with GDI 
 * Working version for both Single threaded & multi-threaded using WinGDI SetPixel()
 
-### Intel's Denoiser Integration (https://openimagedenoise.github.io/) as an optional step
+## Render Output
+![Render Output1](https://pbs.twimg.com/media/DvuZOUmWsAAg9oR.jpg)
+![Render Output2](https://pbs.twimg.com/media/DvuZOUFXQAAOCPm.jpg)
+![Render Output3](https://pbs.twimg.com/media/DvuZOUsXgAI-RtL.jpg)
+
+## Intel's Denoiser Integration (https://openimagedenoise.github.io/)
 
 #### Denoiser Menu
   ![Denoiser Menu](https://i.ibb.co/QMxTWfW/Denoiser-Menu.jpg)
