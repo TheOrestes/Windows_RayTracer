@@ -42,13 +42,11 @@ struct MaterialInfo
 {
 	MaterialInfo()
 	{
-		albedoFilePath.clear();
 		albedoColor = glm::vec4(0);		// logic is dependent on this being 0 i.e. if length(albedoColor) == 0 then we use Maya's color!
 		roughness = 1.0f;
 		refrIndex = 1.0f;
 	}
 
-	std::string		albedoFilePath;
 	glm::vec4		albedoColor;
 	float			roughness;
 	float			refrIndex;

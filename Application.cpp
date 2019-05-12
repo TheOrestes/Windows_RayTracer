@@ -19,9 +19,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 480;
-	m_iBackbufferHeight = 270;
-	m_iNumSamples = 100;
+	m_iBackbufferWidth = 960;
+	m_iBackbufferHeight = 540;
+	m_iNumSamples = 200;
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
 	m_bThreaded = false;
@@ -57,6 +57,7 @@ void Application::Initialize(HWND hwnd, bool _threaded)
 	m_pScene = new Scene();
 	//m_pScene->InitScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//m_pScene->InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
 	// Create Open Image Denoise Device
 	m_oidnDevice = oidn::newDevice();

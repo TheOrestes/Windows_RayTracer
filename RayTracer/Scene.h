@@ -15,6 +15,7 @@ public:
 
 	void InitScene(float screenWidth, float screenHeight);
 	void InitCornellScene(float screenWidth, float screenHeight);
+	void InitTowerScene(float screenWidth, float screenHeight);
 	void InitRandomScene(float screenWidth, float screenHeight);
 
 	inline Camera* getCamera() { if(m_pCamera) return m_pCamera; }

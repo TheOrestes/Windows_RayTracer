@@ -138,9 +138,13 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 			{
 				// Extract texture info if filepath or flat color?
 				Texture* textureInfo = nullptr;
-				if (!m_ptrMeshInfo->matInfo.albedoFilePath.empty())
+				
+				// Look if material has texture info...
+				aiString path;
+				if (AI_SUCCESS == aiGetMaterialTexture(material, aiTextureType_DIFFUSE, 0, &path))
 				{
-					textureInfo = new ImageTexture("models/" + m_ptrMeshInfo->matInfo.albedoFilePath);
+					std::string filePath = std::string(path.C_Str());
+					textureInfo = new ImageTexture("models/" + filePath);
 					m_ptrMaterial = new Lambertian(textureInfo);
 				}
 				else
@@ -173,9 +177,12 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 				Texture* textureInfo = nullptr;
 				float roughness = m_ptrMeshInfo->matInfo.roughness;
 
-				if (!m_ptrMeshInfo->matInfo.albedoFilePath.empty())
+				// Look if material has texture info...
+				aiString path;
+				if (AI_SUCCESS == aiGetMaterialTexture(material, aiTextureType_DIFFUSE, 0, &path))
 				{
-					textureInfo = new ImageTexture("models/" + m_ptrMeshInfo->matInfo.albedoFilePath);
+					std::string filePath = std::string(path.C_Str());
+					textureInfo = new ImageTexture("models/" + filePath);
 					m_ptrMaterial = new Metal(textureInfo, roughness);
 				}
 				else

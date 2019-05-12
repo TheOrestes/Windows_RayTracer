@@ -88,7 +88,7 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	// Override miss color to black
 	m_colMiss = glm::vec4(0.0f);
 	
-	Sphere* pSphereLight = new Sphere(glm::vec3(0.0f, 1.0f, 1.0f), 1.0f, new DiffuseLight(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
+	Sphere* pSphereLight = new Sphere(glm::vec3(-1.5f, 0.5f, 2.0f), 0.25f, new DiffuseLight(new ConstantTexture(glm::vec3(1.0f, 1.0f, 0.0f))));
 
 	// Room Mesh
 	MeshInfo roomInfo;
@@ -107,19 +107,19 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	cubeLeftInfo.rotationAngle = 9.0f;
 	cubeLeftInfo.scale = glm::vec3(1.6f, 3.6f, 1.6f);
 	cubeLeftInfo.matInfo.albedoColor = glm::vec4(1, 1, 1, 1);
-	cubeLeftInfo.matInfo.roughness = 0.2f;
+	cubeLeftInfo.matInfo.roughness = 0.8f;
 	TriangleMesh* pLeftCube = new TriangleMesh(cubeLeftInfo);
 
 	// Cube 2
 	MeshInfo cubeRightInfo;
-	cubeRightInfo.filePath = "models/Cube.fbx";
-	cubeRightInfo.isLightSource = false;
-	cubeRightInfo.leafSize = 10;
-	cubeRightInfo.position = glm::vec3(-0.9f, 0.9f, 1.0f);
+	cubeRightInfo.filePath = "models/tigerLambert.fbx";
+	cubeRightInfo.isLightSource = true;
+	cubeRightInfo.leafSize = 512;
+	cubeRightInfo.position = glm::vec3(-0.9f, 0.0f, 1.0f);
 	cubeRightInfo.rotationAxis = glm::vec3(0, 1, 0);
-	cubeRightInfo.rotationAngle = -6.0f;
-	cubeRightInfo.scale = glm::vec3(1.8f);
-	cubeRightInfo.matInfo.albedoColor = glm::vec4(0, 0, 1, 1);
+	cubeRightInfo.rotationAngle = -45.0f;
+	cubeRightInfo.scale = glm::vec3(0.5f);
+	cubeRightInfo.matInfo.albedoColor = glm::vec4(0.7f, 0.8f, 0.0f, 1.0f);
 	TriangleMesh* pRightCube = new TriangleMesh(cubeRightInfo);
 
 	// Light Quad
@@ -131,12 +131,48 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	lightInfo.scale = glm::vec3(2);
 	TriangleMesh* pLight = new TriangleMesh(lightInfo);
 
-	vecHitables.push_back(pLight);
+	//vecHitables.push_back(pLight);
 	vecHitables.push_back(pRoom);
 	vecHitables.push_back(pLeftCube);
 	vecHitables.push_back(pRightCube);
 
 	Profiler::getInstance().WriteToProfiler("Triangle Count:", pRoom->GetTriangleCount() + pLight->GetTriangleCount() + pLeftCube->GetTriangleCount() + pRightCube->GetTriangleCount());
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Scene::InitTowerScene(float screenWidth, float screenHeight)
+{
+	// Initialize Camera first...!!!
+	glm::vec3 cameraPosition = glm::vec3(5.0f, 2.5f, 5.0f);
+	glm::vec3 cameraLookAt = glm::vec3(0.0f, 0.0f, 0.0f);
+	m_pCamera = new Camera();
+	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
+
+	// Override miss color to black
+	m_colMiss = glm::vec4(0.01f);
+
+	// Sphere Ground
+	glm::vec3 center1(0.0f, -100.5f, 0.0f);
+	glm::vec3 albedo1(0.1f, 0.1f, 0.1f);
+	Material* pMatSphereGround = new Metal(new ConstantTexture(albedo1), 0.0f);
+	Sphere* pSphereGround = new Sphere(center1, 100.0f, pMatSphereGround);
+
+	// Tower
+	MeshInfo towerInfo;
+	towerInfo.filePath = "models/Tower.fbx";
+	towerInfo.isLightSource = true;
+	towerInfo.leafSize = 512;
+	towerInfo.position = glm::vec3(-0.9f, 0.0f, 1.0f);
+	towerInfo.rotationAxis = glm::vec3(0, 1, 0);
+	towerInfo.rotationAngle = -60.0f;
+	towerInfo.scale = glm::vec3(0.5f);
+	towerInfo.matInfo.albedoColor = glm::vec4(2.0f, 1.5f, 1.5f, 1.0f);
+	TriangleMesh* pTower = new TriangleMesh(towerInfo);
+
+	vecHitables.push_back(pSphereGround);
+	vecHitables.push_back(pTower);
+
+	Profiler::getInstance().WriteToProfiler("Triangle Count:", pTower->GetTriangleCount());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
