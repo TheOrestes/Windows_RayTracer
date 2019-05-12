@@ -18,8 +18,11 @@ public:
 	void InitRandomScene(float screenWidth, float screenHeight);
 
 	inline Camera* getCamera() { if(m_pCamera) return m_pCamera; }
+	inline glm::vec4 getMissColor() { return m_colMiss; }
 
 private:	
+	glm::vec4			  m_colMiss;
 	Camera*				  m_pCamera;
 	std::vector<Hitable*> vecHitables;
+
 };

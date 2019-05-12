@@ -21,7 +21,7 @@ Application::Application()
 {
 	m_iBackbufferWidth = 480;
 	m_iBackbufferHeight = 270;
-	m_iNumSamples = 5;
+	m_iNumSamples = 100;
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
 	m_bThreaded = false;
@@ -55,6 +55,7 @@ void Application::Initialize(HWND hwnd, bool _threaded)
 	_threaded ? m_iMaxThreads = std::thread::hardware_concurrency() : 0;
 
 	m_pScene = new Scene();
+	//m_pScene->InitScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
 	// Create Open Image Denoise Device
@@ -224,7 +225,7 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 		//glm::vec3 unit_direction = glm::normalize(r.GetRayDirection());
 		//float t = 0.5f * (unit_direction[1] + 1.0f);
 		//traceColor = Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
-		return glm::vec3(0.01f);
+		return m_pScene->getMissColor();
 	}
 
 	// debug info...

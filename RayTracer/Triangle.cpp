@@ -4,21 +4,40 @@
 
 //#define MOLLER_TRUMBORE
 
-Triangle::Triangle(const VertexPNT & _v0, const VertexPNT & _v1, const VertexPNT & _v2, Material * ptr_mat)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+Triangle::Triangle()
 {
-	v0 = _v0; v1 = _v1; v2 = _v2;
+	m_pTranform = new Transform();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+Triangle::Triangle(const VertexPNT & _v0, const VertexPNT & _v1, const VertexPNT & _v2, Transform* _pTransform, Material * ptr_mat)
+{
+	m_pTranform = _pTransform;
+
+	// Transform vertex positions using transformation matrix!
+	v0.position = m_pTranform->matWorld * glm::vec4(_v0.position, 1);
+	v1.position = m_pTranform->matWorld * glm::vec4(_v1.position, 1);
+	v2.position = m_pTranform->matWorld * glm::vec4(_v2.position, 1);
+
+	// Transform normals using Inverse Transpose of transformation matrix!
+	v0.normal = m_pTranform->matInvTransposeWorld * glm::vec4(_v0.normal, 0);
+	v1.normal = m_pTranform->matInvTransposeWorld * glm::vec4(_v1.normal, 0);
+	v2.normal = m_pTranform->matInvTransposeWorld * glm::vec4(_v2.normal, 0);
+
+	// Keep UVs as is...!
+	v0.uv = _v0.uv;
+	v1.uv = _v1.uv;
+	v2.uv = _v2.uv;
+
 	mat_ptr = ptr_mat;
 
 	// calculate centroid...
 	centroid = v0.position + v1.position + v2.position;
 	centroid /= 3.0f;
-	//float x = (v0.position[0] + v1.position[0] + v2.position[0]) / 3.0f;
-	//float y = (v0.position[1] + v1.position[1] + v2.position[1]) / 3.0f;
-	//float z = (v0.position[2] + v1.position[2] + v2.position[2]) / 3.0f;
-	//centroid = glm::vec3(x, y, z);
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 {
 	++rec.rayTriangleQuery;
@@ -76,6 +95,8 @@ bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 	// cross product's vector direction represents new vector perpendicular to 
 	// plane formed by those two vectors!
 	glm::vec3 N = glm::normalize(area);
+	glm::vec3 transN = m_pTranform->matInvTransposeWorld * glm::vec4(N, 0);
+
 	// Check if ray & plane are parallel
 	float NDotRayDirection = glm::dot(N, rayDirection); 
 	if (fabs(NDotRayDirection) < 0.001f)
@@ -125,37 +146,7 @@ bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 	else
 		return false;
 #endif
-	
 
-	//auto edge0 = V1 - V0;
-	//auto edge1 = V2 - V1;
-	//auto normal = UnitVector(Cross(edge0, edge1));
-	//auto planeOffset = glm::dot(V0, normal);
-	//auto p0 = r.GetPointAt(tmin);
-	//auto p1 = r.GetPointAt(tmax);
-	//auto offset0 = glm::dot(p0, normal);
-	//auto offset1 = glm::dot(p1, normal);
-	//if ((offset0 - planeOffset)*(offset1 - planeOffset) <= 0.f) // Line segment intersects the plane of the triangle
-	//{
-	//	float t = tmin + (tmax - tmin)*(planeOffset - offset0) / (offset1 - offset0);
-	//	auto p = r.GetPointAt(t);
-	//	auto c0 = Cross(edge0, p - V0);
-	//	auto c1 = Cross(edge1, p - V1);
-	//	if (glm::dot(c0, c1) >= 0.f)
-	//	{
-	//		auto edge2 = V0 - V2;
-	//		auto c2 = Cross(edge2, p - V2);
-	//		if (glm::dot(c1, c2) >= 0.f)
-	//		{
-	//			rec.t = t;
-	//			rec.P = p;
-	//			rec.N = normal;
-	//			rec.mat_ptr = mat_ptr;
-	//			return true;
-	//		}
-	//	}
-	//}
-	//return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

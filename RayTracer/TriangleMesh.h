@@ -5,7 +5,7 @@
 #include "assimp\Importer.hpp"
 #include "assimp\postprocess.h"
 #include "assimp\scene.h"
-
+#include "TriangleMeshInfo.h"
 #include "Triangle.h"
 
 class Material;
@@ -17,8 +17,7 @@ class TriangleMesh : public Hitable
 public:
 	TriangleMesh();
 	~TriangleMesh();
-	TriangleMesh(const std::string& path, Material* ptr_mat, uint32_t _leafSize);
-	TriangleMesh(const std::string & path, uint32_t _leafSize);
+	TriangleMesh(const MeshInfo& _meshInfo);
 
 	virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
 	virtual void BoundingBox(AABB& box) const;
@@ -33,11 +32,12 @@ private:
 
 	std::vector<Triangle*> m_vecTriangles;
 
-	AABB*				   m_ptrAABB;
-	Material*			   m_ptrMaterial;
+	AABB*					m_ptrAABB;
+	Material*				m_ptrMaterial;
+	Transform*				m_ptrTransform;
+	MeshInfo*				m_ptrMeshInfo;
 
-	BVHTree*			   m_ptrBVH;
+	BVHTree*				m_ptrBVH;
 
-	uint32_t			   m_iLeafSize;
-	uint64_t			   m_iTriangleCount;
+	uint64_t				m_iTriangleCount;
 };

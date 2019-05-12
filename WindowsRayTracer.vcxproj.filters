@@ -108,6 +108,9 @@
     <ClInclude Include="external\stb\stb_image_write.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracer\TriangleMeshInfo.h">
+      <Filter>Source Files\RayTracer\Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RayTracer\Scene.cpp">

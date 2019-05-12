@@ -2,6 +2,7 @@
 
 #include "glm/glm.hpp"
 #include "Hitable.h"
+#include "TriangleMeshInfo.h"
 #include "VertexStructures.h"
 
 class Material;
@@ -9,8 +10,8 @@ class Material;
 class Triangle : public Hitable
 {
 public:
-	Triangle() {}
-	Triangle(const VertexPNT& _v0, const VertexPNT& _v1, const VertexPNT& _v2, Material* ptr_mat);
+	Triangle();
+	Triangle(const VertexPNT& _v0, const VertexPNT& _v1, const VertexPNT& _v2, Transform* _pTransform, Material* ptr_mat);
 
 	virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
 	virtual void BoundingBox(AABB& box) const;
@@ -24,4 +25,6 @@ private:
 	//glm::vec3 centroid;
 	glm::vec3 centroid;
 	Material* mat_ptr;
+
+	Transform* m_pTranform;
 };

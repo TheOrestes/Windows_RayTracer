@@ -16,6 +16,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Scene::Scene()
 {
+	m_colMiss = glm::vec4(0.5f);
 	vecHitables.clear();
 	m_pCamera = nullptr;
 }
@@ -46,25 +47,33 @@ void Scene::InitScene(float screenWidth, float screenHeight)
 	Material* pMatSphereGround = new Lambertian(new ConstantTexture(albedo1));
 	Sphere* pSphereGround = new Sphere(center1, 100.0f, pMatSphereGround);
 
-	Sphere* pSphereGlass1 = new Sphere(glm::vec3(-4.0f, 0.4f, 0.0f), 1.0f, new Transparent(1.3f));
-	Sphere* pSphereMetal = new Sphere(glm::vec3(0.0f, 0.7f, -3.5f), 1.4f, new Metal(new ConstantTexture(glm::vec3(1.0f, 0.1f, 0.0f)), 0.1f));
-	Sphere* pSphereLight = new Sphere(glm::vec3(-1.5f, 0.5f, 1.25f), 1.0f, new DiffuseLight(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
-	Sphere* pSphereEarth = new Sphere(glm::vec3(2.5f, 0.0f, 0.0f), 0.5, new Lambertian(new ImageTexture("models/earth.jpg")));
+	//Sphere* pSphereGlass1 = new Sphere(glm::vec3(-4.0f, 0.4f, 0.0f), 1.0f, new Transparent(1.3f));
+	//Sphere* pSphereMetal = new Sphere(glm::vec3(0.0f, 0.7f, -3.5f), 1.4f, new Metal(new ConstantTexture(glm::vec3(1.0f, 0.1f, 0.0f)), 0.1f));
+	//Sphere* pSphereLight = new Sphere(glm::vec3(-1.5f, 0.5f, 1.25f), 1.0f, new DiffuseLight(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
+	//Sphere* pSphereEarth = new Sphere(glm::vec3(2.5f, 0.0f, 0.0f), 0.5, new Lambertian(new ImageTexture("models/earth.jpg")));
+	
+	//MeshInfo barbInfo;
+	//barbInfo.filePath = "models/barb1.fbx";
+	//barbInfo.isLightSource = false;
+	//barbInfo.leafSize = 512;
+	//TriangleMesh* pMesh0 = new TriangleMesh(barbInfo);
 
-	//Triangle* pTriangle0  = new Triangle(glm::vec3(-2.0f, 0.0f, -1.0f), glm::vec3(2.0f, 0.0f, -1.0f), glm::vec3(0.0f, 2.0f, -1.0f), new Metal(new ConstantTexture(glm::vec3(0.0, 1.0f, 0.0f)), 0.5f));
-	//Material* pMatMesh = new FlatColor (new ConstantTexture(glm::vec3(1,1,0)));
-	//TriangleMesh* pMesh0 = new TriangleMesh("models/UVCube5.fbx", pMatSphere0);
+	MeshInfo cubePhongInfo;
+	cubePhongInfo.filePath = "models/CubePhong.fbx";
+	cubePhongInfo.matInfo.albedoColor = glm::vec4(0, 1, 0, 1);
+	cubePhongInfo.isLightSource = false;
+	cubePhongInfo.leafSize = 12;
+	TriangleMesh* pCubePhong = new TriangleMesh(cubePhongInfo);
 
-	TriangleMesh* pMesh0 = new TriangleMesh("models/barb1.fbx", 512);
-
-	Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
+	//Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
 	vecHitables.push_back(pSphereGround);
-	vecHitables.push_back(pSphereGlass1);
-	vecHitables.push_back(pSphereMetal);
-	vecHitables.push_back(pSphereEarth);
-	vecHitables.push_back(pSphereLight);
-	vecHitables.push_back(pMesh0);
+	//vecHitables.push_back(pSphereGlass1);
+	//vecHitables.push_back(pSphereMetal);
+	//vecHitables.push_back(pSphereEarth);
+	//vecHitables.push_back(pSphereLight);
+	//vecHitables.push_back(pMesh0);
+	vecHitables.push_back(pCubePhong);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,16 +85,58 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	m_pCamera = new Camera();
 	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
 
-	// Sphere Ground
+	// Override miss color to black
+	m_colMiss = glm::vec4(0.0f);
 	
 	Sphere* pSphereLight = new Sphere(glm::vec3(0.0f, 1.0f, 1.0f), 1.0f, new DiffuseLight(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
-	
-	TriangleMesh* pMesh0 = new TriangleMesh("models/Cornell.fbx", 10);
 
-	Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
+	// Room Mesh
+	MeshInfo roomInfo;
+	roomInfo.filePath = "models/Cornell.fbx";
+	roomInfo.isLightSource = false;
+	roomInfo.leafSize = 10;
+	TriangleMesh* pRoom = new TriangleMesh(roomInfo);
 
-	vecHitables.push_back(pSphereLight);
-	vecHitables.push_back(pMesh0);
+	// Cube 1
+	MeshInfo cubeLeftInfo;
+	cubeLeftInfo.filePath = "models/CubePhong.fbx";
+	cubeLeftInfo.isLightSource = false;
+	cubeLeftInfo.leafSize = 12;
+	cubeLeftInfo.position = glm::vec3(1.0f, 1.8f, -1.35f);
+	cubeLeftInfo.rotationAxis = glm::vec3(0, 1, 0);
+	cubeLeftInfo.rotationAngle = 9.0f;
+	cubeLeftInfo.scale = glm::vec3(1.6f, 3.6f, 1.6f);
+	cubeLeftInfo.matInfo.albedoColor = glm::vec4(1, 1, 1, 1);
+	cubeLeftInfo.matInfo.roughness = 0.2f;
+	TriangleMesh* pLeftCube = new TriangleMesh(cubeLeftInfo);
+
+	// Cube 2
+	MeshInfo cubeRightInfo;
+	cubeRightInfo.filePath = "models/Cube.fbx";
+	cubeRightInfo.isLightSource = false;
+	cubeRightInfo.leafSize = 10;
+	cubeRightInfo.position = glm::vec3(-0.9f, 0.9f, 1.0f);
+	cubeRightInfo.rotationAxis = glm::vec3(0, 1, 0);
+	cubeRightInfo.rotationAngle = -6.0f;
+	cubeRightInfo.scale = glm::vec3(1.8f);
+	cubeRightInfo.matInfo.albedoColor = glm::vec4(0, 0, 1, 1);
+	TriangleMesh* pRightCube = new TriangleMesh(cubeRightInfo);
+
+	// Light Quad
+	MeshInfo lightInfo;
+	lightInfo.filePath = "models/Quad.fbx";
+	lightInfo.isLightSource = true;
+	lightInfo.leafSize = 2;
+	lightInfo.position = glm::vec3(0, 4.99f, 0.5f);
+	lightInfo.scale = glm::vec3(2);
+	TriangleMesh* pLight = new TriangleMesh(lightInfo);
+
+	vecHitables.push_back(pLight);
+	vecHitables.push_back(pRoom);
+	vecHitables.push_back(pLeftCube);
+	vecHitables.push_back(pRightCube);
+
+	Profiler::getInstance().WriteToProfiler("Triangle Count:", pRoom->GetTriangleCount() + pLight->GetTriangleCount() + pLeftCube->GetTriangleCount() + pRightCube->GetTriangleCount());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
