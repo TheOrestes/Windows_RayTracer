@@ -6,10 +6,11 @@
 
 #include "GLFW\glfw3.h"
 #include "glm/glm.hpp"
+#include "OpenImageDenoise/oidn.hpp"
 
 class Ray;
-class Camera;
 class ScreenAlignedQuad;
+class Scene;
 
 class Application
 {
@@ -21,6 +22,7 @@ public:
 	void				Execute(GLFWwindow* window);
 	void				UpdateGL(GLFWwindow* window);
 	void				SaveImage();
+	void				DenoiseImage();
 
 	inline int			GetBufferWidth() { return m_iBackbufferWidth; }
 	inline int			GetBufferHeight() { return m_iBackbufferHeight; }
@@ -38,6 +40,7 @@ private:
 	int					m_iNumSamples;
 	int					m_iMaxThreads;
 	double				m_dTotalRenderTime;
+	float				m_dDenoiserTime;
 	bool				m_bThreaded;
 
 	std::atomic<uint64_t>	 m_iRayCount;
@@ -47,9 +50,11 @@ private:
 	std::atomic<uint64_t>	 m_iRayBoxSuccess;
 	std::atomic<uint64_t>    m_iTriangleCount;
 
-	Camera*				m_pCamera;
-
 	ScreenAlignedQuad*	m_pQuad;
+	Scene*				m_pScene;
 
 	std::vector<glm::vec3>  vecBuffer;
+
+	oidn::DeviceRef	m_oidnDevice;
+	oidn::FilterRef m_oidnFilter;
 };

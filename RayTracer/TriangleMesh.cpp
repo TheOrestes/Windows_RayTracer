@@ -3,6 +3,12 @@
 
 #include "LameBVH.h"
 #include "TriangleMesh.h"
+#include "Material.h"
+#include "Lambertian.h"
+#include "DiffuseLight.h"
+#include "Metal.h"
+#include "Transparent.h"
+#include "Texture.h"
 #include "AABB.h"
 #include <Windows.h>
 
@@ -16,7 +22,18 @@ TriangleMesh::TriangleMesh()
 TriangleMesh::~TriangleMesh()
 {
 	m_vecTriangles.clear();
-	m_ptrMaterial = nullptr;
+
+	if (m_ptrMaterial)
+	{
+		delete m_ptrMaterial;
+		m_ptrMaterial = nullptr;
+	}
+
+	if (m_ptrTransform)
+	{
+		delete m_ptrTransform;
+		m_ptrTransform = nullptr;
+	}
 
 	if (m_ptrAABB)
 	{
@@ -31,20 +48,23 @@ TriangleMesh::~TriangleMesh()
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-TriangleMesh::TriangleMesh(const std::string& path, Material* ptr_mat)
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+TriangleMesh::TriangleMesh(const MeshInfo& _meshInfo)
 {
 	m_vecTriangles.clear();
-	m_ptrMaterial = ptr_mat;
+	m_ptrMaterial = nullptr;
 
+	m_ptrMeshInfo = const_cast<MeshInfo*>(&_meshInfo);
+
+	m_ptrTransform = new Transform(_meshInfo.position, _meshInfo.rotationAxis, _meshInfo.rotationAngle, _meshInfo.scale);
 	m_ptrAABB = new AABB();
 
-	LoadModel(path);
+	LoadModel(_meshInfo.filePath);
 
 	m_iTriangleCount = m_vecTriangles.size();
 
 	m_ptrBVH = new BVHTree();
-	m_ptrBVH->BuildBVHTree(&m_vecTriangles, m_iTriangleCount/8);
+	m_ptrBVH->BuildBVHTree(&m_vecTriangles, _meshInfo.leafSize);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,16 +112,106 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	{
 		VertexPNT vertex;
 
-		vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-		vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+		vertex.position = glm::vec3(mesh->mVertices[i][0], mesh->mVertices[i][1], mesh->mVertices[i][2]);
+		vertex.normal = glm::vec3(mesh->mNormals[i][0], mesh->mNormals[i][1], mesh->mNormals[i][2]);
 
 		if (mesh->mTextureCoords[0])
 		{
-			//vertex.uv = glm::clamp(glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y), 0.0f, 1.0f);
-			vertex.uv = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+			//vertex.uv = glm::clamp(glm::vec2(mesh->mTextureCoords[0][i][0], mesh->mTextureCoords[0][i][1]), 0.0f, 1.0f);
+			vertex.uv = glm::vec2(mesh->mTextureCoords[0][i][0], mesh->mTextureCoords[0][i][1]);
 		}
 		
 		vecVertices.push_back(vertex);
+	}
+
+	// process materials
+	if (mesh->mMaterialIndex >= 0)
+	{
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		aiString aiName;
+
+		if (AI_SUCCESS == aiGetMaterialString(material, AI_MATKEY_NAME, &aiName))
+		{
+			std::string name = aiName.C_Str();
+
+			if (name.find("lambert") != std::string::npos)
+			{
+				// Extract texture info if filepath or flat color?
+				Texture* textureInfo = nullptr;
+				
+				// Look if material has texture info...
+				aiString path;
+				if (AI_SUCCESS == aiGetMaterialTexture(material, aiTextureType_DIFFUSE, 0, &path))
+				{
+					std::string filePath = std::string(path.C_Str());
+					textureInfo = new ImageTexture("models/" + filePath);
+					m_ptrMaterial = new Lambertian(textureInfo);
+				}
+				else
+				{
+					// Check if we have set albedo color explicitly or not, if not then use Maya's 
+					// set color from the properties!
+					glm::vec4 albedoCol = m_ptrMeshInfo->matInfo.albedoColor;
+					if (glm::length(albedoCol) == 0)
+					{
+						aiColor4D diffuseColor;
+						aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor);
+						albedoCol = glm::vec4(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a);
+					}
+
+					if (m_ptrMeshInfo->isLightSource)
+					{
+						textureInfo = new ConstantTexture(albedoCol);
+						m_ptrMaterial = new DiffuseLight(textureInfo);
+					}
+					else
+					{
+						textureInfo = new ConstantTexture(albedoCol);
+						m_ptrMaterial = new Lambertian(textureInfo);
+					}
+				}
+			}
+			else if (name.find("metal") != std::string::npos)
+			{
+				// Extract texture info if filepath or flat color?
+				Texture* textureInfo = nullptr;
+				float roughness = m_ptrMeshInfo->matInfo.roughness;
+
+				// Look if material has texture info...
+				aiString path;
+				if (AI_SUCCESS == aiGetMaterialTexture(material, aiTextureType_DIFFUSE, 0, &path))
+				{
+					std::string filePath = std::string(path.C_Str());
+					textureInfo = new ImageTexture("models/" + filePath);
+					m_ptrMaterial = new Metal(textureInfo, roughness);
+				}
+				else
+				{
+					// Check if we have set albedo color explicitly or not, if not then use Maya's 
+					// set color from the properties!
+					glm::vec4 albedoCol = m_ptrMeshInfo->matInfo.albedoColor;
+					if (glm::length(albedoCol) == 0)
+					{
+						aiColor4D diffuseColor;
+						aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor);
+						albedoCol = glm::vec4(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a);
+					}
+
+					textureInfo = new ConstantTexture(albedoCol);
+					m_ptrMaterial = new Metal(textureInfo, roughness);
+				}
+			}
+			else if (name.find("transparent") != std::string::npos)
+			{
+				float r_i = m_ptrMeshInfo->matInfo.refrIndex;
+				m_ptrMaterial = new Transparent(r_i);
+			}
+			else
+			{
+				MessageBox(0, L"Unknown Material", L"Error", MB_OK);
+				return;
+			}
+		}
 	}
 
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -117,7 +227,7 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		VertexPNT vert1 = vecVertices.at(index1);
 		VertexPNT vert2 = vecVertices.at(index2);
 
-		Triangle* tri = new Triangle(vert0, vert1, vert2, m_ptrMaterial);
+		Triangle* tri = new Triangle(vert0, vert1, vert2, m_ptrTransform, m_ptrMaterial);
 
 		m_vecTriangles.push_back(tri);
 	}
@@ -141,7 +251,7 @@ bool TriangleMesh::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) con
 
 	if (m_ptrBVH->hit(r, tmin, tmax, rec))
 	{
-		rec.mat_ptr = m_ptrMaterial;
+		//rec.mat_ptr = m_ptrMaterial;
 		//closestSoFar = rec.t;
 		isIntersection = true;
 	}
@@ -152,6 +262,7 @@ bool TriangleMesh::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) con
 	//	{
 	//		if (m_vecTriangles[i]->hit(r, tmin, closestSoFar, rec))
 	//		{
+	//			rec.mat_ptr = m_ptrMaterial;
 	//			isIntersection = true;
 	//			closestSoFar = rec.t;
 	//		}
@@ -161,8 +272,9 @@ bool TriangleMesh::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) con
 	return isIntersection;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void TriangleMesh::BoundingBox(AABB & box) const
 {
 	box = *m_ptrAABB;
 }
+

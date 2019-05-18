@@ -52,10 +52,10 @@ bool AABB::hit(const Ray & r, float tmin, float tmax, HitRecord& rec)
 	for (int a = 0; a < 3; a++)
 	{
 		float t0 = fminf((minBound[a] - r.GetRayOrigin()[a]) / r.GetRayDirection()[a],
-			(maxBound[a] - r.GetRayOrigin()[a]) / r.GetRayDirection()[a]);
+						 (maxBound[a] - r.GetRayOrigin()[a]) / r.GetRayDirection()[a]);
 
 		float t1 = fmaxf((minBound[a] - r.GetRayOrigin()[a]) / r.GetRayDirection()[a],
-			(maxBound[a] - r.GetRayOrigin()[a]) / r.GetRayDirection()[a]);
+						 (maxBound[a] - r.GetRayOrigin()[a]) / r.GetRayDirection()[a]);
 
 		tmin = fmaxf(t0, tmin);
 		tmax = fminf(t1, tmax);

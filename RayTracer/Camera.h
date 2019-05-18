@@ -6,20 +6,14 @@
 class Camera
 {
 public:
-	static Camera& getInstance()
-	{
-		static Camera instance;
-		return instance;
-	}
-
+	Camera();
 	~Camera();
 
-	void InitCamera(float screenWidth, float screenHeight);
+	void InitCamera(const glm::vec3& _position, const glm::vec3& _lookAt, float _screenWidth, float _screenHeight);
 	Ray get_ray(float s, float t);
 
 private:
-	Camera();
-	glm::vec3 lookFrom, lookAt, Up;
+	glm::vec3 position, lookAt, Up;
 	glm::vec3 origin;
 	glm::vec3 lower_left_corner;
 	glm::vec3 horizontal;

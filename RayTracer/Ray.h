@@ -17,7 +17,7 @@ public:
 		origin = A;
 		direction = B; 
 
-		invDirection = glm::vec3(1.0f / direction.x, 1.0f/direction.y, 1.0f/direction.z);
+		invDirection = glm::vec3(1.0f / direction[0], 1.0f/direction[1], 1.0f/direction[2]);
 	}
 
 	inline glm::vec3 GetRayOrigin() const { return origin; }

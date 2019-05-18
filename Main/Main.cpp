@@ -12,6 +12,7 @@
 #include "Application.h"
 #include "Profiler.h"
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 GLFWwindow* InitGLFW(Application* pApp)
 {
 	if (!pApp)
@@ -43,6 +44,7 @@ GLFWwindow* InitGLFW(Application* pApp)
 	return window;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void InitGLEW()
 {
 	// Ensure glew uses all the modern techniques...
@@ -56,16 +58,17 @@ void InitGLEW()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 // 3. Inputs
 void KeyHandler(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
-		
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
 	GLFWwindow* window;
@@ -74,7 +77,7 @@ int main()
 	window = InitGLFW(pApp);
 	InitGLEW();
 
-	glfwSetKeyCallback(window, KeyHandler);
+	glfwSetKeyCallback(window, KeyHandler);		
 
 #ifdef NDEBUG
 	pApp->Initialize(true);

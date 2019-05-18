@@ -56,8 +56,8 @@ void Sphere::BoundingBox(AABB & box) const
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 glm::vec2 Sphere::GetSphereUV(const glm::vec3& p) const
 {
-	float phi = std::atan2(p.z, p.x);
-	float theta = std::asin(p.y);
+	float phi = std::atan2(p[2], p[0]);
+	float theta = std::asin(p[1]);
 
 	float x = 1 - (phi + PI) / (2 * PI);
 	float y = (theta + PI / 2) / PI;
