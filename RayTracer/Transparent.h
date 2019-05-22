@@ -8,7 +8,7 @@
 class Transparent : public Material
 {
 public:
-	Transparent(float ri) : refr_index(ri) {}
+	Transparent(Texture* _albedo, float ri) : Albedo(_albedo), refr_index(ri) {}
 
 	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& attenuation, Ray& scattered) const
 	{
@@ -17,7 +17,7 @@ public:
 		
 		glm::vec3 reflected = Helper::Reflect(ray_direction, rec.N);
 		float ni_over_nt;
-		attenuation = glm::vec3(1.0f, 1.0f, 1.0f);
+		attenuation = Albedo->value(rec.uv);
 
 		glm::vec3 refracted = glm::vec3(0.0f, 0.0f, 0.0f);
 		float reflect_prob;
@@ -61,5 +61,6 @@ public:
 	}
 
 private:
+	Texture* Albedo;
 	float refr_index;
 };

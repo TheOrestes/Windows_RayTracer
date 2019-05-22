@@ -203,8 +203,22 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 			}
 			else if (name.find("transparent") != std::string::npos)
 			{
+				// Extract texture info if filepath or flat color?
+				Texture* textureInfo = nullptr;
 				float r_i = m_ptrMeshInfo->matInfo.refrIndex;
-				m_ptrMaterial = new Transparent(r_i);
+
+				// Check if we have set albedo color explicitly or not, if not then use Maya's 
+				// set color from the properties!
+				glm::vec4 albedoCol = m_ptrMeshInfo->matInfo.albedoColor;
+				if (glm::length(albedoCol) == 0)
+				{
+					aiColor4D diffuseColor;
+					aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor);
+					albedoCol = glm::vec4(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a);
+				}
+
+				textureInfo = new ConstantTexture(albedoCol);
+				m_ptrMaterial = new Transparent(textureInfo, r_i);
 			}
 			else
 			{

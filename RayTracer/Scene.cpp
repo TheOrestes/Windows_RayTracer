@@ -88,7 +88,8 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	// Override miss color to black
 	m_colMiss = glm::vec4(0.0f);
 	
-	Sphere* pSphereLight = new Sphere(glm::vec3(-1.5f, 0.5f, 2.0f), 0.25f, new DiffuseLight(new ConstantTexture(glm::vec3(1.0f, 1.0f, 0.0f))));
+	glm::vec4 glassColor = glm::vec4(0, 1, 0, 1);
+	Sphere* pSphereGlass = new Sphere(glm::vec3(-1.0f, 0.5f, 1.0f), 0.5f, new Transparent(new ConstantTexture(glassColor), 1.4f));
 
 	// Room Mesh
 	MeshInfo roomInfo;
@@ -117,12 +118,26 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	lightInfo.leafSize = 2;
 	lightInfo.position = glm::vec3(0, 4.99f, 0.5f);
 	lightInfo.scale = glm::vec3(2);
-	lightInfo.matInfo.albedoColor = glm::vec4(glm::vec3(3), 1);
+	lightInfo.matInfo.albedoColor = glm::vec4(glm::vec3(1.5f), 1);
 	TriangleMesh* pLight = new TriangleMesh(lightInfo);
+
+	// Glass Mesh
+	MeshInfo glassTigerInfo;
+	glassTigerInfo.filePath = "models/tigerTransparent.fbx";
+	glassTigerInfo.leafSize = 512;
+	glassTigerInfo.position = glm::vec3(1, 0.0f, 1.0f);
+	glassTigerInfo.rotationAxis = glm::vec3(0, 1, 0);
+	glassTigerInfo.rotationAngle = -45.0f;
+	glassTigerInfo.scale = glm::vec3(0.5f);
+	glassTigerInfo.matInfo.albedoColor = glm::vec4(1.0f, 1.0f, 0, 1);
+	glassTigerInfo.matInfo.refrIndex = 1.4f;
+	TriangleMesh* pGlassTiger = new TriangleMesh(glassTigerInfo);
 
 	vecHitables.push_back(pLight);
 	vecHitables.push_back(pRoom);
 	vecHitables.push_back(pLeftCube);
+	vecHitables.push_back(pSphereGlass);
+	vecHitables.push_back(pGlassTiger);
 
 	Profiler::getInstance().WriteToProfiler("Triangle Count:", pRoom->GetTriangleCount() + pLight->GetTriangleCount() + pLeftCube->GetTriangleCount());
 }
@@ -176,6 +191,7 @@ void Scene::InitRandomScene(float screenWidth, float screenHeight)
 	vecHitables.push_back(pSphere0);
 
 	int i = 1;
+	glm::vec4 glassColor = glm::vec4(1, 1, 0, 1);
 
 	for (int a = -11; a < 11; a++)
 	{
@@ -201,14 +217,14 @@ void Scene::InitRandomScene(float screenWidth, float screenHeight)
 				else
 				{
 					// glass
-					Sphere* temp = new Sphere(center, 0.2f, new Transparent(1.5f));
+					Sphere* temp = new Sphere(center, 0.2f, new Transparent(new ConstantTexture(glassColor), 1.5f));
 					vecHitables.push_back(temp);
 				}
 			}
 		}
 	}
 
-	Sphere* pSphere1 = new Sphere(glm::vec3(0.f, 1.f, 0.f), 1.0f, new Transparent(1.5f));
+	Sphere* pSphere1 = new Sphere(glm::vec3(0.f, 1.f, 0.f), 1.0f, new Transparent(new ConstantTexture(glassColor), 1.5f));
 	Sphere* pSphere2 = new Sphere(glm::vec3(-4.f, 1.f, 0.f), 1.0f, new Lambertian(new ConstantTexture(glm::vec3(0.4f, 0.2f, 0.1f))));
 	Sphere* pSphere3 = new Sphere(glm::vec3(4.f, 1.f, 0.f), 1.0f, new Metal(new ConstantTexture(glm::vec3(0.7f, 0.6f, 0.5f)), 0.0f));
 
