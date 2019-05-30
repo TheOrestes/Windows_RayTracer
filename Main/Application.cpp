@@ -25,7 +25,7 @@ Application::Application()
 {
 	m_iBackbufferWidth = 480;
 	m_iBackbufferHeight = 270;
-	m_iNumSamples = 50;
+	m_iNumSamples = 1;
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
 	m_bThreaded = false;
@@ -69,6 +69,7 @@ void Application::Initialize(bool _threaded)
 	for (int i = 0; i < m_iBackbufferWidth * m_iBackbufferHeight; i++)
 	{
 		vecBuffer.push_back(col);
+		m_vecDstBuffer.push_back(col);
 	}
 
   // Create Open Image Denoise Device
@@ -326,10 +327,20 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::UpdateGL(GLFWwindow* window)
 {
-	m_pQuad->UpdateTexture(0, 0, m_iBackbufferWidth, m_iBackbufferHeight, glm::value_ptr(vecBuffer[0]));
-	m_pQuad->Render();
-	
-	glfwSwapBuffers(window);
+	// Message Loop!
+	while (!glfwWindowShouldClose(window))
+	{
+		m_vecDstBuffer = vecBuffer;
+
+		glfwPollEvents();
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		m_pQuad->UpdateTexture(0, 0, m_iBackbufferWidth, m_iBackbufferHeight, glm::value_ptr(m_vecDstBuffer[0]));
+		m_pQuad->Render();
+
+		glfwSwapBuffers(window);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

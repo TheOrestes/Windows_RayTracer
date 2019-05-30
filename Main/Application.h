@@ -54,6 +54,7 @@ private:
 	Scene*				m_pScene;
 
 	std::vector<glm::vec3>  vecBuffer;
+	std::vector<glm::vec3>	m_vecDstBuffer;
 
 	oidn::DeviceRef	m_oidnDevice;
 	oidn::FilterRef m_oidnFilter;

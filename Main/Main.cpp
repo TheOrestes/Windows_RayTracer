@@ -21,7 +21,7 @@ GLFWwindow* InitGLFW(Application* pApp)
 		return nullptr;
 	}
 
-	// Initialize & Setup basic 
+	// Initialize & Setup basic  
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
@@ -86,13 +86,11 @@ int main()
 #endif
 
 	pApp->Execute(window);
-
-	while (!glfwWindowShouldClose(window))
-	{
-		pApp->UpdateGL(window);
-	}
+	pApp->UpdateGL(window);
 
 	glfwTerminate();
+
+	delete pApp;
 
 	return 0;
 }
