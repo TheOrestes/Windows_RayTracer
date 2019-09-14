@@ -57,9 +57,6 @@
     <ClInclude Include="Profiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RayTracer\FlatColor.h">
-      <Filter>Source Files\RayTracer\Materials</Filter>
-    </ClInclude>
     <ClInclude Include="RayTracer\Lambertian.h">
       <Filter>Source Files\RayTracer\Materials</Filter>
     </ClInclude>
@@ -124,9 +121,6 @@
     </ClCompile>
     <ClCompile Include="Profiler.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RayTracer\FlatColor.cpp">
-      <Filter>Source Files\RayTracer\Materials</Filter>
     </ClCompile>
     <ClCompile Include="RayTracer\Lambertian.cpp">
       <Filter>Source Files\RayTracer\Materials</Filter>

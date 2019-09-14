@@ -6,8 +6,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool Sphere::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 {
-	glm::vec3 rayDirection = r.GetRayDirection();
-	glm::vec3 rayOrigin = r.GetRayOrigin();
+	glm::vec3 rayDirection = r.direction;
+	glm::vec3 rayOrigin = r.origin;
 
 	glm::vec3 oc = rayOrigin - center;
 	float a = glm::dot(rayDirection, rayDirection);

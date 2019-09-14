@@ -42,8 +42,8 @@ bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 {
 	++rec.rayTriangleQuery;
 
-	glm::vec3 rayDirection = r.GetRayDirection();
-	glm::vec3 rayOrigin = r.GetRayOrigin();
+	glm::vec3 rayDirection = r.direction;
+	glm::vec3 rayOrigin = r.origin;
 
 	// Compute Plane Normal
 	glm::vec3 edge0 = v1.position - v0.position;
@@ -95,7 +95,6 @@ bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 	// cross product's vector direction represents new vector perpendicular to 
 	// plane formed by those two vectors!
 	glm::vec3 N = glm::normalize(area);
-	glm::vec3 transN = m_pTranform->matInvTransposeWorld * glm::vec4(N, 0);
 
 	// Check if ray & plane are parallel
 	float NDotRayDirection = glm::dot(N, rayDirection); 

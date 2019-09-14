@@ -19,9 +19,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 960;
-	m_iBackbufferHeight = 540;
-	m_iNumSamples = 200;
+	m_iBackbufferWidth = 1280;
+	m_iBackbufferHeight = 720;
+	m_iNumSamples = 50;
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
 	m_bThreaded = false;
@@ -55,8 +55,8 @@ void Application::Initialize(HWND hwnd, bool _threaded)
 	_threaded ? m_iMaxThreads = std::thread::hardware_concurrency() : 0;
 
 	m_pScene = new Scene();
-	//m_pScene->InitScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
 	// Create Open Image Denoise Device
@@ -211,10 +211,7 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 
 		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, attenuation, scatteredRay))
 		{
-			if (glm::distance(scatteredRay.GetRayOrigin(), scatteredRay.GetRayDirection()) < 0.0000001f)
-				traceColor = emitted + attenuation;
-			else
-				traceColor = emitted + (attenuation * (TraceColor(scatteredRay, depth + 1, rayCount)));
+			traceColor = emitted + (attenuation * TraceColor(scatteredRay, depth + 1, rayCount));
 		}
 		else
 		{
@@ -223,10 +220,10 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 	}
 	else
 	{
-		//glm::vec3 unit_direction = glm::normalize(r.GetRayDirection());
+		glm::vec3 unit_direction = glm::normalize(r.direction);
 		//float t = 0.5f * (unit_direction[1] + 1.0f);
 		//traceColor = Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
-		return m_pScene->getMissColor();
+		return m_pScene->CalculateMissColor(unit_direction);
 	}
 
 	// debug info...

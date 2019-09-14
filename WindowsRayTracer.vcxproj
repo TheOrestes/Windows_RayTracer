@@ -167,7 +167,6 @@
     <ClInclude Include="RayTracer\AABB.h" />
     <ClInclude Include="RayTracer\Camera.h" />
     <ClInclude Include="RayTracer\DiffuseLight.h" />
-    <ClInclude Include="RayTracer\FlatColor.h" />
     <ClInclude Include="RayTracer\Helper.h" />
     <ClInclude Include="RayTracer\Hitable.h" />
     <ClInclude Include="RayTracer\Lambertian.h" />
@@ -192,7 +191,6 @@
     <ClCompile Include="Profiler.cpp" />
     <ClCompile Include="RayTracer\AABB.cpp" />
     <ClCompile Include="RayTracer\Camera.cpp" />
-    <ClCompile Include="RayTracer\FlatColor.cpp" />
     <ClCompile Include="RayTracer\Lambertian.cpp" />
     <ClCompile Include="RayTracer\LameBVH.cpp" />
     <ClCompile Include="RayTracer\Metal.cpp" />

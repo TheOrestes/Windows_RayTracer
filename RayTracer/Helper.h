@@ -42,6 +42,17 @@ namespace Helper
 		return P;
 	}
 
+	inline glm::vec3 RandomUnitVector()
+	{
+		float z = GetRandom01() * 2.0f - 1.0f;
+		float a = GetRandom01() * 2.0f * PI;
+		float r = sqrtf(1.0f - z * z);
+		float x = r * cosf(a);
+		float y = r * sinf(a);
+
+		return glm::vec3(x, y, z);
+	}
+
 	inline glm::vec3 Reflect(const glm::vec3& dir, const glm::vec3& normal)
 	{
 		return (dir - 2.0f * glm::dot(dir, normal) * normal);

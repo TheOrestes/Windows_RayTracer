@@ -24,7 +24,7 @@ struct Transform
 
 		// World matrix
 		matWorld = glm::translate(matWorld, _pos);
-		matWorld = glm::rotate(matWorld, _angle, _axis);
+		matWorld = glm::rotate(matWorld, glm::radians(_angle), _axis);
 		matWorld = glm::scale(matWorld, _scale);
 
 		// World inverse & world inverse transpose
