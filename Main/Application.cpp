@@ -17,15 +17,23 @@
 #include "ScreenAlignedQuad.h"
 #include "Application.h"
 
+#include "marl/defer.h"
+#include "marl/scheduler.h"
+#include "marl/thread.h"
+#include "marl/waitgroup.h"
+
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
+
+#define CPLUSPLUS_THREADING 1
+//#define MARL_SCHEDULING 1
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 1500;
+	m_iBackbufferWidth = 500;
 	m_iBackbufferHeight = 500;
-	m_iNumSamples = 200;
+	m_iNumSamples = 10;
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
 	m_bThreaded = false;
@@ -58,8 +66,10 @@ void Application::Initialize(bool _threaded)
 	_threaded ? m_iMaxThreads = std::thread::hardware_concurrency() : 0;
 
 	m_pScene = new Scene();
-	m_pScene->InitScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//m_pScene->InitRefractionScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	m_pScene->InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
 	m_pQuad = new ScreenAlignedQuad();
@@ -68,11 +78,11 @@ void Application::Initialize(bool _threaded)
 	glm::vec3 col = glm::vec3(0, 0, 0);
 	for (int i = 0; i < m_iBackbufferWidth * m_iBackbufferHeight; i++)
 	{
-		vecBuffer.push_back(col);
-		m_vecDstBuffer.push_back(col);
+		m_vecSrcPixels.push_back(col);
+		m_vecDstPixels.push_back(col);
 	}
 
-  // Create Open Image Denoise Device
+	// Create Open Image Denoise Device
 	m_oidnDevice = oidn::newDevice();
 	m_oidnDevice.set("numThreads", m_iMaxThreads);
 	m_oidnDevice.commit();
@@ -226,22 +236,20 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 
 		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, attenuation, scatteredRay))
 		{
-			if (glm::distance(scatteredRay.GetRayOrigin(), scatteredRay.GetRayDirection()) < 0.0000001f)
-				traceColor = emitted + attenuation;
-			else
-				traceColor = emitted + (attenuation * (TraceColor(scatteredRay, depth + 1, rayCount)));
+			traceColor = emitted + (attenuation * (TraceColor(scatteredRay, depth + 1, rayCount)));
 		}
 		else
 		{
+			// This is light source, simply return emitted color!
 			return emitted;
 		}
 	}
 	else
 	{
-		//glm::vec3 unit_direction = glm::normalize(r.GetRayDirection());
+		glm::vec3 unit_direction = glm::normalize(r.direction);
 		//float t = 0.5f * (unit_direction[1] + 1.0f);
 		//traceColor = Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
-		return m_pScene->getMissColor();
+		return m_pScene->CalculateMissColor(unit_direction);
 	}
 
 	// debug info...
@@ -303,8 +311,8 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 
 				for (int s = 0; s < ns; s++)
 				{
-					float u = float(i + Helper::GetRandom01()) / float(backBufferWidth);
-					float v = float(j + Helper::GetRandom01()) / float(backBufferHeight);
+					float u = float(i + Helper::GetRandom01());// / float(backBufferWidth);
+					float v = float(j + Helper::GetRandom01());// / float(backBufferHeight);
 
 					Ray r = m_pScene->getCamera()->get_ray(u, v);
 
@@ -315,7 +323,7 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 				color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
 				//threadMutex->lock();
-				vecBuffer[j * endWidth + i] = color;
+				m_vecSrcPixels[j * endWidth + i] = color;
 				//threadMutex->unlock();
 			}
 		}
@@ -325,18 +333,44 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+void Application::RenderPixel(int rowIndex, int columnIndex)
+{
+	glm::vec3 color(0, 0, 0);
+	int rayCount = 0;
+
+	for (int s = 0; s < m_iNumSamples; s++)
+	{
+		float u = float(columnIndex + Helper::GetRandom01()) / float(m_iBackbufferWidth);
+		float v = float(rowIndex + Helper::GetRandom01()) / float(m_iBackbufferHeight);
+
+		Ray r = m_pScene->getCamera()->get_ray(u, v);
+
+		color = color + TraceColor(r, 0, rayCount);
+	}
+
+	color = color / float(m_iNumSamples);
+	color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
+
+	int index = columnIndex + m_iBackbufferWidth * rowIndex;
+	if (index < m_iBackbufferWidth * m_iBackbufferHeight)
+	{
+		m_vecSrcPixels[index] = color;
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::UpdateGL(GLFWwindow* window)
 {
 	// Message Loop!
 	while (!glfwWindowShouldClose(window))
 	{
-		m_vecDstBuffer = vecBuffer;
+		m_vecDstPixels = m_vecSrcPixels;
 
 		glfwPollEvents();
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		m_pQuad->UpdateTexture(0, 0, m_iBackbufferWidth, m_iBackbufferHeight, glm::value_ptr(m_vecDstBuffer[0]));
+		m_pQuad->UpdateTexture(0, 0, m_iBackbufferWidth, m_iBackbufferHeight, glm::value_ptr(m_vecDstPixels[0]));
 		m_pQuad->Render();
 
 		glfwSwapBuffers(window);
@@ -349,58 +383,86 @@ void Application::Trace(GLFWwindow* window)
 	if (m_pScene == nullptr)
 		return;
 
-	if (m_bThreaded)
+#if defined _DEBUG
+
+	int rayCount = 0;
+
+	for (int j = 0; j < m_iBackbufferHeight; j++)
 	{
-		std::vector<std::thread*> ThreadGroup;
-		std::mutex threadMutex;
-
-		for (int i = 0; i < m_iMaxThreads; i++)
+		std::vector<glm::vec3> rowColor;
+		for (int i = 0; i < m_iBackbufferWidth; i++)
 		{
-			std::thread* t = new std::thread(&Application::ParallelTrace, this, &threadMutex, i, window);
-			ThreadGroup.push_back(t);
-		}
+			glm::vec3 color(0, 0, 0);
 
-		std::vector<std::thread*>::iterator iter = ThreadGroup.begin();
-		for (; iter != ThreadGroup.end(); iter++)
-		{
-			(*iter)->detach();
-		}
-	}
-	else
-	{
-		int rayCount = 0;
-
-		for (int j = 0; j < m_iBackbufferHeight; j++)
-		{
-			std::vector<glm::vec3> rowColor;
-			for (int i = 0; i < m_iBackbufferWidth; i++)
+			for (int s = 0; s < m_iNumSamples; s++)
 			{
-				glm::vec3 color(0, 0, 0);
+				float u = float(i + Helper::GetRandom01());// / float(m_iBackbufferWidth);
+				float v = float(j + Helper::GetRandom01());// / float(m_iBackbufferHeight);
 
-				for (int s = 0; s < m_iNumSamples; s++)
-				{
-					float u = float(i + Helper::GetRandom01()) / float(m_iBackbufferWidth);
-					float v = float(j + Helper::GetRandom01()) / float(m_iBackbufferHeight);
+				Ray r = m_pScene->getCamera()->get_ray(u, v);
 
-					Ray r = m_pScene->getCamera()->get_ray(u, v);
-
-					color = color + TraceColor(r, 0, rayCount);
-				}
-
-				color = color / float(m_iNumSamples);
-				color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
-
-				//vecBuffer[j * gBackbufferWidth + i] = color;
-
-				rowColor.push_back(color);
+				color = color + TraceColor(r, 0, rayCount);
 			}
 
-			m_pQuad->UpdateTexture(0, j, m_iBackbufferWidth, 1, glm::value_ptr(rowColor[0]));
-			m_pQuad->Render();
-			glfwSwapBuffers(window);
-			rowColor.clear();
+			color = color / float(m_iNumSamples);
+			color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
+
+			//m_vecSrcPixels[j * gBackbufferWidth + i] = color;
+
+			rowColor.push_back(color);
 		}
 
-		m_iRayCount += rayCount;
+		m_pQuad->UpdateTexture(0, j, m_iBackbufferWidth, 1, glm::value_ptr(rowColor[0]));
+		m_pQuad->Render();
+		glfwSwapBuffers(window);
+		rowColor.clear();
 	}
+
+	m_iRayCount += rayCount;
+
+#else
+
+#if defined CPLUSPLUS_THREADING 
+	std::vector<std::thread*> ThreadGroup;
+	std::mutex threadMutex;
+
+	for (int i = 0; i < m_iMaxThreads; i++)
+	{
+		std::thread* t = new std::thread(&Application::ParallelTrace, this, &threadMutex, i, window);
+		ThreadGroup.push_back(t);
+	}
+
+	std::vector<std::thread*>::iterator iter = ThreadGroup.begin();
+	for (; iter != ThreadGroup.end(); iter++)
+	{
+		(*iter)->detach();
+	}
+#elif defined MARL_SCHEDULING
+	// Marl Scheduler related...
+	marl::Scheduler scheduler;
+	scheduler.setWorkerThreadCount(marl::Thread::numLogicalCPUs());
+	scheduler.bind();
+	defer(scheduler.unbind());
+
+	marl::WaitGroup wg(m_iBackbufferHeight);
+
+	for (uint32_t y = 0; y < m_iBackbufferHeight; y++)
+	{
+		marl::schedule([=] {
+
+			defer(wg.done());
+
+			for (uint32_t x = 0; x < m_iBackbufferWidth; x++)
+			{
+				RenderPixel(y, x);
+			}
+			});
+	}
+
+	wg.wait();
+#endif
+
+#endif
+
+	
 }

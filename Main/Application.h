@@ -32,6 +32,7 @@ private:
 	glm::vec3			TraceColor(const Ray& r, int depth, int& rayCount);
 	void				ShowProgress(int percentage);
 	void				ParallelTrace(std::mutex* threadMutex, int i, GLFWwindow* window);
+	void				RenderPixel(int rowIndex, int columnIndex);
 	void				Trace(GLFWwindow* window);
 
 
@@ -53,8 +54,8 @@ private:
 	ScreenAlignedQuad*	m_pQuad;
 	Scene*				m_pScene;
 
-	std::vector<glm::vec3>  vecBuffer;
-	std::vector<glm::vec3>	m_vecDstBuffer;
+	std::vector<glm::vec3>  m_vecSrcPixels;
+	std::vector<glm::vec3>	m_vecDstPixels;
 
 	oidn::DeviceRef	m_oidnDevice;
 	oidn::FilterRef m_oidnFilter;

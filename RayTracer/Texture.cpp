@@ -1,15 +1,18 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
 #include "Texture.h"
 
+#include <iostream>
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 ImageTexture::ImageTexture(const std::string & _path)
 {
 	path = _path;
 	LoadImage();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 glm::vec3 ImageTexture::value(glm::vec2 uv) const
 {
 	// Images with alpha channels not supported yet!
@@ -31,7 +34,46 @@ glm::vec3 ImageTexture::value(glm::vec2 uv) const
 	return glm::vec3(r, g, b);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 void ImageTexture::LoadImage()
 {
 	data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+HDRITexture::HDRITexture()
+{
+	data = nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+HDRITexture::HDRITexture(const std::string& _path)
+{
+	path = _path;
+	data = nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void HDRITexture::LoadImage()
+{
+	if (stbi_is_hdr(path.c_str()))
+	{
+		stbi_set_flip_vertically_on_load(1);
+		data = stbi_loadf(path.c_str(), &width, &height, &channels, 0);
+
+		if (!data)
+		{
+			std::cout << "Error loading HDRI image data!" << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "Image not HDRI!" << std::endl;
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+glm::vec3 HDRITexture::value(glm::vec2 uv) const
+{
+	return glm::vec3(1, 1, 1);
 }

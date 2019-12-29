@@ -3,6 +3,14 @@
 #include "Ray.h"
 #include "Helper.h"
 
+enum eProjectionType
+{
+	OTHOGRAPHIC,
+	PERSPECTIVE,
+	FISHEYE,
+	SPHERICAL,
+};
+
 class Camera
 {
 public:
@@ -13,11 +21,26 @@ public:
 	Ray get_ray(float s, float t);
 
 private:
-	glm::vec3 position, lookAt, Up;
-	glm::vec3 origin;
-	glm::vec3 lower_left_corner;
-	glm::vec3 horizontal;
-	glm::vec3 vertical;
-	glm::vec3 u, v, w;
-	float lens_radius, aperture, vfov, focus_dist;
+	// Camera vectors
+	glm::vec3		position, lookAt, Up;
+
+	// basis vectors
+	glm::vec3		u, v, w;
+
+	// screen params
+	float			halfWidth;
+	float			halfHeight;
+	float			screenWidht;
+	float			screenHeight;
+
+	// For Perspective
+	float			viewPlaneDistance;
+
+	// For Fisheye
+	float			psi_max;
+
+	// For Spherical
+	float			lambda_max;
+
+	eProjectionType projectionType;
 };

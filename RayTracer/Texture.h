@@ -53,11 +53,30 @@ private:
 	float valY;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+class HDRITexture : public Texture
+{
+public:
+	HDRITexture();
+	HDRITexture(const std::string& _path);
+
+	virtual glm::vec3 value(glm::vec2 uv) const;
+
+private:
+	glm::vec3 color;
+	std::string path;
+
+	void LoadImage();
+
+	int width, height, channels;
+	float* data;
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 class ImageTexture : public Texture
 {
 public:
-	ImageTexture() {}
+	ImageTexture() { data = nullptr; }
 	ImageTexture(const std::string& _path);
 
 	virtual glm::vec3 value(glm::vec2 uv) const;

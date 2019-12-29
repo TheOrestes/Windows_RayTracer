@@ -42,8 +42,8 @@ bool Triangle::hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const
 {
 	++rec.rayTriangleQuery;
 
-	glm::vec3 rayDirection = r.GetRayDirection();
-	glm::vec3 rayOrigin = r.GetRayOrigin();
+	glm::vec3 rayDirection = r.direction;
+	glm::vec3 rayOrigin = r.origin;
 
 	// Compute Plane Normal
 	glm::vec3 edge0 = v1.position - v0.position;
