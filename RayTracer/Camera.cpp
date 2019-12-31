@@ -17,7 +17,7 @@ Camera::Camera()
 	psi_max = 180.0f;
 	lambda_max = 180.0f;
 
-	projectionType = eProjectionType::FISHEYE;
+	projectionType = eProjectionType::PERSPECTIVE;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
