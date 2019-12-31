@@ -14,6 +14,7 @@ public:
 	bool Trace(const Ray& r, int& rayCount, float tmin, float tmax, HitRecord& rec);
 
 	void InitSphereScene(float screenWidth, float screenHeight);
+	void InitRefractionScene(float screenWidth, float screenHeight);
 	void InitTigerScene(float screenWidth, float screenHeight);
 	void InitCornellScene(float screenWidth, float screenHeight);
 	void InitTowerScene(float screenWidth, float screenHeight);

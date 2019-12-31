@@ -19,8 +19,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 1280;
-	m_iBackbufferHeight = 720;
+	m_iBackbufferWidth = 1000;
+	m_iBackbufferHeight = 500;
 	m_iNumSamples = 50;
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
@@ -55,7 +55,8 @@ void Application::Initialize(HWND hwnd, bool _threaded)
 	_threaded ? m_iMaxThreads = std::thread::hardware_concurrency() : 0;
 
 	m_pScene = new Scene();
-	m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	m_pScene->InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
@@ -282,8 +283,8 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i)
 
 				for (int s = 0; s < ns; s++)
 				{
-					float u = float(i + Helper::GetRandom01()) / float(backBufferWidth);
-					float v = float(j + Helper::GetRandom01()) / float(backBufferHeight);
+					float u = float(i + Helper::GetRandom01());// / float(backBufferWidth);
+					float v = float(j + Helper::GetRandom01());// / float(backBufferHeight);
 
 					Ray r = m_pScene->getCamera()->get_ray(u, v);
 
@@ -347,8 +348,8 @@ void Application::Trace()
 
 				for (int s = 0; s < m_iNumSamples; s++)
 				{
-					float u = float(i + Helper::GetRandom01()) / float(m_iBackbufferWidth);
-					float v = float(j + Helper::GetRandom01()) / float(m_iBackbufferHeight);
+					float u = float(i + Helper::GetRandom01());// / float(m_iBackbufferWidth);
+					float v = float(j + Helper::GetRandom01());// / float(m_iBackbufferHeight);
 
 					Ray r = m_pScene->getCamera()->get_ray(u, v);
 
