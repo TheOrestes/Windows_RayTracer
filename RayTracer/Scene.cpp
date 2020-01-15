@@ -138,7 +138,7 @@ void Scene::InitTigerScene(float screenWidth, float screenHeight)
 	glassTigerInfo.scale = glm::vec3(0.75f);
 	glassTigerInfo.matInfo.albedoColor = glm::vec4(0.3f, 0.8f, 1.0f, 1);
 	glassTigerInfo.matInfo.refrIndex = 1.4f;
-	TriangleMesh* pGlassTiger = new TriangleMesh(glassTigerInfo);
+	//TriangleMesh* pGlassTiger = new TriangleMesh(glassTigerInfo);
 
 	// Light Quad
 	MeshInfo lightInfo;
@@ -178,7 +178,7 @@ void Scene::InitTigerScene(float screenWidth, float screenHeight)
 void Scene::InitCornellScene(float screenWidth, float screenHeight)
 {
 	// Initialize Camera first...!!!
-	glm::vec3 cameraPosition = glm::vec3(0.0f, 2.5f, 8.5f);
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 2.5f, 6.5f);
 	glm::vec3 cameraLookAt = glm::vec3(0.0f, 2.5f, 0.0f);
 	m_pCamera = new Camera();
 	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
@@ -220,22 +220,22 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	TriangleMesh* pLight = new TriangleMesh(lightInfo);
 
 	// Glass Mesh
-	MeshInfo glassTigerInfo;
-	glassTigerInfo.filePath = "models/tigerTransparent.fbx";
-	glassTigerInfo.leafSize = 512;
-	glassTigerInfo.position = glm::vec3(-2.0f, 0.0f, 1.0f);
-	glassTigerInfo.rotationAxis = glm::vec3(0, 1, 0);
-	glassTigerInfo.rotationAngle = -45.0f;
-	glassTigerInfo.scale = glm::vec3(0.5f);
-	glassTigerInfo.matInfo.albedoColor = glm::vec4(1.0f, 1.0f, 0, 1);
-	glassTigerInfo.matInfo.refrIndex = 1.4f;
-	TriangleMesh* pGlassTiger = new TriangleMesh(glassTigerInfo);
+	//MeshInfo glassTigerInfo;
+	//glassTigerInfo.filePath = "models/tigerTransparent.fbx";
+	//glassTigerInfo.leafSize = 512;
+	//glassTigerInfo.position = glm::vec3(-2.0f, 0.0f, 1.0f);
+	//glassTigerInfo.rotationAxis = glm::vec3(0, 1, 0);
+	//glassTigerInfo.rotationAngle = -45.0f;
+	//glassTigerInfo.scale = glm::vec3(0.5f);
+	//glassTigerInfo.matInfo.albedoColor = glm::vec4(1.0f, 1.0f, 0, 1);
+	//glassTigerInfo.matInfo.refrIndex = 1.4f;
+	//TriangleMesh* pGlassTiger = new TriangleMesh(glassTigerInfo);
 
 	vecHitables.push_back(pLight);
 	vecHitables.push_back(pRoom);
 	vecHitables.push_back(pLeftCube);
 	vecHitables.push_back(pSphereGlass);
-	vecHitables.push_back(pGlassTiger);
+	//vecHitables.push_back(pGlassTiger);
 
 	Profiler::getInstance().WriteToProfiler("Triangle Count:", pRoom->GetTriangleCount() + pLight->GetTriangleCount() + pLeftCube->GetTriangleCount());
 }

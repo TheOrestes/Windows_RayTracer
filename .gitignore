@@ -37,4 +37,6 @@
 *.app
 *.ppm
 *.bmp
+*.hdr
+*.dat
 /models

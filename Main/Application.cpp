@@ -13,6 +13,7 @@
 #include "../RayTracer/Helper.h"
 #include "../RayTracer/Camera.h"
 #include "..//RayTracer/Scene.h"
+#include "../RayTracer/Sampler.h"
 #include "Profiler.h"
 #include "ScreenAlignedQuad.h"
 #include "Application.h"
@@ -31,9 +32,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 1000;
+	m_iBackbufferWidth = 500;
 	m_iBackbufferHeight = 500;
-	m_iNumSamples = 50;
+	m_iNumSamples = 100;
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
 	m_bThreaded = false;
@@ -46,6 +47,7 @@ Application::Application()
 	m_iTriangleCount = 0;
 
 	m_pQuad = nullptr;
+	m_pSampler = nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +57,12 @@ Application::~Application()
 	{
 		delete m_pScene;
 		m_pScene = nullptr;
+	}
+
+	if (m_pSampler)
+	{
+		delete m_pSampler;
+		m_pSampler = nullptr;
 	}
 }
 
@@ -67,13 +75,17 @@ void Application::Initialize(bool _threaded)
 
 	m_pScene = new Scene();
 	//m_pScene->InitRefractionScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	//m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	m_pScene->InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//m_pScene->InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
 	m_pQuad = new ScreenAlignedQuad();
 	m_pQuad->Init(m_iBackbufferWidth, m_iBackbufferHeight);
+
+	// Initialize Sampler
+	m_pSampler = new JitteredSampler();
+	m_pSampler->GenerateSamples(m_iNumSamples);
 
 	glm::vec3 col = glm::vec3(0, 0, 0);
 	for (int i = 0; i < m_iBackbufferWidth * m_iBackbufferHeight; i++)
@@ -115,7 +127,15 @@ void Application::Execute(GLFWwindow* window)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::SaveImage()
 {
-	static int count = 0;
+	std::string fileName = m_pSampler->GetName() + std::to_string(m_iBackbufferWidth)
+												 + "x" 
+												 + std::to_string(m_iBackbufferHeight) 
+												 + "_samples_"
+												 + std::to_string(m_iNumSamples) 
+												 + ".hdr";
+
+	stbi_flip_vertically_on_write(1);
+	stbi_write_hdr(fileName.c_str(), m_iBackbufferWidth, m_iBackbufferHeight, 3, glm::value_ptr(m_vecDstPixels[0]));
 
 	//BITMAPINFO info;
 	//BITMAPFILEHEADER header;
@@ -300,6 +320,8 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 
 	//threadMutex->unlock();
 
+	std::vector<glm::vec2> samples = m_pSampler->GetSamples();
+
 	// Error check for bounds!
 	if (startWidth < endWidth && startHeight < endHeight)
 	{
@@ -311,8 +333,8 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 
 				for (int s = 0; s < ns; s++)
 				{
-					float u = float(i + Helper::GetRandom01());// / float(backBufferWidth);
-					float v = float(j + Helper::GetRandom01());// / float(backBufferHeight);
+					float u = float(i + samples[s].x); 
+					float v = float(j + samples[s].y); 
 
 					Ray r = m_pScene->getCamera()->get_ray(u, v);
 
@@ -365,14 +387,14 @@ void Application::UpdateGL(GLFWwindow* window)
 	while (!glfwWindowShouldClose(window))
 	{
 		m_vecDstPixels = m_vecSrcPixels;
-
+	
 		glfwPollEvents();
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	
 		m_pQuad->UpdateTexture(0, 0, m_iBackbufferWidth, m_iBackbufferHeight, glm::value_ptr(m_vecDstPixels[0]));
 		m_pQuad->Render();
-
+	
 		glfwSwapBuffers(window);
 	}
 }
@@ -386,6 +408,7 @@ void Application::Trace(GLFWwindow* window)
 #if defined _DEBUG
 
 	int rayCount = 0;
+	std::vector<glm::vec2> samples = m_pSampler->GetSamples();
 
 	for (int j = 0; j < m_iBackbufferHeight; j++)
 	{
@@ -396,8 +419,8 @@ void Application::Trace(GLFWwindow* window)
 
 			for (int s = 0; s < m_iNumSamples; s++)
 			{
-				float u = float(i + Helper::GetRandom01());// / float(m_iBackbufferWidth);
-				float v = float(j + Helper::GetRandom01());// / float(m_iBackbufferHeight);
+				float u = float(i + samples[s].x);
+				float v = float(j + samples[s].y);
 
 				Ray r = m_pScene->getCamera()->get_ray(u, v);
 
@@ -407,8 +430,7 @@ void Application::Trace(GLFWwindow* window)
 			color = color / float(m_iNumSamples);
 			color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
-			//m_vecSrcPixels[j * gBackbufferWidth + i] = color;
-
+			m_vecSrcPixels[j * m_iBackbufferWidth + i] = color;
 			rowColor.push_back(color);
 		}
 

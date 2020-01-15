@@ -11,6 +11,7 @@
 class Ray;
 class ScreenAlignedQuad;
 class Scene;
+class Sampler;
 
 class Application
 {
@@ -53,6 +54,7 @@ private:
 
 	ScreenAlignedQuad*	m_pQuad;
 	Scene*				m_pScene;
+	Sampler*			m_pSampler;
 
 	std::vector<glm::vec3>  m_vecSrcPixels;
 	std::vector<glm::vec3>	m_vecDstPixels;

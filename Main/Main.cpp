@@ -88,6 +88,8 @@ int main()
 	pApp->Execute(window);
 	pApp->UpdateGL(window);
 
+	pApp->SaveImage();
+
 	glfwTerminate();
 
 	delete pApp;
