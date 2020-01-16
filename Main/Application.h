@@ -37,9 +37,9 @@ private:
 	void				Trace(GLFWwindow* window);
 
 
-	int					m_iBackbufferWidth;
-	int					m_iBackbufferHeight;
-	int					m_iNumSamples;
+	uint32_t			m_iBackbufferWidth;
+	uint32_t			m_iBackbufferHeight;
+	uint32_t			m_iNumSamples;
 	int					m_iMaxThreads;
 	double				m_dTotalRenderTime;
 	float				m_dDenoiserTime;

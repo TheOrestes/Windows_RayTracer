@@ -89,6 +89,7 @@ int main()
 	pApp->UpdateGL(window);
 
 	pApp->SaveImage();
+	pApp->DenoiseImage();
 
 	glfwTerminate();
 

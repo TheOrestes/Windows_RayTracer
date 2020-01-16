@@ -34,7 +34,7 @@ Application::Application()
 {
 	m_iBackbufferWidth = 500;
 	m_iBackbufferHeight = 500;
-	m_iNumSamples = 100;
+	m_iNumSamples = 16;
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
 	m_bThreaded = false;
@@ -75,8 +75,8 @@ void Application::Initialize(bool _threaded)
 
 	m_pScene = new Scene();
 	//m_pScene->InitRefractionScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	//m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
@@ -136,109 +136,58 @@ void Application::SaveImage()
 
 	stbi_flip_vertically_on_write(1);
 	stbi_write_hdr(fileName.c_str(), m_iBackbufferWidth, m_iBackbufferHeight, 3, glm::value_ptr(m_vecDstPixels[0]));
-
-	//BITMAPINFO info;
-	//BITMAPFILEHEADER header;
-	//memset(&info, 0, sizeof(info));
-	//memset(&header, 0, sizeof(header));
-	//
-	//info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	//info.bmiHeader.biWidth = m_iBackbufferWidth;
-	//info.bmiHeader.biHeight = m_iBackbufferHeight;
-	//info.bmiHeader.biPlanes = 1;
-	//info.bmiHeader.biBitCount = 24;
-	//info.bmiHeader.biCompression = BI_RGB;
-	////info.bmiHeader.biSizeImage = width * height * 3;
-	//
-	//header.bfType = 0x4D42;
-	//header.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-	//
-	//char* pixels = NULL;
-	//HDC hdc = GetDC(m_hWnd);
-	//HDC memDC = CreateCompatibleDC(hdc);
-	//HBITMAP section = CreateDIBSection(hdc, &info, DIB_RGB_COLORS, (void**)&pixels, 0, 0);
-	//DeleteObject(SelectObject(memDC, section));
-	//BitBlt(memDC, 0, 0, m_iBackbufferWidth, m_iBackbufferHeight, hdc, 0, 0, SRCCOPY);
-	//DeleteDC(memDC);
-	//
-	//count++;
-	//char buf[32] = { 0 };
-	//sprintf(buf, "RenderImage%d.bmp", count);
-	//std::fstream hFile(buf, std::ios::out | std::ios::binary);
-	//if (hFile.is_open())
-	//{
-	//	hFile.write((char*)&header, sizeof(header));
-	//	hFile.write((char*)&info.bmiHeader, sizeof(info.bmiHeader));
-	//	int bytes = (((24 * m_iBackbufferWidth + 31) & (~31)) / 8) * m_iBackbufferHeight;
-	//	hFile.write(pixels, bytes);
-	//	hFile.close();
-	//}
-	//
-	//DeleteObject(section);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::DenoiseImage()
 {
-//	// Get pixel colors
-//	HDC hdc = GetDC(m_hWnd);
-//
-//	float* pixelData = (float*)malloc(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float));
-//	float* outData   = (float*)malloc(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float));
-//	if (pixelData && outData)
-//	{
-//		// Below logic can be improved!!
-//		float* origData = pixelData;
-//		for (int j = 0; j < m_iBackbufferHeight; j++)
-//		{
-//			for (int i = 0; i < m_iBackbufferWidth; i++)
-//			{
-//				COLORREF refColor = GetPixel(hdc, i, j);
-//				float rVal = (float)GetRValue(refColor);
-//				float gVal = (float)GetGValue(refColor);
-//				float bVal = (float)GetBValue(refColor);
-//
-//				*pixelData = rVal / 255.0f; ++pixelData;
-//				*pixelData = gVal / 255.0f; ++pixelData;
-//				*pixelData = bVal / 255.0f; ++pixelData;
-//			}
-//		}
-//
-//#if defined _DEBUG
-//		// Write down orginal image in HDR format
-//		stbi_write_hdr("debug.hdr", m_iBackbufferWidth, m_iBackbufferHeight, 3, origData);
-//#endif
-//
-//		// Create a denoising filter
-//		m_oidnFilter = m_oidnDevice.newFilter("RT");
-//		m_oidnFilter.setImage("color", origData, oidn::Format::Float3, m_iBackbufferWidth, m_iBackbufferHeight);
-//		m_oidnFilter.setImage("output", outData, oidn::Format::Float3, m_iBackbufferWidth, m_iBackbufferHeight);
-//		m_oidnFilter.set("hdr", true);
-//		m_oidnFilter.set("numThreads", m_iMaxThreads);
-//		m_oidnFilter.set("setAffinity", true);
-//		m_oidnFilter.commit();
-//
-//
-//		const clock_t begin_time = clock();
-//		
-//		m_oidnFilter.execute();
-//
-//		const clock_t end_time = clock();
-//		m_dDenoiserTime = (end_time - begin_time) / (float)CLOCKS_PER_SEC;
-//		Profiler::getInstance().WriteToProfiler("Denoiser Time: ", m_dDenoiserTime);
-//
-//#if defined _DEBUG
-//		// Check for errors
-//		const char* errorMessage;
-//		if (m_oidnDevice.getError(errorMessage) != oidn::Error::None)
-//		{
-//			Profiler::getInstance().WriteToProfiler(errorMessage);
-//		}
-//#endif
-//
-//		// Write down denoised image in HDR format!!
-//		stbi_write_hdr("Denoise.hdr", m_iBackbufferWidth, m_iBackbufferHeight, 3, outData);
-//	}
+	float* pixelData = (float*)malloc(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float));
+	float* outData   = (float*)malloc(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float));
+	if (pixelData && outData)
+	{
+		float* origData = glm::value_ptr(m_vecDstPixels[0]);
+		
+#if defined _DEBUG
+		// Write down orginal image in HDR format
+		stbi_write_hdr("debug.hdr", m_iBackbufferWidth, m_iBackbufferHeight, 3, origData);
+#endif
+
+		// Create a denoising filter
+		m_oidnFilter = m_oidnDevice.newFilter("RT");
+		m_oidnFilter.setImage("color", origData, oidn::Format::Float3, m_iBackbufferWidth, m_iBackbufferHeight);
+		m_oidnFilter.setImage("output", outData, oidn::Format::Float3, m_iBackbufferWidth, m_iBackbufferHeight);
+		m_oidnFilter.set("hdr", true);
+		m_oidnFilter.set("numThreads", m_iMaxThreads);
+		m_oidnFilter.set("setAffinity", true);
+		m_oidnFilter.commit();
+
+		const clock_t begin_time = clock();
+		
+		m_oidnFilter.execute();
+
+		const clock_t end_time = clock();
+		m_dDenoiserTime = (end_time - begin_time) / (float)CLOCKS_PER_SEC;
+		Profiler::getInstance().WriteToProfiler("Denoiser Time: ", m_dDenoiserTime);
+
+#if defined _DEBUG
+		// Check for errors
+		const char* errorMessage;
+		if (m_oidnDevice.getError(errorMessage) != oidn::Error::None)
+		{
+			Profiler::getInstance().WriteToProfiler(errorMessage);
+		}
+#endif
+
+		// Write down denoised image in HDR format!!
+		std::string fileName = m_pSampler->GetName() + std::to_string(m_iBackbufferWidth)
+													 + "x"
+													 + std::to_string(m_iBackbufferHeight)
+													 + "_samples_"
+													 + std::to_string(m_iNumSamples)											
+													 + "_denoised.hdr";
+
+		stbi_write_hdr(fileName.c_str(), m_iBackbufferWidth, m_iBackbufferHeight, 3, outData);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

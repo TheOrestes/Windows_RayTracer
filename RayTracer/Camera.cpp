@@ -73,6 +73,7 @@ void Camera::InitCamera(const glm::vec3& _position, const glm::vec3& _lookAt, fl
 		{
 			u = glm::vec3(1, 0, 0);
 			v = glm::vec3(0, 1, 0);
+
 			// For OpenGL, order of Cross product changes!		
 
 			break;
