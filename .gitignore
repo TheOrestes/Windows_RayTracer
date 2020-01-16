@@ -39,4 +39,6 @@
 *.bmp
 *.hdr
 *.dat
+*.jpg
+*.png
 /models
