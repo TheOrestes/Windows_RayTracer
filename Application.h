@@ -9,6 +9,7 @@
 
 class Ray;
 class Scene;
+class Sampler;
 
 class Application
 {
@@ -31,9 +32,9 @@ private:
 	void			ParallelTrace(std::mutex* threadMutex, int i);
 	void			Trace();
 
-	int				m_iBackbufferWidth;
-	int				m_iBackbufferHeight;
-	int				m_iNumSamples;
+	uint32_t		m_iBackbufferWidth;
+	uint32_t		m_iBackbufferHeight;
+	uint32_t		m_iNumSamples;
 	int				m_iMaxThreads;
 	float			m_dTotalRenderTime;
 	float			m_dDenoiserTime;
@@ -48,6 +49,7 @@ private:
 
 	HWND			m_hWnd;
 	Scene*			m_pScene;
+	Sampler*		m_pSampler;
 
 	oidn::DeviceRef	m_oidnDevice;
 	oidn::FilterRef m_oidnFilter;

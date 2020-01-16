@@ -108,6 +108,9 @@
     <ClInclude Include="RayTracer\TriangleMeshInfo.h">
       <Filter>Source Files\RayTracer\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracer\Sampler.h">
+      <Filter>Source Files\RayTracer\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RayTracer\Scene.cpp">
@@ -148,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="RayTracer\LameBVH.cpp">
       <Filter>Source Files\RayTracer\Accelerators</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Sampler.cpp">
+      <Filter>Source Files\RayTracer\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

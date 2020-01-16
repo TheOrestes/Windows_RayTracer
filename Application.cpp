@@ -9,6 +9,7 @@
 #include "RayTracer/Material.h"
 #include "RayTracer/Scene.h"
 #include "RayTracer/Camera.h"
+#include "RayTracer/Sampler.h"
 #include "RayTracer/Helper.h"
 #include "Profiler.h"
 #include "Application.h"
@@ -34,6 +35,7 @@ Application::Application()
 	m_iTriangleCount = 0;
 
 	m_hWnd = NULL;
+	m_pSampler = nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +45,12 @@ Application::~Application()
 	{
 		delete m_pScene;
 		m_pScene = nullptr;
+	}
+
+	if (m_pSampler)
+	{
+		delete m_pSampler;
+		m_pSampler = nullptr;
 	}
 }
 
@@ -59,6 +67,10 @@ void Application::Initialize(HWND hwnd, bool _threaded)
 	m_pScene->InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
+
+	// Initialize Sampler
+	m_pSampler = new JitteredSampler();
+	m_pSampler->GenerateSamples(m_iNumSamples);
 
 	// Create Open Image Denoise Device
 	m_oidnDevice = oidn::newDevice();
@@ -272,6 +284,8 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i)
 
 	threadMutex->unlock();
 
+	std::vector<glm::vec2> samples = m_pSampler->GetSamples();
+
 	// Error check for bounds!
 	if (startWidth < endWidth && startHeight < endHeight)
 	{
@@ -283,8 +297,8 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i)
 
 				for (int s = 0; s < ns; s++)
 				{
-					float u = float(i + Helper::GetRandom01());// / float(backBufferWidth);
-					float v = float(j + Helper::GetRandom01());// / float(backBufferHeight);
+					float u = float(i + samples[s].x);
+					float v = float(j + samples[s].y);
 
 					Ray r = m_pScene->getCamera()->get_ray(u, v);
 
@@ -339,6 +353,7 @@ void Application::Trace()
 		HDC hdc = GetDC(m_hWnd);
 
 		int rayCount = 0;
+		std::vector<glm::vec2> samples = m_pSampler->GetSamples();
 
 		for (int j = m_iBackbufferHeight; j >= 0; j--)
 		{
@@ -348,8 +363,8 @@ void Application::Trace()
 
 				for (int s = 0; s < m_iNumSamples; s++)
 				{
-					float u = float(i + Helper::GetRandom01());// / float(m_iBackbufferWidth);
-					float v = float(j + Helper::GetRandom01());// / float(m_iBackbufferHeight);
+					float u = float(i + samples[s].x);// / float(m_iBackbufferWidth);
+					float v = float(j + samples[s].y);// / float(m_iBackbufferHeight);
 
 					Ray r = m_pScene->getCamera()->get_ray(u, v);
 
