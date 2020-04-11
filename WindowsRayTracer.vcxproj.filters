@@ -87,13 +87,13 @@
     <ClInclude Include="Main\Profiler.h">
       <Filter>Source Files\Main</Filter>
     </ClInclude>
-    <ClInclude Include="RayTracer\DiffuseLight.h">
-      <Filter>Source Files\RayTracer</Filter>
-    </ClInclude>
     <ClInclude Include="RayTracer\Texture.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
     <ClInclude Include="RayTracer\Sampler.h">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\Emissive.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
   </ItemGroup>
@@ -144,6 +144,9 @@
       <Filter>Source Files\Main</Filter>
     </ClCompile>
     <ClCompile Include="RayTracer\Sampler.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Transparent.cpp">
       <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
   </ItemGroup>

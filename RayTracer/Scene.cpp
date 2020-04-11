@@ -4,7 +4,7 @@
 #include "Sphere.h"
 #include "FlatColor.h"
 #include "Lambertian.h"
-#include "DiffuseLight.h"
+#include "Emissive.h"
 #include "Metal.h"
 #include "Transparent.h"
 #include "Texture.h"
@@ -53,16 +53,16 @@ void Scene::InitSphereScene(float screenWidth, float screenHeight)
 	CheckeredTexture* checksTexture = new CheckeredTexture(glm::vec3(0.2f, 0.9f, 0.5f), glm::vec3(0.03f), 10.0f, 10.0f);
 	glm::vec4 glassColor = glm::vec4(1, 1, 0, 1);
 
-	Sphere* pSphereGlass1 = new Sphere(glm::vec3(-4.0f, 0.4f, 0.0f), 1.0f, new Transparent(new ConstantTexture(glassColor), 1.5f));
-	Sphere* pSphereMetal = new Sphere(glm::vec3(3.5f, 0.5f, 0.0f), 1.0f, new Metal(checksTexture, 0.1f));
-	Sphere* pSphereLight = new Sphere(glm::vec3(-1.5f, 0.5f, 0.0f), 0.75f, new DiffuseLight(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
+	//Sphere* pSphereGlass1 = new Sphere(glm::vec3(-4.0f, 0.4f, 0.0f), 1.0f, new Transparent(new ConstantTexture(glassColor), 1.5f));
+	//Sphere* pSphereMetal = new Sphere(glm::vec3(3.5f, 0.5f, 0.0f), 1.0f, new Metal(checksTexture, 0.1f));
+	Sphere* pSphereLight = new Sphere(glm::vec3(-1.5f, 0.5f, 0.0f), 0.75f, new Emissive(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
 	Sphere* pSphereEarth = new Sphere(glm::vec3(0.5f, 0.0f, 0.0f), 0.5, new Lambertian(new ImageTexture("models/earth.jpg")));
 
 	//Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
 	vecHitables.push_back(pSphereGround);
-	vecHitables.push_back(pSphereGlass1);
-	vecHitables.push_back(pSphereMetal);
+	//vecHitables.push_back(pSphereGlass1);
+	//vecHitables.push_back(pSphereMetal);
 	vecHitables.push_back(pSphereEarth);
 	vecHitables.push_back(pSphereLight);
 }
@@ -119,7 +119,7 @@ void Scene::InitTigerScene(float screenWidth, float screenHeight)
 
 	//Sphere* pSphereGlass1 = new Sphere(glm::vec3(-4.0f, 0.4f, 0.0f), 1.0f, new Transparent(1.3f));
 	Sphere* pSphereMetal = new Sphere(glm::vec3(3.5f, 0.5f, 0.0f), 1.0f, new Metal(new ConstantTexture(glm::vec3(1.0f, 0.1f, 0.0f)), 0.1f));
-	//Sphere* pSphereLight = new Sphere(glm::vec3(-1.5f, 0.5f, 1.25f), 1.0f, new DiffuseLight(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
+	//Sphere* pSphereLight = new Sphere(glm::vec3(-1.5f, 0.5f, 1.25f), 1.0f, new Emissive(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
 	Sphere* pSphereEarth = new Sphere(glm::vec3(2.5f, 0.0f, 0.0f), 0.5, new Lambertian(new ImageTexture("models/earth.jpg")));
 	
 	//MeshInfo barbInfo;
@@ -138,7 +138,7 @@ void Scene::InitTigerScene(float screenWidth, float screenHeight)
 	glassTigerInfo.scale = glm::vec3(0.75f);
 	glassTigerInfo.matInfo.albedoColor = glm::vec4(0.3f, 0.8f, 1.0f, 1);
 	glassTigerInfo.matInfo.refrIndex = 1.4f;
-	//TriangleMesh* pGlassTiger = new TriangleMesh(glassTigerInfo);
+	TriangleMesh* pGlassTiger = new TriangleMesh(glassTigerInfo);
 
 	// Light Quad
 	MeshInfo lightInfo;
@@ -171,14 +171,14 @@ void Scene::InitTigerScene(float screenWidth, float screenHeight)
 	//vecHitables.push_back(pSphereLight);
 	vecHitables.push_back(pBase);
 	vecHitables.push_back(pLight);
-	//vecHitables.push_back(pGlassTiger);
+	vecHitables.push_back(pGlassTiger);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Scene::InitCornellScene(float screenWidth, float screenHeight)
 {
 	// Initialize Camera first...!!!
-	glm::vec3 cameraPosition = glm::vec3(0.0f, 2.5f, 6.5f);
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 2.5f, 8.5f);
 	glm::vec3 cameraLookAt = glm::vec3(0.0f, 2.5f, 0.0f);
 	m_pCamera = new Camera();
 	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
@@ -187,7 +187,7 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	m_colMiss = glm::vec4(0.0f);
 	
 	glm::vec4 glassColor = glm::vec4(0, 1, 0, 1);
-	Sphere* pSphereGlass = new Sphere(glm::vec3(-1.0f, 0.5f, 1.0f), 0.5f, new Transparent(new ConstantTexture(glassColor), 1.4f));
+	Sphere* pSphereGlass = new Sphere(glm::vec3(-1.0f, 0.5f, 1.0f), 0.5f, new Lambertian(new ConstantTexture(glassColor)));
 
 	// Room Mesh
 	MeshInfo roomInfo;
@@ -196,18 +196,31 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	roomInfo.leafSize = 10;
 	TriangleMesh* pRoom = new TriangleMesh(roomInfo);
 
-	// Cube 1
+	// Cube Left Big
 	MeshInfo cubeLeftInfo;
-	cubeLeftInfo.filePath = "models/CubePhong.fbx";
+	cubeLeftInfo.filePath = "models/Cube.fbx";
 	cubeLeftInfo.isLightSource = false;
 	cubeLeftInfo.leafSize = 12;
-	cubeLeftInfo.position = glm::vec3(1.0f, 1.8f, -1.35f);
+	cubeLeftInfo.position = glm::vec3(0.8f, 1.5f, -1.1f);
 	cubeLeftInfo.rotationAxis = glm::vec3(0, 1, 0);
-	cubeLeftInfo.rotationAngle = 9.0f;
-	cubeLeftInfo.scale = glm::vec3(1.6f, 3.6f, 1.6f);
-	cubeLeftInfo.matInfo.albedoColor = glm::vec4(1,1,1,1);
-	cubeLeftInfo.matInfo.roughness = 0.5f;
+	cubeLeftInfo.rotationAngle = -20.0f;
+	cubeLeftInfo.scale = glm::vec3(1.6f, 3.0f, 1.6f);
+	//cubeLeftInfo.matInfo.albedoColor = glm::vec4(1,1,1,1);
+	//cubeLeftInfo.matInfo.roughness = 0.5f;
 	TriangleMesh* pLeftCube = new TriangleMesh(cubeLeftInfo);
+
+	// Cube Right Small
+	MeshInfo cubeRightInfo;
+	cubeRightInfo.filePath = "models/Cube.fbx";
+	cubeRightInfo.isLightSource = false;
+	cubeRightInfo.leafSize = 12;
+	cubeRightInfo.position = glm::vec3(-0.8f, 0.7f, 1.5f);
+	cubeRightInfo.rotationAxis = glm::vec3(0, 1, 0);
+	cubeRightInfo.rotationAngle = 20.0f;
+	cubeRightInfo.scale = glm::vec3(1.4f, 1.4f, 1.4f);
+	//cubeRightInfo.matInfo.albedoColor = glm::vec4(1,1,1,1);
+	//cubeRightInfo.matInfo.roughness = 0.5f;
+	TriangleMesh* pRightCube = new TriangleMesh(cubeRightInfo);
 
 	// Light Quad
 	MeshInfo lightInfo;
@@ -215,8 +228,8 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	lightInfo.isLightSource = true;
 	lightInfo.leafSize = 2;
 	lightInfo.position = glm::vec3(0, 4.99f, 0.5f);
-	lightInfo.scale = glm::vec3(2);
-	lightInfo.matInfo.albedoColor = glm::vec4(glm::vec3(1.5f), 1);
+	lightInfo.scale = glm::vec3(1.2);
+	lightInfo.matInfo.albedoColor = glm::vec4(glm::vec3(15.0f), 1);
 	TriangleMesh* pLight = new TriangleMesh(lightInfo);
 
 	// Glass Mesh
@@ -234,6 +247,7 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	vecHitables.push_back(pLight);
 	vecHitables.push_back(pRoom);
 	vecHitables.push_back(pLeftCube);
+	vecHitables.push_back(pRightCube);
 	vecHitables.push_back(pSphereGlass);
 	//vecHitables.push_back(pGlassTiger);
 
@@ -334,7 +348,7 @@ void Scene::InitRandomScene(float screenWidth, float screenHeight)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 glm::vec4 Scene::CalculateMissColor(glm::vec3 rayDirection)
 {
-	return glm::vec4(0.3f, 0.3f, 0.3f, 1.0f);
+	return m_colMiss;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

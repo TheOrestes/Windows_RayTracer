@@ -1,0 +1,263 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="AABB" Collapsed="true">
+    <Position X="9.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAIAAgAAABAAAAACgAAAAAAAAAACAEAAAgA=</HashCode>
+      <FileName>RayTracer\AABB.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Camera" Collapsed="true">
+    <Position X="13.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAgAAAACAgAgAQAgAIAAAAAAAAABABBoEQIAgAAI=</HashCode>
+      <FileName>RayTracer\Camera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Emissive" Collapsed="true">
+    <Position X="5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAgAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Emissive.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hitable" Collapsed="true">
+    <Position X="3.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Hitable.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lambertian" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAABAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Lambertian.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BVHTree" Collapsed="true">
+    <Position X="0.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQCAIAAAARAgAAIAIAAAAAACAAAAAAAAACABAIACA=</HashCode>
+      <FileName>RayTracer\LameBVH.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Material" Collapsed="true">
+    <Position X="3.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Material.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Metal" Collapsed="true">
+    <Position X="7.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAABAAAAAAAAAgAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Metal.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ray" Collapsed="true">
+    <Position X="13.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAQAAAKAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>RayTracer\Ray.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sampler" Collapsed="true">
+    <Position X="2.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAgAIwACAAAABAAIAAAAAABQAAAgAAAARAA=</HashCode>
+      <FileName>RayTracer\Sampler.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RandomSampler" Collapsed="true">
+    <Position X="0.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>RayTracer\Sampler.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RegularSampler" Collapsed="true">
+    <Position X="2.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAYAAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Sampler.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JitteredSampler" Collapsed="true">
+    <Position X="5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAAAIAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>RayTracer\Sampler.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene" Collapsed="true">
+    <Position X="9.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAMAACBAAEAAAEAggAABAAAAQAAAADAAgAAAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sphere" Collapsed="true">
+    <Position X="2.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAACAAgAgAAAASAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Sphere.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Texture" Collapsed="true">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ConstantTexture" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAAAAAACCAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CheckeredTexture" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAACDAAAAAAAAAAgA=</HashCode>
+      <FileName>RayTracer\Texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HDRITexture" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAQAQAACAAAAAAAAACCAAQAQAAAAAAA=</HashCode>
+      <FileName>RayTracer\Texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ImageTexture" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQARAACAAAAAAAAACCAAQAQAAAAAAA=</HashCode>
+      <FileName>RayTracer\Texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Transparent" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAEAAAABAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Transparent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Triangle" Collapsed="true">
+    <Position X="5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAoABAICAAAAAADQAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Triangle.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TriangleMesh" Collapsed="true">
+    <Position X="7.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEIAAABABAAAgAAAIAIAAAAwCAAAAAAEAAAAIAAEEE=</HashCode>
+      <FileName>RayTracer\TriangleMesh.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Application" Collapsed="true">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EIAABAAACBEAAQSAAJAAAkBCAIACgBgAKSEAgBAggBE=</HashCode>
+      <FileName>Main\Application.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GLSLShader" Collapsed="true">
+    <Position X="9.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIDAAAAAAAAAAAAAACCAAAAAAAAEAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Main\GLSLShader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Profiler" Collapsed="true">
+    <Position X="11.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAABAAAAAAQAEAACAAAAAAQ=</HashCode>
+      <FileName>Main\Profiler.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScreenAlignedQuad" Collapsed="true">
+    <Position X="11.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAoAAAEAAAFAAAAAMAQAAAAAAEoAAABACAAAAAAA=</HashCode>
+      <FileName>Main\ScreenAlignedQuad.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="HitRecord" Collapsed="true">
+    <Position X="11.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAQAAAAgAACAAAAAAAACAAACAAQAABBAAgA=</HashCode>
+      <FileName>RayTracer\Hitable.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="BVHNode" Collapsed="true">
+    <Position X="9.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAEAAAAAAAAAEABAAAAAABABAAAAAAACCAAAAAAAA=</HashCode>
+      <FileName>RayTracer\LameBVH.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="VertexP" Collapsed="true">
+    <Position X="13.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Main\VertexStructures.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="VertexPC" Collapsed="true">
+    <Position X="9.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAAAIAAAAAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>Main\VertexStructures.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="VertexPT" Collapsed="true">
+    <Position X="9.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAEgA=</HashCode>
+      <FileName>Main\VertexStructures.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="VertexPN" Collapsed="true">
+    <Position X="11.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAIAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Main\VertexStructures.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="VertexPNT" Collapsed="true">
+    <Position X="13.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAIAgAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Main\VertexStructures.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="VertexPTNBT" Collapsed="true">
+    <Position X="11.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAIAgAAAAAAAAgAAAAAgAAAgA=</HashCode>
+      <FileName>Main\VertexStructures.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="eLongestAxis" Collapsed="true">
+    <Position X="9.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>RayTracer\AABB.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="eProjectionType" Collapsed="true">
+    <Position X="11.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAIAAAAAAAAAAAAAAAAQAEAAAAAAAA=</HashCode>
+      <FileName>RayTracer\Camera.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

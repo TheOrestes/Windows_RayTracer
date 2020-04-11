@@ -163,7 +163,7 @@
     <ClInclude Include="Main\VertexStructures.h" />
     <ClInclude Include="RayTracer\AABB.h" />
     <ClInclude Include="RayTracer\Camera.h" />
-    <ClInclude Include="RayTracer\DiffuseLight.h" />
+    <ClInclude Include="RayTracer\Emissive.h" />
     <ClInclude Include="RayTracer\Helper.h" />
     <ClInclude Include="RayTracer\Hitable.h" />
     <ClInclude Include="RayTracer\Lambertian.h" />
@@ -196,6 +196,7 @@
     <ClCompile Include="RayTracer\Scene.cpp" />
     <ClCompile Include="RayTracer\Sphere.cpp" />
     <ClCompile Include="RayTracer\Texture.cpp" />
+    <ClCompile Include="RayTracer\Transparent.cpp" />
     <ClCompile Include="RayTracer\Triangle.cpp" />
     <ClCompile Include="RayTracer\TriangleMesh.cpp" />
   </ItemGroup>

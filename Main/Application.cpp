@@ -200,12 +200,12 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 	{
 		Ray scatteredRay;
 
-		glm::vec3 attenuation = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 albedo = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::vec3 emitted = rec.mat_ptr->Emitted(rec.uv);
 
-		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, attenuation, scatteredRay))
+		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, albedo, scatteredRay))
 		{
-			traceColor = emitted + (attenuation * (TraceColor(scatteredRay, depth + 1, rayCount)));
+			traceColor = emitted + (albedo * TraceColor(scatteredRay, depth + 1, rayCount));
 		}
 		else
 		{

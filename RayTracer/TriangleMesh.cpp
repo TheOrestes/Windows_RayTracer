@@ -5,7 +5,7 @@
 #include "TriangleMesh.h"
 #include "Material.h"
 #include "Lambertian.h"
-#include "DiffuseLight.h"
+#include "Emissive.h"
 #include "Metal.h"
 #include "Transparent.h"
 #include "Texture.h"
@@ -159,10 +159,11 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 						albedoCol = glm::vec4(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a);
 					}
 
+					// Is this Mesh a light source?
 					if (m_ptrMeshInfo->isLightSource)
 					{
 						textureInfo = new ConstantTexture(albedoCol);
-						m_ptrMaterial = new DiffuseLight(textureInfo);
+						m_ptrMaterial = new Emissive(textureInfo);
 					}
 					else
 					{

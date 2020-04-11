@@ -55,7 +55,7 @@ void Camera::InitCamera(const glm::vec3& _position, const glm::vec3& _lookAt, fl
 			// or
 			// d = screenHeight / 2 * tan(fov/2)
 			// We will be using "d" for the sake of it. 
-			viewPlaneDistance = 400.0f;
+			viewPlaneDistance = 600.0f;
 			break;
 		}
 
