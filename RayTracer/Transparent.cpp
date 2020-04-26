@@ -2,15 +2,15 @@
 #include "Transparent.h"
 #include "Helper.h"
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Transparent::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& albedo, Ray& scattered) const
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool Transparent::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor , Ray& scattered) const
 {
 	glm::vec3 outward_normal;
 	glm::vec3 ray_direction = r_in.direction;
 
 	glm::vec3 reflected = Helper::Reflect(ray_direction, rec.N);
 	float ni_over_nt;
-	albedo = Albedo->value(rec.uv);
+	outColor = Albedo->value(rec.uv);
 
 	glm::vec3 refracted = glm::vec3(0.0f, 0.0f, 0.0f);
 	float reflect_prob;
@@ -63,5 +63,17 @@ bool Transparent::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, 
 	++rayCount;
 
 	return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+float Transparent::PDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
+{
+	return 0.0f;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+glm::vec3 Transparent::BRDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
+{
+	return glm::vec3();
 }
 

@@ -36,7 +36,7 @@ Scene::~Scene()
 void Scene::InitSphereScene(float screenWidth, float screenHeight)
 {
 	// Initialize Camera first...!!!
-	glm::vec3 cameraPosition = glm::vec3(0.0f, 3.5f, 7.0f);
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 1.5f, 4.0f);
 	glm::vec3 cameraLookAt = glm::vec3(0.0f, 0.0f, 0.0f);
 	m_pCamera = new Camera();
 	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
@@ -64,7 +64,7 @@ void Scene::InitSphereScene(float screenWidth, float screenHeight)
 	//vecHitables.push_back(pSphereGlass1);
 	//vecHitables.push_back(pSphereMetal);
 	vecHitables.push_back(pSphereEarth);
-	vecHitables.push_back(pSphereLight);
+	//vecHitables.push_back(pSphereLight);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -16,9 +16,13 @@ public:
 			fuzz = 1;
 	}
 
-	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& attenuation, Ray& scatterd) const;
+	virtual bool		Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scatterd) const;
+	virtual float		PDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const;
 
 private:
-	Texture* Albedo;
-	float fuzz;
+
+	glm::vec3			BRDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const;
+
+	Texture*	Albedo;
+	float		fuzz;
 };

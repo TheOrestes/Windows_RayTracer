@@ -13,7 +13,7 @@ public:
 		Emission = _emission;
 	}
 
-	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& albedo, Ray& scatterd) const
+	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scatterd) const
 	{
 		return false;
 	}

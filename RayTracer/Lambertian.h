@@ -10,8 +10,12 @@ class Lambertian : public Material
 public:
 	Lambertian(Texture* _albedo) : Albedo(_albedo) {}
 
-	virtual bool	Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& albedo, Ray& scatterd) const;
+	virtual bool	Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scatterd) const;
+	virtual float	PDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const;
 
 private:
-	Texture* Albedo;
+
+	glm::vec3		BRDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const;
+
+	Texture*	Albedo;
 };

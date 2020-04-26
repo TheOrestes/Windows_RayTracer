@@ -6,6 +6,7 @@
 #include <cstdlib>
 
 const float PI = 3.14159265358f;
+const float INV_PI = 0.3183098861837f;
 
 namespace Helper
 {

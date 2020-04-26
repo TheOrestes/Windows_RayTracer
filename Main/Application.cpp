@@ -75,8 +75,8 @@ void Application::Initialize(bool _threaded)
 
 	m_pScene = new Scene();
 	//m_pScene->InitRefractionScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	//m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
@@ -200,12 +200,13 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 	{
 		Ray scatteredRay;
 
-		glm::vec3 albedo = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 outColor = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::vec3 emitted = rec.mat_ptr->Emitted(rec.uv);
 
-		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, albedo, scatteredRay))
+		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, outColor, scatteredRay))
 		{
-			traceColor = emitted + (albedo * TraceColor(scatteredRay, depth + 1, rayCount));
+			float pdf = rec.mat_ptr->PDF(r, rec, scatteredRay);
+			traceColor = emitted + ((outColor * TraceColor(scatteredRay, depth + 1, rayCount))) / pdf;
 		}
 		else
 		{

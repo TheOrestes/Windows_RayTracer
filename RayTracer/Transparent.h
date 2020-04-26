@@ -10,9 +10,14 @@ class Transparent : public Material
 {
 public:
 	Transparent(Texture* _albedo, float ri) : Albedo(_albedo), refr_index(ri) {}
-	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& attenuation, Ray& scattered) const;
+	
+	virtual bool		Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scattered) const;
+	virtual float		PDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const;
 
 private:
-	Texture* Albedo;
-	float refr_index;
+
+	glm::vec3			BRDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const;
+
+	Texture*	Albedo;
+	float		refr_index;
 };
