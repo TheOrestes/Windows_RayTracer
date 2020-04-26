@@ -34,7 +34,7 @@ Application::Application()
 {
 	m_iBackbufferWidth = 500;
 	m_iBackbufferHeight = 500;
-	m_iNumSamples = 16;
+	m_iNumSamples = 1024;
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
 	m_bThreaded = false;
@@ -273,33 +273,37 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 	std::vector<glm::vec2> samples = m_pSampler->GetSamples();
 
 	// Error check for bounds!
-	if (startWidth < endWidth && startHeight < endHeight)
+	for (int s = 0; s < ns; ++s)
 	{
-		for (int j = startHeight; j <= endHeight; j++)
+		if (startWidth < endWidth && startHeight < endHeight)
 		{
-			for (int i = startWidth; i <= endWidth; i++)
+			for (int j = startHeight; j <= endHeight; j++)
 			{
-				glm::vec3 color(0, 0, 0);
-
-				for (int s = 0; s < ns; s++)
+				for (int i = startWidth; i <= endWidth; i++)
 				{
-					float u = float(i + samples[s].x); 
-					float v = float(j + samples[s].y); 
+					glm::vec3 color(0, 0, 0);
+
+					float u = float(i + samples[s].x);
+					float v = float(j + samples[s].y);
 
 					Ray r = m_pScene->getCamera()->get_ray(u, v);
 
 					color = color + TraceColor(r, 0, rayCount);
+				
+					//color = color / float(ns);
+					color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
+
+					//threadMutex->lock();
+					//!-- Accumulative buffer
+					// So instead of running all the samples in each iteration, we run one sample
+					// in each iteration & acumulate the result in final buffer!
+					m_vecSrcPixels[j * endWidth + i] += (color / (float)ns);
+					//threadMutex->unlock();
 				}
-
-				color = color / float(ns);
-				color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
-
-				//threadMutex->lock();
-				m_vecSrcPixels[j * endWidth + i] = color;
-				//threadMutex->unlock();
 			}
 		}
 	}
+	
 
 	m_iRayCount += rayCount;
 }
@@ -376,7 +380,7 @@ void Application::Trace(GLFWwindow* window)
 
 				color = color + TraceColor(r, 0, rayCount);
 			}
-
+			
 			color = color / float(m_iNumSamples);
 			color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
@@ -389,6 +393,7 @@ void Application::Trace(GLFWwindow* window)
 		glfwSwapBuffers(window);
 		rowColor.clear();
 	}
+	
 
 	m_iRayCount += rayCount;
 

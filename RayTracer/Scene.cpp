@@ -268,20 +268,20 @@ void Scene::InitTowerScene(float screenWidth, float screenHeight)
 
 	// Sphere Ground
 	glm::vec3 center1(0.0f, -100.5f, 0.0f);
-	glm::vec3 albedo1(0.1f, 0.1f, 0.1f);
-	Material* pMatSphereGround = new Metal(new ConstantTexture(albedo1), 0.0f);
+	glm::vec3 albedo1(1.0f);
+	Material* pMatSphereGround = new Lambertian(new ConstantTexture(albedo1));
 	Sphere* pSphereGround = new Sphere(center1, 100.0f, pMatSphereGround);
 
 	// Tower
 	MeshInfo towerInfo;
 	towerInfo.filePath = "models/Tower.fbx";
-	towerInfo.isLightSource = true;
+	towerInfo.isLightSource = false;
 	towerInfo.leafSize = 512;
 	towerInfo.position = glm::vec3(-0.9f, 0.0f, 1.0f);
 	towerInfo.rotationAxis = glm::vec3(0, 1, 0);
 	towerInfo.rotationAngle = -60.0f;
 	towerInfo.scale = glm::vec3(0.5f);
-	towerInfo.matInfo.albedoColor = glm::vec4(2.0f, 1.5f, 1.5f, 1.0f);
+	towerInfo.matInfo.albedoColor = glm::vec4(1.0f, 0.5f, 0.8f, 1.0f);
 	TriangleMesh* pTower = new TriangleMesh(towerInfo);
 
 	vecHitables.push_back(pSphereGround);
