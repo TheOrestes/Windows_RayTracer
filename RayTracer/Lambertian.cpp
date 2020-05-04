@@ -5,12 +5,11 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool Lambertian::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scatterd) const
 {
-	glm::vec3 target = rec.P + rec.N + Helper::RandomUnitVector();
-
-	scatterd = Ray(rec.P, target - rec.P);
+	glm::vec3 direction = Helper::CosineSamplingUpperHemisphere(rec.N);
+	scatterd = Ray(rec.P, glm::normalize(direction));
 	++rayCount;
 
-	float NdotWi = glm::dot(r_in.direction, rec.N);
+	float NdotWi = glm::dot(glm::normalize(r_in.direction), rec.N);
 
 	glm::vec3 albedo = Albedo->value(rec.uv);
 
@@ -25,7 +24,7 @@ bool Lambertian::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, g
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 float Lambertian::PDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
 {
-	float NdotWi = glm::dot(r_in.direction, rec.N);
+	float NdotWi = glm::dot(glm::normalize(r_in.direction), rec.N);
 	return NdotWi * INV_PI;
 }
 

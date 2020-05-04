@@ -34,7 +34,7 @@ Application::Application()
 {
 	m_iBackbufferWidth = 500;
 	m_iBackbufferHeight = 500;
-	m_iNumSamples = 1024;
+	m_iNumSamples = 100;
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
 	m_bThreaded = false;
@@ -75,8 +75,8 @@ void Application::Initialize(bool _threaded)
 
 	m_pScene = new Scene();
 	//m_pScene->InitRefractionScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	//m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
@@ -127,11 +127,11 @@ void Application::Execute(GLFWwindow* window)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::SaveImage()
 {
-	std::string fileName = m_pSampler->GetName() + std::to_string(m_iBackbufferWidth)
-												 + "x" 
-												 + std::to_string(m_iBackbufferHeight) 
-												 + "_samples_"
-												 + std::to_string(m_iNumSamples) 
+	std::string fileName = m_pSampler->GetName() + "_"
+												 + std::to_string(m_iNumSamples)
+												 + "SPP"
+												 + "_"
+												 + Helper::GetCurrentDateTime()
 												 + ".hdr";
 
 	stbi_flip_vertically_on_write(1);
@@ -179,11 +179,11 @@ void Application::DenoiseImage()
 #endif
 
 		// Write down denoised image in HDR format!!
-		std::string fileName = m_pSampler->GetName() + std::to_string(m_iBackbufferWidth)
-													 + "x"
-													 + std::to_string(m_iBackbufferHeight)
-													 + "_samples_"
-													 + std::to_string(m_iNumSamples)											
+		std::string fileName = m_pSampler->GetName() + "_"
+													 + std::to_string(m_iNumSamples)		
+													 + "SPP"
+													 + "_"		
+													 + Helper::GetCurrentDateTime()
 													 + "_denoised.hdr";
 
 		stbi_write_hdr(fileName.c_str(), m_iBackbufferWidth, m_iBackbufferHeight, 3, outData);
@@ -286,7 +286,7 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 					float u = float(i + samples[s].x);
 					float v = float(j + samples[s].y);
 
-					Ray r = m_pScene->getCamera()->get_ray(u, v);
+					Ray r = Camera::getInstance().get_ray(u, v);
 
 					color = color + TraceColor(r, 0, rayCount);
 				
@@ -314,17 +314,19 @@ void Application::RenderPixel(int rowIndex, int columnIndex)
 	glm::vec3 color(0, 0, 0);
 	int rayCount = 0;
 
+	std::vector<glm::vec2> samples = m_pSampler->GetSamples();
+
 	for (int s = 0; s < m_iNumSamples; s++)
 	{
-		float u = float(columnIndex + Helper::GetRandom01()) / float(m_iBackbufferWidth);
-		float v = float(rowIndex + Helper::GetRandom01()) / float(m_iBackbufferHeight);
+		float u = float(columnIndex + samples[s].x);
+		float v = float(rowIndex + samples[s].y);
 
-		Ray r = m_pScene->getCamera()->get_ray(u, v);
+		Ray r = Camera::getInstance().get_ray(u, v);
 
 		color = color + TraceColor(r, 0, rayCount);
 	}
 
-	color = color / float(m_iNumSamples);
+	//color = color / float(m_iNumSamples);
 	color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
 	int index = columnIndex + m_iBackbufferWidth * rowIndex;
@@ -376,7 +378,7 @@ void Application::Trace(GLFWwindow* window)
 				float u = float(i + samples[s].x);
 				float v = float(j + samples[s].y);
 
-				Ray r = m_pScene->getCamera()->get_ray(u, v);
+				Ray r = Camera::getInstance().get_ray(u, v);
 
 				color = color + TraceColor(r, 0, rayCount);
 			}

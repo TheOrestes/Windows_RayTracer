@@ -4,6 +4,7 @@
 #include "Sphere.h"
 #include "FlatColor.h"
 #include "Lambertian.h"
+#include "Phong.h"
 #include "Emissive.h"
 #include "Metal.h"
 #include "Transparent.h"
@@ -18,18 +19,12 @@ Scene::Scene()
 {
 	m_colMiss = glm::vec4(0.5f);
 	vecHitables.clear();
-	m_pCamera = nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Scene::~Scene()
 {
 	vecHitables.clear();
-	if (m_pCamera)
-	{
-		delete m_pCamera;
-		m_pCamera = nullptr;
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,8 +33,8 @@ void Scene::InitSphereScene(float screenWidth, float screenHeight)
 	// Initialize Camera first...!!!
 	glm::vec3 cameraPosition = glm::vec3(0.0f, 1.5f, 4.0f);
 	glm::vec3 cameraLookAt = glm::vec3(0.0f, 0.0f, 0.0f);
-	m_pCamera = new Camera();
-	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
+
+	Camera::getInstance().InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
 
 	// Override miss color to black
 	m_colMiss = glm::vec4(0.78f, 0.88f, 1.0f, 1.0f);
@@ -56,7 +51,7 @@ void Scene::InitSphereScene(float screenWidth, float screenHeight)
 	//Sphere* pSphereGlass1 = new Sphere(glm::vec3(-4.0f, 0.4f, 0.0f), 1.0f, new Transparent(new ConstantTexture(glassColor), 1.5f));
 	//Sphere* pSphereMetal = new Sphere(glm::vec3(3.5f, 0.5f, 0.0f), 1.0f, new Metal(checksTexture, 0.1f));
 	Sphere* pSphereLight = new Sphere(glm::vec3(-1.5f, 0.5f, 0.0f), 0.75f, new Emissive(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
-	Sphere* pSphereEarth = new Sphere(glm::vec3(0.5f, 0.0f, 0.0f), 0.5, new Lambertian(new ImageTexture("models/earth.jpg")));
+	Sphere* pSphereEarth = new Sphere(glm::vec3(0.5f, 0.0f, 0.0f), 0.5, new Phong(new ImageTexture("models/earth.jpg"), 32.0f, 1.0f));
 
 	//Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
@@ -73,8 +68,8 @@ void Scene::InitRefractionScene(float screenWidth, float screenHeight)
 	// Initialize Camera first...!!!
 	glm::vec3 cameraPosition = glm::vec3(0.0f, 3.5f, 7.0f);
 	glm::vec3 cameraLookAt = glm::vec3(0.0f, 0.0f, 0.0f);
-	m_pCamera = new Camera();
-	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
+	
+	Camera::getInstance().InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
 
 	// Override miss color to black
 	m_colMiss = glm::vec4(0.78f, 0.88f, 1.0f, 1.0f);
@@ -104,8 +99,8 @@ void Scene::InitTigerScene(float screenWidth, float screenHeight)
 	// Initialize Camera first...!!!
 	glm::vec3 cameraPosition = glm::vec3(0.0f, 1.5f, 5.0f);
 	glm::vec3 cameraLookAt = glm::vec3(0.0f, 0.0f, 0.0f);
-	m_pCamera = new Camera();
-	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
+	
+	Camera::getInstance().InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
 
 	// Override miss color to black
 	m_colMiss = glm::vec4(0.78f, 0.88f, 1.0f, 1.0f);
@@ -180,14 +175,17 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	// Initialize Camera first...!!!
 	glm::vec3 cameraPosition = glm::vec3(0.0f, 2.5f, 8.5f);
 	glm::vec3 cameraLookAt = glm::vec3(0.0f, 2.5f, 0.0f);
-	m_pCamera = new Camera();
-	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
+	
+	Camera::getInstance().InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
 
 	// Override miss color to black
-	m_colMiss = glm::vec4(0.0f);
+	m_colMiss = glm::vec4(0.1f,0.1f,0.1f, 1.0f);
 	
-	glm::vec4 glassColor = glm::vec4(0, 1, 0, 1);
-	Sphere* pSphereGlass = new Sphere(glm::vec3(-1.0f, 0.5f, 1.0f), 0.5f, new Lambertian(new ConstantTexture(glassColor)));
+	glm::vec4 glassColor = glm::vec4(1, 1, 1, 1);
+	Sphere* pSphereGlass = new Sphere(glm::vec3(1.0f, 1.0f, 0.0f), 1.0f, new Phong(new ConstantTexture(glassColor), 512.0f, 1.0f));
+
+	glm::vec4 lightColor = glm::vec4(10, 10, 0, 0);
+	Sphere* pLightSphere = new Sphere(glm::vec3(-1.0f, 1.0f, 1.0f), 0.5f, new Emissive(new ConstantTexture(lightColor)));
 
 	// Room Mesh
 	MeshInfo roomInfo;
@@ -229,7 +227,7 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	lightInfo.leafSize = 2;
 	lightInfo.position = glm::vec3(0, 4.99f, 0.5f);
 	lightInfo.scale = glm::vec3(1.2);
-	lightInfo.matInfo.albedoColor = glm::vec4(glm::vec3(15.0f), 1);
+	lightInfo.matInfo.albedoColor = glm::vec4(glm::vec3(50.0f), 1);
 	TriangleMesh* pLight = new TriangleMesh(lightInfo);
 
 	// Glass Mesh
@@ -246,9 +244,10 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 
 	vecHitables.push_back(pLight);
 	vecHitables.push_back(pRoom);
-	vecHitables.push_back(pLeftCube);
-	vecHitables.push_back(pRightCube);
+	//vecHitables.push_back(pLeftCube);
+	//vecHitables.push_back(pRightCube);
 	vecHitables.push_back(pSphereGlass);
+	vecHitables.push_back(pLightSphere);
 	//vecHitables.push_back(pGlassTiger);
 
 	Profiler::getInstance().WriteToProfiler("Triangle Count:", pRoom->GetTriangleCount() + pLight->GetTriangleCount() + pLeftCube->GetTriangleCount());
@@ -260,8 +259,8 @@ void Scene::InitTowerScene(float screenWidth, float screenHeight)
 	// Initialize Camera first...!!!
 	glm::vec3 cameraPosition = glm::vec3(5.0f, 2.5f, 5.0f);
 	glm::vec3 cameraLookAt = glm::vec3(0.0f, 0.0f, 0.0f);
-	m_pCamera = new Camera();
-	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
+
+	Camera::getInstance().InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
 
 	// Override miss color to black
 	m_colMiss = glm::vec4(0.01f);
@@ -296,8 +295,8 @@ void Scene::InitRandomScene(float screenWidth, float screenHeight)
 	// Initialize Camera first...!!!
 	glm::vec3 cameraPosition = glm::vec3(5.0f, 2.5f, 5.0f);
 	glm::vec3 cameraLookAt = glm::vec3(0.0f, 0.0f, 0.0f);
-	m_pCamera = new Camera();
-	m_pCamera->InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
+	
+	Camera::getInstance().InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
 
 	Sphere* pSphere0 = new Sphere(glm::vec3(0, -1000.0f, 0), 1000, new Lambertian(new ConstantTexture (glm::vec3(0.5, 0.5, 0.5))));
 	vecHitables.push_back(pSphere0);

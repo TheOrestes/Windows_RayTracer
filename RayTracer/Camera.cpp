@@ -177,3 +177,4 @@ Ray Camera::get_ray(float s, float t)
 	return ray;
 }
 
+

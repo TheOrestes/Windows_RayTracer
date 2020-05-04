@@ -14,16 +14,30 @@ enum eProjectionType
 class Camera
 {
 public:
-	Camera();
+	static Camera& getInstance()
+	{
+		static Camera inst;
+		return inst;
+	}
+
 	~Camera();
 
-	void InitCamera(const glm::vec3& _position, const glm::vec3& _lookAt, float _screenWidth, float _screenHeight);
-	Ray get_ray(float s, float t);
+	void			InitCamera(const glm::vec3& _position, const glm::vec3& _lookAt, float _screenWidth, float _screenHeight);
+	Ray				get_ray(float s, float t);
+
+	inline glm::vec3 GetViewDirection(const glm::vec3& _pos) { return glm::normalize(_pos - position); }
+
 
 private:
+	Camera();
+	Camera(const Camera&);
+	void operator=(const Camera&);
+
+public:
 	// Camera vectors
 	glm::vec3		position, lookAt, Up;
 
+private:
 	// basis vectors
 	glm::vec3		u, v, w;
 

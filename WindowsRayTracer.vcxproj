@@ -170,6 +170,7 @@
     <ClInclude Include="RayTracer\LameBVH.h" />
     <ClInclude Include="RayTracer\Material.h" />
     <ClInclude Include="RayTracer\Metal.h" />
+    <ClInclude Include="RayTracer\Phong.h" />
     <ClInclude Include="RayTracer\Ray.h" />
     <ClInclude Include="RayTracer\Sampler.h" />
     <ClInclude Include="RayTracer\Scene.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="RayTracer\Lambertian.cpp" />
     <ClCompile Include="RayTracer\LameBVH.cpp" />
     <ClCompile Include="RayTracer\Metal.cpp" />
+    <ClCompile Include="RayTracer\Phong.cpp" />
     <ClCompile Include="RayTracer\Sampler.cpp" />
     <ClCompile Include="RayTracer\Scene.cpp" />
     <ClCompile Include="RayTracer\Sphere.cpp" />
