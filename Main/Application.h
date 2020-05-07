@@ -25,6 +25,8 @@ public:
 	void				SaveImage();
 	void				DenoiseImage();
 
+	void				RenderPixel(int rowIndex, int columnIndex);
+
 	inline int			GetBufferWidth() { return m_iBackbufferWidth; }
 	inline int			GetBufferHeight() { return m_iBackbufferHeight; }
 	inline double		GetTotalRenderTime() { return m_dTotalRenderTime; }
@@ -33,7 +35,6 @@ private:
 	glm::vec3			TraceColor(const Ray& r, int depth, int& rayCount);
 	void				ShowProgress(int percentage);
 	void				ParallelTrace(std::mutex* threadMutex, int i, GLFWwindow* window);
-	void				RenderPixel(int rowIndex, int columnIndex);
 	void				Trace(GLFWwindow* window);
 
 

@@ -68,12 +68,12 @@ bool Transparent::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 float Transparent::PDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
 {
-	return 0.0f;
+	return 1.0f;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 glm::vec3 Transparent::BRDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
 {
-	return glm::vec3();
+	return glm::vec3(1);
 }
 

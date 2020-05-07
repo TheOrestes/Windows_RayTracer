@@ -26,14 +26,17 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-#define CPLUSPLUS_THREADING 1
+#define CPLUSPLUS_THREADING 
+#define ACCUM_BUFFER_RENDERING 
+//#define SAVE_IMAGE
+//#define DENOISE_IMAGE
 //#define MARL_SCHEDULING 1
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 500;
-	m_iBackbufferHeight = 500;
+	m_iBackbufferWidth = 960;
+	m_iBackbufferHeight = 540;
 	m_iNumSamples = 100;
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
@@ -75,8 +78,8 @@ void Application::Initialize(bool _threaded)
 
 	m_pScene = new Scene();
 	//m_pScene->InitRefractionScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	//m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
@@ -127,6 +130,7 @@ void Application::Execute(GLFWwindow* window)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::SaveImage()
 {
+#if defined SAVE_IMAGE
 	std::string fileName = m_pSampler->GetName() + "_"
 												 + std::to_string(m_iNumSamples)
 												 + "SPP"
@@ -136,11 +140,13 @@ void Application::SaveImage()
 
 	stbi_flip_vertically_on_write(1);
 	stbi_write_hdr(fileName.c_str(), m_iBackbufferWidth, m_iBackbufferHeight, 3, glm::value_ptr(m_vecDstPixels[0]));
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::DenoiseImage()
 {
+#if defined DENOISE_IMAGE
 	float* pixelData = (float*)malloc(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float));
 	float* outData   = (float*)malloc(3 * m_iBackbufferWidth * m_iBackbufferHeight * sizeof(float));
 	if (pixelData && outData)
@@ -188,6 +194,7 @@ void Application::DenoiseImage()
 
 		stbi_write_hdr(fileName.c_str(), m_iBackbufferWidth, m_iBackbufferHeight, 3, outData);
 	}
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -201,12 +208,12 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 		Ray scatteredRay;
 
 		glm::vec3 outColor = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::vec3 emitted = rec.mat_ptr->Emitted(rec.uv);
+		glm::vec3 emitted = rec.mat_ptr->Emitted(r, rec);
 
 		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, outColor, scatteredRay))
 		{
 			float pdf = rec.mat_ptr->PDF(r, rec, scatteredRay);
-			traceColor = emitted + ((outColor * TraceColor(scatteredRay, depth + 1, rayCount))) / pdf;
+			traceColor = emitted + ((outColor) *TraceColor(scatteredRay, depth + 1, rayCount)) / pdf;
 		}
 		else
 		{
@@ -272,6 +279,8 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 
 	std::vector<glm::vec2> samples = m_pSampler->GetSamples();
 
+
+#if defined ACCUM_BUFFER_RENDERING
 	// Error check for bounds!
 	for (int s = 0; s < ns; ++s)
 	{
@@ -289,7 +298,7 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 					Ray r = Camera::getInstance().get_ray(u, v);
 
 					color = color + TraceColor(r, 0, rayCount);
-				
+
 					//color = color / float(ns);
 					color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
@@ -303,6 +312,38 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 			}
 		}
 	}
+#else
+	// Error check for bounds!
+	if (startWidth < endWidth && startHeight < endHeight)
+	{
+		for (int j = startHeight; j <= endHeight; j++)
+		{
+			for (int i = startWidth; i <= endWidth; i++)
+			{
+				glm::vec3 color(0, 0, 0);
+
+				for (int s = 0; s < ns; s++)
+				{
+					float u = float(i + samples[s].x);
+					float v = float(j + samples[s].y);
+
+					Ray r = Camera::getInstance().get_ray(u, v);
+
+					color = color + TraceColor(r, 0, rayCount);
+				}
+
+				color = color / float(ns);
+				color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
+
+				//threadMutex->lock();
+				m_vecSrcPixels[j * endWidth + i] = color;
+				//threadMutex->unlock();
+			}
+		}
+	}
+#endif // ACCUM_BUFFER_RENDERING
+
+	
 	
 
 	m_iRayCount += rayCount;

@@ -8,10 +8,7 @@
 class Emissive : public Material
 {
 public:
-	Emissive(Texture* _emission)
-	{
-		Emission = _emission;
-	}
+	Emissive(Texture* _emission) : Emission(_emission), m_bIsLightSource(true) {}
 
 	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scatterd) const
 	{
@@ -23,11 +20,17 @@ public:
 		return 1.0f;
 	}
 
-	virtual glm::vec3 Emitted(const glm::vec2& uv) const
+	virtual glm::vec3 Emitted(const Ray& r_in, const HitRecord& rec) const
 	{
-		return Emission->value(uv);
+		if (glm::dot(-rec.N, glm::normalize(r_in.direction)) > 0.0f)
+			return Emission->value(rec.uv);
+		else
+			return glm::vec3(0.0f);
 	}
 
 private:
-	Texture* Emission;
+	Texture*	Emission;
+
+public:
+	bool		m_bIsLightSource;
 };

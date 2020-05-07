@@ -41,23 +41,25 @@ void Scene::InitSphereScene(float screenWidth, float screenHeight)
 
 	// Sphere Ground
 	glm::vec3 center1(0.0f, -200.5f, 0.0f);
-	glm::vec3 albedo1(0.2f, 0.2f, 0.2f);
+	glm::vec3 matColor(1,0,0);
 	Material* pMatSphereGround = new Lambertian(new ConstantTexture(glm::vec3(0.25f, 0.25f, 0.25f)));
 	Sphere* pSphereGround = new Sphere(center1, 200.0f, pMatSphereGround);
 
 	CheckeredTexture* checksTexture = new CheckeredTexture(glm::vec3(0.2f, 0.9f, 0.5f), glm::vec3(0.03f), 10.0f, 10.0f);
-	glm::vec4 glassColor = glm::vec4(1, 1, 0, 1);
+	glm::vec4 glassColor = glm::vec4(1, 1, 1, 1);
 
-	//Sphere* pSphereGlass1 = new Sphere(glm::vec3(-4.0f, 0.4f, 0.0f), 1.0f, new Transparent(new ConstantTexture(glassColor), 1.5f));
-	//Sphere* pSphereMetal = new Sphere(glm::vec3(3.5f, 0.5f, 0.0f), 1.0f, new Metal(checksTexture, 0.1f));
-	Sphere* pSphereLight = new Sphere(glm::vec3(-1.5f, 0.5f, 0.0f), 0.75f, new Emissive(new ConstantTexture(glm::vec3(1.0f, 1.0f, 1.0f))));
-	Sphere* pSphereEarth = new Sphere(glm::vec3(0.5f, 0.0f, 0.0f), 0.5, new Phong(new ImageTexture("models/earth.jpg"), 32.0f, 1.0f));
+	Sphere* pSphereGlass1 = new Sphere(glm::vec3(0.0f, 0.15f, 2.0f), 0.3f, new Transparent(new ConstantTexture(glassColor), 1.5f));
+	Sphere* pSpherePhong = new Sphere(glm::vec3(1.5f, 0.0f, 0.0f), 0.5f, new Phong(new ConstantTexture(matColor), 4096.0, 1.0f));
+	Sphere* pSphereMetal = new Sphere(glm::vec3(-1.5f, 0.0f, 0.0f), 0.5f, new Metal(new ConstantTexture(matColor), 0.0f));
+	Sphere* pSphereLight = new Sphere(glm::vec3(-0.5f, 0.1f, 2.0f), 0.2f, new Emissive(new ConstantTexture(glm::vec3(10.0f, 10.0f, 10.0f))));
+	Sphere* pSphereEarth = new Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.5f, new Phong(new ImageTexture("models/earth.jpg"), 32.0f, 0.0f));
 
 	//Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
 	vecHitables.push_back(pSphereGround);
-	//vecHitables.push_back(pSphereGlass1);
-	//vecHitables.push_back(pSphereMetal);
+	vecHitables.push_back(pSphereGlass1);
+	vecHitables.push_back(pSpherePhong);
+	vecHitables.push_back(pSphereMetal);
 	vecHitables.push_back(pSphereEarth);
 	//vecHitables.push_back(pSphereLight);
 }
@@ -182,7 +184,7 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	m_colMiss = glm::vec4(0.1f,0.1f,0.1f, 1.0f);
 	
 	glm::vec4 glassColor = glm::vec4(1, 1, 1, 1);
-	Sphere* pSphereGlass = new Sphere(glm::vec3(1.0f, 1.0f, 0.0f), 1.0f, new Phong(new ConstantTexture(glassColor), 512.0f, 1.0f));
+	Sphere* pSphereGlass = new Sphere(glm::vec3(1.0f, 1.0f, 1.0f), 1.0f, new Phong(new ConstantTexture(glassColor), 512.0f, 0.5f));
 
 	glm::vec4 lightColor = glm::vec4(10, 10, 0, 0);
 	Sphere* pLightSphere = new Sphere(glm::vec3(-1.0f, 1.0f, 1.0f), 0.5f, new Emissive(new ConstantTexture(lightColor)));
@@ -244,7 +246,7 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 
 	vecHitables.push_back(pLight);
 	vecHitables.push_back(pRoom);
-	//vecHitables.push_back(pLeftCube);
+	vecHitables.push_back(pLeftCube);
 	//vecHitables.push_back(pRightCube);
 	vecHitables.push_back(pSphereGlass);
 	vecHitables.push_back(pLightSphere);

@@ -8,7 +8,7 @@
 class Metal : public Material
 {
 public:
-	Metal (Texture* _albedo, float f) : Albedo(_albedo) 
+	Metal (Texture* _albedo, float f) : Albedo(_albedo), m_bIsLightSource(false)
 	{
 		if (f < 1)
 			fuzz = f;
@@ -23,6 +23,9 @@ private:
 
 	glm::vec3			BRDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const;
 
-	Texture*	Albedo;
-	float		fuzz;
+	Texture*			Albedo;
+	float				fuzz;
+
+public:
+	bool				m_bIsLightSource;
 };

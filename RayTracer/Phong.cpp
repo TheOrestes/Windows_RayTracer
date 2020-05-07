@@ -23,7 +23,6 @@ bool Phong::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::v
 float Phong::PDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
 {
 	// Lambertian PDF
-	float NdotWi = glm::clamp(glm::dot(r_in.direction, rec.N), 0.0f, 1.0f);
 	float lambertPDF = Kd * INV_PI;
 	
 	// Specular PDF

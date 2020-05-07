@@ -16,11 +16,11 @@ bool Metal::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::v
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 float Metal::PDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
 {
-	return 0.0f;
+	return 1.0f;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 glm::vec3 Metal::BRDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
 {
-	return glm::vec3();
+	return glm::vec3(1);
 }
