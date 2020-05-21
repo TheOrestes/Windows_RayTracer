@@ -3,7 +3,7 @@
 #include "glm/glm.hpp"
 #include "Hitable.h"
 #include "TriangleMeshInfo.h"
-#include "VertexStructures.h"
+#include "../Main/VertexStructures.h"
 
 class Material;
 

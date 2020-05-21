@@ -164,6 +164,7 @@
     <ClInclude Include="RayTracer\AABB.h" />
     <ClInclude Include="RayTracer\Camera.h" />
     <ClInclude Include="RayTracer\Emissive.h" />
+    <ClInclude Include="RayTracer\Light.h" />
     <ClInclude Include="RayTracer\Specular.h" />
     <ClInclude Include="RayTracer\Helper.h" />
     <ClInclude Include="RayTracer\Hitable.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="Main\ScreenAlignedQuad.cpp" />
     <ClCompile Include="RayTracer\AABB.cpp" />
     <ClCompile Include="RayTracer\Camera.cpp" />
+    <ClCompile Include="RayTracer\Light.cpp" />
     <ClCompile Include="RayTracer\Specular.cpp" />
     <ClCompile Include="RayTracer\Lambertian.cpp" />
     <ClCompile Include="RayTracer\LameBVH.cpp" />

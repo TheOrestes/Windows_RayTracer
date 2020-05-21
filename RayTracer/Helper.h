@@ -64,6 +64,24 @@ namespace Helper
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	inline glm::vec3 OrientTowards(const glm::vec3& samples, glm::vec3 towardsVector)
+	{
+		// This sample is oriented towards Local Y axis instead of oriented as per the hitpoint normal
+		// need to do that before actually using it!
+		glm::vec3 Up;
+		if (fabsf(towardsVector.y > 0.9f))
+			Up = glm::vec3(1, 0, 0);
+		else
+			Up = glm::vec3(0, 1, 0);
+
+		glm::vec3 v = glm::normalize(towardsVector);
+		glm::vec3 u = glm::normalize(glm::cross(Up, v));
+		glm::vec3 w = glm::cross(v, u);
+
+		return samples.x * u + samples.y * v + samples.z * w;
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	inline glm::vec3 CosineSamplingUpperHemisphere(glm::vec3 Normal)
 	{
 		float rand1 = GetRandom01();
@@ -83,17 +101,7 @@ namespace Helper
 
 		// This sample is oriented towards Local Y axis instead of oriented as per the hitpoint normal
 		// need to do that before actually using it!
-		glm::vec3 Up;
-		if (fabsf(Normal.y > 0.9f))
-			Up = glm::vec3(1, 0, 0);
-		else
-			Up = glm::vec3(0, 1, 0);
-
-		glm::vec3 v = glm::normalize(Normal);
-		glm::vec3 u = glm::normalize(glm::cross(Up, v));
-		glm::vec3 w = glm::cross(v, u);
-		
-		return X * u + Y * v + Z * w;
+		return OrientTowards(glm::vec3(X, Y, Z), Normal);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,17 +122,7 @@ namespace Helper
 
 		// This sample is oriented towards Local Y axis instead of oriented as per the reflection vector
 		// need to do that before actually using it!
-		glm::vec3 Up;
-		if (fabsf(Reflection.y > 0.9f))
-			Up = glm::vec3(1, 0, 0);
-		else
-			Up = glm::vec3(0, 1, 0);
-
-		glm::vec3 v = glm::normalize(Reflection);
-		glm::vec3 u = glm::normalize(glm::cross(Up, v));
-		glm::vec3 w = glm::cross(v, u);
-
-		return X * u + Y * v + Z * w;
+		return OrientTowards(glm::vec3(X, Y, Z), Reflection);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,17 +146,7 @@ namespace Helper
 
 			// This sample is oriented towards Local Y axis instead of oriented as per the normal vector
 			// need to do that before actually using it!
-			glm::vec3 Up;
-			if (fabsf(Normal.y > 0.9f))
-				Up = glm::vec3(1, 0, 0);
-			else
-				Up = glm::vec3(0, 1, 0);
-
-			glm::vec3 v = glm::normalize(Normal);
-			glm::vec3 u = glm::normalize(glm::cross(Up, v));
-			glm::vec3 w = glm::cross(v, u);
-
-			return X * u + Y * v + Z * w;
+			return OrientTowards(glm::vec3(X, Y, Z), Normal);
 		}
 		else
 		{
@@ -172,17 +160,7 @@ namespace Helper
 
 			// This sample is oriented towards Local Y axis instead of oriented as per the reflection vector
 			// need to do that before actually using it!
-			glm::vec3 Up;
-			if (fabsf(Reflection.y > 0.9f))
-				Up = glm::vec3(1, 0, 0);
-			else
-				Up = glm::vec3(0, 1, 0);
-
-			glm::vec3 v = glm::normalize(Reflection);
-			glm::vec3 u = glm::normalize(glm::cross(Up, v));
-			glm::vec3 w = glm::cross(v, u);
-
-			return X * u + Y * v + Z * w;
+			return OrientTowards(glm::vec3(X, Y, Z), Reflection);
 		}
 	}
 

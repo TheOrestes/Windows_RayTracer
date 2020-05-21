@@ -56,12 +56,6 @@ Application::Application()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::~Application()
 {
-	if (m_pScene)
-	{
-		delete m_pScene;
-		m_pScene = nullptr;
-	}
-
 	if (m_pSampler)
 	{
 		delete m_pSampler;
@@ -76,9 +70,8 @@ void Application::Initialize(bool _threaded)
 
 	_threaded ? m_iMaxThreads = std::thread::hardware_concurrency() : 0;
 
-	m_pScene = new Scene();
 	//m_pScene->InitRefractionScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	m_pScene->InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	Scene::getInstance().InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//m_pScene->InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
@@ -203,7 +196,7 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 	HitRecord rec;
 	glm::vec3 traceColor = glm::vec3(0.0f, 0.0f, 0.0f);
 
-	if (m_pScene->Trace(r, rayCount, 0.001f, FLT_MAX, rec))
+	if (Scene::getInstance().Trace(r, rayCount, 0.001f, FLT_MAX, rec))
 	{
 		Ray scatteredRay;
 
@@ -226,7 +219,7 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 		glm::vec3 unit_direction = glm::normalize(r.direction);
 		//float t = 0.5f * (unit_direction[1] + 1.0f);
 		//traceColor = Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
-		return m_pScene->CalculateMissColor(unit_direction);
+		return Scene::getInstance().CalculateMissColor(unit_direction);
 	}
 
 	// debug info...
@@ -399,9 +392,6 @@ void Application::UpdateGL(GLFWwindow* window)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::Trace(GLFWwindow* window)
 {
-	if (m_pScene == nullptr)
-		return;
-
 #if defined _DEBUG
 
 	int rayCount = 0;

@@ -5,10 +5,6 @@
 #include <string>
 #include "glm/glm.hpp"
 
-#include "assimp/Importer.hpp"
-#include "assimp/postprocess.h"
-#include "assimp/scene.h"
-
 //////////////////////////////////////////////////////////////////////////////////////////
 struct VertexP
 {

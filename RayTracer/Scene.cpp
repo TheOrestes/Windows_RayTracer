@@ -12,56 +12,67 @@
 #include "Triangle.h"
 #include "TriangleMesh.h"
 #include "Camera.h"
+#include "Light.h"
 #include "../Main/Profiler.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Scene::Scene()
 {
 	m_colMiss = glm::vec4(0.5f);
-	vecHitables.clear();
+	m_vecHitables.clear();
+	m_vecLights.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Scene::~Scene()
 {
-	vecHitables.clear();
+	m_vecHitables.clear();
+	m_vecLights.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Scene::InitSphereScene(float screenWidth, float screenHeight)
 {
 	// Initialize Camera first...!!!
-	glm::vec3 cameraPosition = glm::vec3(0.0f, 1.5f, 4.0f);
+	glm::vec3 cameraPosition = glm::vec3(3.0f, 2.5f, 4.0f);
 	glm::vec3 cameraLookAt = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	Camera::getInstance().InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
 
 	// Override miss color to black
-	m_colMiss = glm::vec4(0.78f, 0.88f, 1.0f, 1.0f);
+	m_colMiss = glm::vec4(0.3f);
 
 	// Sphere Ground
 	glm::vec3 center1(0.0f, -200.5f, 0.0f);
-	glm::vec3 matColor(1,0,0);
+	glm::vec3 matColor(1,1,0);
 	Material* pMatSphereGround = new Lambertian(new ConstantTexture(glm::vec3(0.25f, 0.25f, 0.25f)));
 	Sphere* pSphereGround = new Sphere(center1, 200.0f, pMatSphereGround);
 
 	CheckeredTexture* checksTexture = new CheckeredTexture(glm::vec3(0.2f, 0.9f, 0.5f), glm::vec3(0.03f), 10.0f, 10.0f);
-	glm::vec4 glassColor = glm::vec4(1, 1, 1, 1);
+	glm::vec4 glassColor = glm::vec4(100, 100, 100, 1);
 
-	Sphere* pSphereGlass1 = new Sphere(glm::vec3(0.0f, 0.15f, 2.0f), 0.3f, new Transparent(new ConstantTexture(glassColor), 1.5f));
-	Sphere* pSpherePhong = new Sphere(glm::vec3(1.5f, 0.0f, 0.0f), 0.5f, new Phong(new ConstantTexture(matColor), 4096.0, 1.0f));
-	Sphere* pSphereMetal = new Sphere(glm::vec3(-1.5f, 0.0f, 0.0f), 0.5f, new Metal(new ConstantTexture(matColor), 0.0f));
-	Sphere* pSphereLight = new Sphere(glm::vec3(-0.5f, 0.1f, 2.0f), 0.2f, new Emissive(new ConstantTexture(glm::vec3(10.0f, 10.0f, 10.0f))));
-	Sphere* pSphereEarth = new Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.5f, new Phong(new ImageTexture("models/earth.jpg"), 32.0f, 0.0f));
+	Sphere* pSphereGlass1 = new Sphere(glm::vec3(0.0f, 0.15f, 1.0f), 0.3f, new Emissive(new ConstantTexture(glassColor)));
+	Sphere* pSpherePhong = new Sphere(glm::vec3(1.5f, 0.0f, 0.0f), 0.5f, new Phong(new ConstantTexture(matColor), 256.0f, 0.5));
+	Sphere* pSphereMetal = new Sphere(glm::vec3(-1.5f, 0.0f, 0.0f), 0.5f, new Metal(new ConstantTexture(matColor), 0.1f));
+	//Sphere* pSphereLight = new Sphere(glm::vec3(-0.5f, 0.1f, 2.0f), 0.2f, new Emissive(new ConstantTexture(glm::vec3(10.0f, 10.0f, 10.0f))));
+	Sphere* pSphereEarth = new Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.5f, new Phong(new ImageTexture("models/earth.jpg"), 512.0f, 1.0f));
 
 	//Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
-	vecHitables.push_back(pSphereGround);
-	vecHitables.push_back(pSphereGlass1);
-	vecHitables.push_back(pSpherePhong);
-	vecHitables.push_back(pSphereMetal);
-	vecHitables.push_back(pSphereEarth);
-	//vecHitables.push_back(pSphereLight);
+	m_vecHitables.push_back(pSphereGround);
+	m_vecHitables.push_back(pSphereGlass1);
+	m_vecHitables.push_back(pSpherePhong);
+	m_vecHitables.push_back(pSphereMetal);
+	m_vecHitables.push_back(pSphereEarth);
+	//m_vecHitables.push_back(pSphereLight);
+
+	// Scene Lights...
+	//AmbientLight* pAmbientLight = new AmbientLight(glm::vec3(0.5f), 1.0f);
+	//DirectionalLight* pDirLight = new DirectionalLight(glm::vec3(0,1,0), glm::vec3(1.0f), 1.0f);
+	//PointLight* pPointLight = new PointLight(glm::vec3(0, 1, 0), glm::vec3(1, 0, 0), 1.0f);
+	//m_vecLights.push_back(pAmbientLight);
+	//m_vecLights.push_back(pDirLight);
+	//m_vecLights.push_back(pPointLight);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,9 +101,9 @@ void Scene::InitRefractionScene(float screenWidth, float screenHeight)
 	
 	//Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
-	vecHitables.push_back(pSphereGround);
-	vecHitables.push_back(pSphereGlass1);
-	vecHitables.push_back(pSphereMetal);
+	m_vecHitables.push_back(pSphereGround);
+	m_vecHitables.push_back(pSphereGlass1);
+	m_vecHitables.push_back(pSphereMetal);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,14 +172,14 @@ void Scene::InitTigerScene(float screenWidth, float screenHeight)
 
 	//Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
-	//vecHitables.push_back(pSphereGround);
-	//vecHitables.push_back(pSphereGlass1);
-	vecHitables.push_back(pSphereMetal);
-	//vecHitables.push_back(pSphereEarth);
-	//vecHitables.push_back(pSphereLight);
-	vecHitables.push_back(pBase);
-	vecHitables.push_back(pLight);
-	vecHitables.push_back(pGlassTiger);
+	//m_vecHitables.push_back(pSphereGround);
+	//m_vecHitables.push_back(pSphereGlass1);
+	m_vecHitables.push_back(pSphereMetal);
+	//m_vecHitables.push_back(pSphereEarth);
+	//m_vecHitables.push_back(pSphereLight);
+	m_vecHitables.push_back(pBase);
+	m_vecHitables.push_back(pLight);
+	m_vecHitables.push_back(pGlassTiger);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,13 +255,13 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	//glassTigerInfo.matInfo.refrIndex = 1.4f;
 	//TriangleMesh* pGlassTiger = new TriangleMesh(glassTigerInfo);
 
-	vecHitables.push_back(pLight);
-	vecHitables.push_back(pRoom);
-	vecHitables.push_back(pLeftCube);
-	//vecHitables.push_back(pRightCube);
-	vecHitables.push_back(pSphereGlass);
-	vecHitables.push_back(pLightSphere);
-	//vecHitables.push_back(pGlassTiger);
+	m_vecHitables.push_back(pLight);
+	m_vecHitables.push_back(pRoom);
+	m_vecHitables.push_back(pLeftCube);
+	//m_vecHitables.push_back(pRightCube);
+	m_vecHitables.push_back(pSphereGlass);
+	m_vecHitables.push_back(pLightSphere);
+	//m_vecHitables.push_back(pGlassTiger);
 
 	Profiler::getInstance().WriteToProfiler("Triangle Count:", pRoom->GetTriangleCount() + pLight->GetTriangleCount() + pLeftCube->GetTriangleCount());
 }
@@ -285,8 +296,8 @@ void Scene::InitTowerScene(float screenWidth, float screenHeight)
 	towerInfo.matInfo.albedoColor = glm::vec4(1.0f, 0.5f, 0.8f, 1.0f);
 	TriangleMesh* pTower = new TriangleMesh(towerInfo);
 
-	vecHitables.push_back(pSphereGround);
-	vecHitables.push_back(pTower);
+	m_vecHitables.push_back(pSphereGround);
+	m_vecHitables.push_back(pTower);
 
 	Profiler::getInstance().WriteToProfiler("Triangle Count:", pTower->GetTriangleCount());
 }
@@ -301,7 +312,7 @@ void Scene::InitRandomScene(float screenWidth, float screenHeight)
 	Camera::getInstance().InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
 
 	Sphere* pSphere0 = new Sphere(glm::vec3(0, -1000.0f, 0), 1000, new Lambertian(new ConstantTexture (glm::vec3(0.5, 0.5, 0.5))));
-	vecHitables.push_back(pSphere0);
+	m_vecHitables.push_back(pSphere0);
 
 	int i = 1;
 	glm::vec4 glassColor = glm::vec4(1, 1, 0, 1);
@@ -319,19 +330,19 @@ void Scene::InitRandomScene(float screenWidth, float screenHeight)
 				{
 					// diffuse
 					Sphere* temp = new Sphere(center, 0.2f, new Lambertian(new ConstantTexture(glm::vec3(Helper::GetRandom01() * Helper::GetRandom01(), Helper::GetRandom01() * Helper::GetRandom01(), Helper::GetRandom01() * Helper::GetRandom01()))));
-					vecHitables.push_back(temp);
+					m_vecHitables.push_back(temp);
 				}
 				else if (choose_mat < 0.95f)
 				{
 					// Metal
 					Sphere* temp = new Sphere(center, 0.2f, new Metal(new ConstantTexture(glm::vec3(0.5f*(1 + Helper::GetRandom01()), 0.5f*(1 + Helper::GetRandom01()), 0.5f*(1 + Helper::GetRandom01()))), Helper::GetRandom01()));
-					vecHitables.push_back(temp);
+					m_vecHitables.push_back(temp);
 				}
 				else
 				{
 					// glass
 					Sphere* temp = new Sphere(center, 0.2f, new Transparent(new ConstantTexture(glassColor), 1.5f));
-					vecHitables.push_back(temp);
+					m_vecHitables.push_back(temp);
 				}
 			}
 		}
@@ -341,9 +352,9 @@ void Scene::InitRandomScene(float screenWidth, float screenHeight)
 	Sphere* pSphere2 = new Sphere(glm::vec3(-4.f, 1.f, 0.f), 1.0f, new Lambertian(new ConstantTexture(glm::vec3(0.4f, 0.2f, 0.1f))));
 	Sphere* pSphere3 = new Sphere(glm::vec3(4.f, 1.f, 0.f), 1.0f, new Metal(new ConstantTexture(glm::vec3(0.7f, 0.6f, 0.5f)), 0.0f));
 
-	vecHitables.push_back(pSphere1);
-	vecHitables.push_back(pSphere2);
-	vecHitables.push_back(pSphere3);
+	m_vecHitables.push_back(pSphere1);
+	m_vecHitables.push_back(pSphere2);
+	m_vecHitables.push_back(pSphere3);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -361,9 +372,9 @@ bool Scene::Trace(const Ray& r, int& rayCount, float tmin, float tmax, HitRecord
 	HitRecord temp_rec;
 	float closest_so_far = tmax;
 
-	for (int i = 0; i < vecHitables.size(); i++)
+	for (int i = 0; i < m_vecHitables.size(); i++)
 	{
-		if (vecHitables[i]->hit(r, tmin, closest_so_far, temp_rec))
+		if (m_vecHitables[i]->hit(r, tmin, closest_so_far, temp_rec))
 		{
 			hit_anything = true;
 			closest_so_far = temp_rec.t;

@@ -102,6 +102,9 @@
     <ClInclude Include="RayTracer\Specular.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracer\Light.h">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RayTracer\Scene.cpp">
@@ -159,6 +162,9 @@
       <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
     <ClCompile Include="RayTracer\Specular.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\Light.cpp">
       <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
   </ItemGroup>
