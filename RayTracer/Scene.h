@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <map>
 #include "Hitable.h"
 #include "Light.h"
 
@@ -26,14 +26,13 @@ public:
 	void					InitTowerScene(float screenWidth, float screenHeight);
 	void					InitRandomScene(float screenWidth, float screenHeight);
 	
-	glm::vec4				CalculateMissColor(glm::vec3 rayDirection);
+	glm::vec3				CalculateMissColor(glm::vec3 rayDirection);
 
 private:	
 	Scene();
-
-	glm::vec4				m_colMiss;
-	std::vector<Hitable*>	m_vecHitables;
+	glm::vec3				m_colMiss;
 
 public:
+	std::map<Hitable*, HitableType>	m_mapHitables;
 	std::vector<Light*>		m_vecLights;
 };

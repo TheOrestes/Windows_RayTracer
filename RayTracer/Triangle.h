@@ -13,8 +13,11 @@ public:
 	Triangle();
 	Triangle(const VertexPNT& _v0, const VertexPNT& _v1, const VertexPNT& _v2, Transform* _pTransform, Material* ptr_mat);
 
-	virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
-	virtual void BoundingBox(AABB& box) const;
+	virtual bool		hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
+	virtual void		BoundingBox(AABB& box) const;
+
+	virtual float		PDF(const glm::vec3& origin, const glm::vec3& direction) const;
+	virtual glm::vec3	Sample(const glm::vec3& origin) const;
 
 	inline glm::vec3 Centroid() const { return centroid; }
 

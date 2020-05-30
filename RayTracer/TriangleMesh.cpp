@@ -293,3 +293,13 @@ void TriangleMesh::BoundingBox(AABB & box) const
 	box = *m_ptrAABB;
 }
 
+float TriangleMesh::PDF(const glm::vec3& origin, const glm::vec3& direction) const
+{
+	return 1.0f;
+}
+
+glm::vec3 TriangleMesh::Sample(const glm::vec3& origin) const
+{
+	return glm::vec3(1.0f);
+}
+

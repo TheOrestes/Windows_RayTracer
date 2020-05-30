@@ -19,8 +19,11 @@ public:
 	~TriangleMesh();
 	TriangleMesh(const MeshInfo& _meshInfo);
 
-	virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
-	virtual void BoundingBox(AABB& box) const;
+	virtual bool		hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
+	virtual void		BoundingBox(AABB& box) const;
+
+	virtual float		PDF(const glm::vec3& origin, const glm::vec3& direction) const;
+	virtual glm::vec3	Sample(const glm::vec3& origin) const;
 
 	inline uint64_t GetTriangleCount() { return m_iTriangleCount; }
 

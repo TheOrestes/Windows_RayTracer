@@ -28,7 +28,7 @@
 
 #define CPLUSPLUS_THREADING 
 #define ACCUM_BUFFER_RENDERING 
-//#define SAVE_IMAGE
+#define SAVE_IMAGE
 //#define DENOISE_IMAGE
 //#define MARL_SCHEDULING 1
 
@@ -37,7 +37,13 @@ Application::Application()
 {
 	m_iBackbufferWidth = 960;
 	m_iBackbufferHeight = 540;
+
+#if defined _DEBUG
+	m_iNumSamples = 1;
+#else 
 	m_iNumSamples = 100;
+#endif
+
 	m_dTotalRenderTime = 0;
 	m_dDenoiserTime = 0;
 	m_bThreaded = false;
@@ -72,9 +78,9 @@ void Application::Initialize(bool _threaded)
 
 	//m_pScene->InitRefractionScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	Scene::getInstance().InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	//m_pScene->InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	//m_pScene->InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	//m_pScene->InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//Scene::getInstance().InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//Scene::getInstance().InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//Scene::getInstance().InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
 	m_pQuad = new ScreenAlignedQuad();
 	m_pQuad->Init(m_iBackbufferWidth, m_iBackbufferHeight);
@@ -196,30 +202,57 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 	HitRecord rec;
 	glm::vec3 traceColor = glm::vec3(0.0f, 0.0f, 0.0f);
 
+	// if we have exceeded ray bounce limit, no more light is gathered!
+	if (depth >= 5)
+		return traceColor;
+
 	if (Scene::getInstance().Trace(r, rayCount, 0.001f, FLT_MAX, rec))
 	{
 		Ray scatteredRay;
+		float materialPDF;
 
 		glm::vec3 outColor = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::vec3 emitted = rec.mat_ptr->Emitted(r, rec);
 
-		if (depth < 50 && rec.mat_ptr->Scatter(r, rec, rayCount, outColor, scatteredRay))
-		{
-			float pdf = rec.mat_ptr->PDF(r, rec, scatteredRay);
-			traceColor = emitted + ((outColor) *TraceColor(scatteredRay, depth + 1, rayCount)) / pdf;
-		}
-		else
-		{
-			// This is light source, simply return emitted color!
+		// If we hit Emissive material, return Emissive color as it is!
+		if (!rec.mat_ptr->Scatter(r, rec, rayCount, outColor, scatteredRay, materialPDF))
 			return emitted;
+
+		//!---- Light PDF
+		std::map<Hitable*, HitableType>::iterator iter = Scene::getInstance().m_mapHitables.begin();
+		std::map<Hitable*, HitableType>::iterator iterEnd = Scene::getInstance().m_mapHitables.end();
+		
+		float lightPDF = 0.0f;
+		Ray lightSampleRay;
+		
+		for (; iter != iterEnd; ++iter)
+		{
+			if (iter->second == HitableType::LIGHT)
+			{
+				glm::vec3 lightSampleVector = iter->first->Sample(rec.P);
+		
+				////glm::vec3 tar = rec.P + lightSampleVector;
+				lightSampleRay = Ray(rec.P, lightSampleVector);
+				lightPDF = iter->first->PDF(rec.P, lightSampleRay.direction);
+			}
 		}
+
+		Ray finalRay;
+		if (Helper::GetRandom01() < 0.5f)
+			finalRay = scatteredRay;
+		else
+			finalRay = lightSampleRay;
+
+		float finalPDF = 0.5f * materialPDF + 0.5f * lightPDF;
+
+		traceColor = emitted + outColor * TraceColor(finalRay, depth + 1, rayCount) / finalPDF;
 	}
 	else
 	{
 		glm::vec3 unit_direction = glm::normalize(r.direction);
 		//float t = 0.5f * (unit_direction[1] + 1.0f);
 		//traceColor = Helper::LerpVector(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.7f, 1.0f), t);
-		return Scene::getInstance().CalculateMissColor(unit_direction);
+		traceColor = Scene::getInstance().CalculateMissColor(unit_direction);
 	}
 
 	// debug info...

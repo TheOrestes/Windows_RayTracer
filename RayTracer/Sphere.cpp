@@ -54,6 +54,28 @@ void Sphere::BoundingBox(AABB & box) const
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+float Sphere::PDF(const glm::vec3& origin, const glm::vec3& direction) const
+{
+	HitRecord rec;
+
+	if(!this->hit(Ray(origin, direction), 0.001f, FLT_MAX, rec))
+		return 0.0f;
+
+	float cosThetaMax = sqrtf(1.0f - ((radius * radius) / (glm::length2(center - origin))));
+	float solidAngle = 2.0f * PI * (1.0f - cosThetaMax);
+
+	return 1.0f / solidAngle;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+glm::vec3 Sphere::Sample(const glm::vec3& origin) const
+{
+	glm::vec3 dir = center - origin;
+	float distSqrd = glm::length2(dir);
+	return dir / distSqrd;// Helper::SphereLightSampling(dir, radius, distSqrd);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 glm::vec2 Sphere::GetSphereUV(const glm::vec3& p) const
 {
 	float phi = std::atan2(p[2], p[0]);

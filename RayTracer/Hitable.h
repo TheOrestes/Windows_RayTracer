@@ -34,9 +34,18 @@ struct HitRecord
 	uint64_t rayBoxSuccess;
 };
 
+enum HitableType
+{
+	GEOMETRY,
+	LIGHT
+};
+
 class Hitable
 {
 public:
-	virtual bool hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const = 0;
-	virtual void BoundingBox(AABB& box) const = 0;
+	virtual bool		hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const = 0;
+	virtual void		BoundingBox(AABB& box) const = 0;
+
+	virtual float		PDF(const glm::vec3& origin, const glm::vec3& direction) const = 0;
+	virtual glm::vec3	Sample(const glm::vec3& origin) const = 0;
 };

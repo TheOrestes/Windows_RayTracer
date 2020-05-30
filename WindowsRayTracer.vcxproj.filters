@@ -105,6 +105,15 @@
     <ClInclude Include="RayTracer\Light.h">
       <Filter>Source Files\RayTracer</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracer\HitableManager.h">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\XYRect.h">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer\XZRect.h">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RayTracer\Scene.cpp">
@@ -165,6 +174,12 @@
       <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
     <ClCompile Include="RayTracer\Light.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\XYRect.cpp">
+      <Filter>Source Files\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer\XZRect.cpp">
       <Filter>Source Files\RayTracer</Filter>
     </ClCompile>
   </ItemGroup>

@@ -54,20 +54,23 @@ public:
 	BVHTree();
 	~BVHTree();
 
-	virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& rec) const;
-	virtual void BoundingBox(AABB& box) const;
+	virtual bool		hit(const Ray& ray, float tMin, float tMax, HitRecord& rec) const;
+	virtual void		BoundingBox(AABB& box) const;
 
-	bool Hit(BVHNode *node, const Ray &ray, float &tMin, float &tMax, HitRecord &rec) const;
-	void BuildBVHTree(std::vector<Triangle*> *listTris, int _leafSize);
-	void BuildRecursive(int startIndex, int endIndex, BVHNode* node);
+	virtual float		PDF(const glm::vec3& origin, const glm::vec3& direction) const { return 1.0f; };
+	virtual glm::vec3	Sample(const glm::vec3& origin) const { return glm::vec3(1.0f); };
 
-	static bool CompareBB_X(const Triangle * first, const Triangle * second);
-	static bool CompareBB_Y(const Triangle * first, const Triangle * second);
-	static bool CompareBB_Z(const Triangle * first, const Triangle * second);
+	bool				Hit(BVHNode *node, const Ray &ray, float &tMin, float &tMax, HitRecord &rec) const;
+	void				BuildBVHTree(std::vector<Triangle*> *listTris, int _leafSize);
+	void				BuildRecursive(int startIndex, int endIndex, BVHNode* node);
+
+	static bool			CompareBB_X(const Triangle * first, const Triangle * second);
+	static bool			CompareBB_Y(const Triangle * first, const Triangle * second);
+	static bool			CompareBB_Z(const Triangle * first, const Triangle * second);
 
 private:
-	BVHNode*	m_pRootNode;
-	uint64_t	m_uiNumNodes;
-	int			m_iLeafSize;
+	BVHNode*			m_pRootNode;
+	uint64_t			m_uiNumNodes;
+	int					m_iLeafSize;
 	std::vector<Triangle*> *primsVector;
 };

@@ -3,34 +3,36 @@
 #include "Helper.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Phong::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scatterd) const
+bool Phong::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scattered, float& pdf) const
 {
 	glm::vec3 PerfectReflDir = glm::normalize(Helper::Reflect(r_in.direction, rec.N));
 
 	glm::vec3 direction = Helper::ModifiedPhongImportanceSampling(rec.N, PerfectReflDir, Ks, SpecularPower);
-	scatterd = Ray(rec.P, glm::normalize(direction));
+
+	glm::vec3 target = rec.P + direction;
+	Ray brdfSampleRay = Ray(rec.P, target - rec.P);
 
 	++rayCount;
 
-	glm::vec3 brdf = BRDF(r_in, rec, scatterd);
+	glm::vec3 brdf = BRDF(r_in, rec, brdfSampleRay);
 	outColor = brdf * Albedo->value(rec.uv);
 
-	bool flag = (glm::dot(scatterd.direction, rec.N) > 0);
-	return flag;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-float Phong::PDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
-{
+	//!----- PDF
 	// Lambertian PDF
-	float lambertPDF = Kd * INV_PI;
-	
+	float NdotWi = glm::dot(glm::normalize(brdfSampleRay.direction), rec.N);
+	float lambertPDF = Kd * NdotWi * INV_PI;
+
 	// Specular PDF
-	glm::vec3 PerfectReflDir = glm::normalize(Helper::Reflect(r_in.direction, rec.N));
-	float alpha = glm::clamp(glm::dot(scattered.direction, PerfectReflDir), 0.0f, PI_OVER_TWO);
+	float alpha = glm::clamp(glm::dot(brdfSampleRay.direction, PerfectReflDir), 0.0f, PI_OVER_TWO);
 	float specularPDF = Ks * (SpecularPower + 1) / TWO_PI * powf(alpha, SpecularPower);
 
-	return glm::clamp(lambertPDF + specularPDF, 0.0f, 1.0f);
+	pdf = glm::clamp(lambertPDF + specularPDF, 0.0f, 1.0f);
+	//!----- PDF
+
+	bool flag = (glm::dot(brdfSampleRay.direction, rec.N) > 0);
+	scattered = brdfSampleRay;
+
+	return flag;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

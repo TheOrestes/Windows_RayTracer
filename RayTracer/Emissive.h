@@ -10,14 +10,11 @@ class Emissive : public Material
 public:
 	Emissive(Texture* _emission) : Emission(_emission), m_bIsLightSource(true) {}
 
-	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scatterd) const
+	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scatterd, float& pdf) const
 	{
+		scatterd = Ray(rec.P, rec.P);
+		pdf = 1.0f;
 		return false;
-	}
-
-	virtual float PDF(const Ray& r_in, const HitRecord& rec, const Ray& scatterd) const
-	{
-		return 1.0f;
 	}
 
 	virtual glm::vec3 Emitted(const Ray& r_in, const HitRecord& rec) const

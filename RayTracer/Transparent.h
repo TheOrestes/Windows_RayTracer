@@ -11,8 +11,7 @@ class Transparent : public Material
 public:
 	Transparent(Texture* _albedo, float ri) : Albedo(_albedo), refr_index(ri) {}
 	
-	virtual bool		Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scattered) const;
-	virtual float		PDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const;
+	virtual bool		Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scattered, float& pdf) const;
 
 private:
 

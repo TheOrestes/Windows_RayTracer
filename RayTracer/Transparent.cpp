@@ -3,7 +3,7 @@
 #include "Helper.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Transparent::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor , Ray& scattered) const
+bool Transparent::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor , Ray& scattered, float& pdf) const
 {
 	glm::vec3 outward_normal;
 	glm::vec3 ray_direction = r_in.direction;
@@ -60,15 +60,11 @@ bool Transparent::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, 
 		scattered = Ray(rec.P, refracted);
 	}
 
+	pdf = 1.0f;
+
 	++rayCount;
 
 	return true;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-float Transparent::PDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
-{
-	return 1.0f;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

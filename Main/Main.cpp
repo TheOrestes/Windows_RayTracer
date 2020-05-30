@@ -75,6 +75,9 @@ int main()
 	Application* pApp = new Application();
 
 	window = InitGLFW(pApp);
+	if (!window)
+		return 0;
+
 	InitGLEW();
 
 	glfwSetKeyCallback(window, KeyHandler);		

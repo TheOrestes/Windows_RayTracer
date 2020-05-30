@@ -4,14 +4,13 @@
 
 class Material;
 
-class Sphere : public Hitable
+class XYRect : public Hitable
 {
 public:
-	Sphere() {}
-	Sphere(const glm::vec3& _center, float _r, Material* ptr_mat) :
-		center(_center),
-		radius(_r),
-		mat_ptr(ptr_mat) {};
+	XYRect() {};
+	XYRect(const glm::vec3& _center, float _width, float _height, Material* ptr_mat);
+			
+	~XYRect() {};
 
 	virtual bool		hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
 	virtual void		BoundingBox(AABB& box) const;
@@ -19,13 +18,12 @@ public:
 	virtual float		PDF(const glm::vec3& origin, const glm::vec3& direction) const;
 	virtual glm::vec3	Sample(const glm::vec3& origin) const;
 
-	glm::vec2			GetSphereUV(const glm::vec3& p) const;
-
 public:
-	glm::vec3			center;
-	float				radius;
+	glm::vec3 center;
+	float width;
+	float height;
 
 private:
-	Material*			mat_ptr;
+	Material* mat_ptr;
+	float x0, x1, y0, y1, z;
 };
-

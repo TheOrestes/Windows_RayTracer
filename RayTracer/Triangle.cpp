@@ -160,3 +160,13 @@ void Triangle::BoundingBox(AABB &box) const
 							fmaxf(fmaxf(v0.position[2], v1.position[2]), v2.position[2]));
 }
 
+float Triangle::PDF(const glm::vec3& origin, const glm::vec3& direction) const
+{
+	return 1.0f;
+}
+
+glm::vec3 Triangle::Sample(const glm::vec3& origin) const
+{
+	return glm::vec3(1.0f);
+}
+

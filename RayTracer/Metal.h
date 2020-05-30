@@ -16,8 +16,7 @@ public:
 			fuzz = 1;
 	}
 
-	virtual bool		Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scatterd) const;
-	virtual float		PDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const;
+	virtual bool		Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scatterd, float& pdf) const;
 
 private:
 

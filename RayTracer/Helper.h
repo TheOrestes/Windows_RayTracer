@@ -39,6 +39,12 @@ namespace Helper
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	inline float GetRandomRange(float min, float max)
+	{
+		return min + (max - min) * GetRandom01();
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	inline glm::vec3 GetRandomInUnitDisk()
 	{
 		glm::vec3 p;
@@ -69,16 +75,36 @@ namespace Helper
 		// This sample is oriented towards Local Y axis instead of oriented as per the hitpoint normal
 		// need to do that before actually using it!
 		glm::vec3 Up;
-		if (fabsf(towardsVector.y > 0.9f))
-			Up = glm::vec3(1, 0, 0);
+		if (fabsf(towardsVector.y) > 0.9f)
+			Up = glm::vec3(1.0f, 0, 0);
 		else
-			Up = glm::vec3(0, 1, 0);
+			Up = glm::vec3(0, 1.0f, 0);
 
 		glm::vec3 v = glm::normalize(towardsVector);
 		glm::vec3 u = glm::normalize(glm::cross(Up, v));
 		glm::vec3 w = glm::cross(v, u);
 
 		return samples.x * u + samples.y * v + samples.z * w;
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	inline glm::vec3 SphereLightSampling(const glm::vec3& towardsVector, float radius, float distSqrd)
+	{
+		float rand1 = GetRandom01();
+		float rand2 = GetRandom01();
+
+		float phi = TWO_PI * rand2;	// phi = 2PI * esp2
+		float Y = 1.0f + rand1 * sqrtf(1.0f - radius * radius / distSqrd) - 1.0f;
+
+		// Generate random sample
+		float X = cosf(phi) * sqrtf(1.0f - Y * Y);
+		float Z = sinf(phi) * sqrtf(1.0f - Y * Y);
+
+		return glm::vec3(X, Y, Z);
+
+		// This sample is oriented towards Local Y axis instead of oriented as per the hitpoint normal
+		// need to do that before actually using it!
+		return OrientTowards(glm::vec3(X, Y, Z), towardsVector);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
