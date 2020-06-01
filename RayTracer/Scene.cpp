@@ -61,8 +61,8 @@ void Scene::InitSphereScene(float screenWidth, float screenHeight)
 	XZRect* pRect = new XZRect(glm::vec3(0.0f, 2.0f, 0.0f), 2.0f, 2.0f, new Emissive(new ConstantTexture(lightColor)));
 
 	Sphere* pSphereGlass1 = new Sphere(glm::vec3(0.0f, 0.15f, 1.0f), 0.3f, new Emissive(new ConstantTexture(glassColor)));
-	Sphere* pSpherePhong = new Sphere(glm::vec3(1.5f, 0.0f, 0.0f), 0.5f, new Phong(new ConstantTexture(matColor), 512.0f, 1.0f));
-	Sphere* pSphereMetal = new Sphere(glm::vec3(-1.5f, 0.0f, 0.0f), 0.5f, new Phong (new ConstantTexture(blueColor), 512.0, 1.0f));
+	Sphere* pSpherePhong = new Sphere(glm::vec3(1.5f, 0.0f, 0.0f), 0.5f, new Lambertian(new ConstantTexture(matColor)));// , 512.0f, 1.0f));
+	Sphere* pSphereMetal = new Sphere(glm::vec3(-1.5f, 0.0f, 0.0f), 0.5f, new Lambertian(new ConstantTexture(blueColor)));// , 512.0, 1.0f));
 	//Sphere* pSphereLight = new Sphere(glm::vec3(-0.5f, 0.1f, 2.0f), 0.2f, new Emissive(new ConstantTexture(glm::vec3(10.0f, 10.0f, 10.0f))));
 	Sphere* pSphereEarth = new Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.5f, new Lambertian(new ImageTexture("models/earth.jpg")));
 

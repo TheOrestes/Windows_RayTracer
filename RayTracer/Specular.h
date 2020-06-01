@@ -23,10 +23,10 @@ private:
 	glm::vec3			BRDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const;
 
 	// Microfacet models...
-	float				NormalDistributionTerm_GGX() const;
-	float				NormalDistributionTerm_Beckmann() const;
-	float				NormalDistributionTerm_Phong() const;
-	float				GeometricAttenuationTerm() const;
+	void				NormalDistributionTerm_GGX(const Ray& r_in, const HitRecord& rec, const Ray& scattered, float& D, float& pdf) const;
+	void				NormalDistributionTerm_Beckmann(const Ray& r_in, const HitRecord& rec, const Ray& scattered, float& D, float& pdf) const;
+	void				NormalDistributionTerm_Phong(const Ray& r_in, const HitRecord& rec, const Ray& scattered, float& D, float& pdf) const;
+	float				GeometricAttenuationTerm(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const;
 	float				FresnelTerm() const;
 
 	Texture*			Albedo;

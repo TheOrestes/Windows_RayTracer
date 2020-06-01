@@ -245,7 +245,7 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 
 		float finalPDF = 0.5f * materialPDF + 0.5f * lightPDF;
 
-		traceColor = emitted + outColor * TraceColor(finalRay, depth + 1, rayCount) / finalPDF;
+		traceColor = outColor * TraceColor(finalRay, depth + 1, rayCount) / finalPDF;
 	}
 	else
 	{
