@@ -8,7 +8,7 @@
 class FlatColor : public Material
 {
 public:
-	FlatColor(Texture* _albedo) : Albedo(_albedo) {}
+	FlatColor(Texture* _albedo) : Albedo(_albedo), Material(true, MaterialType::EMISSIVE) {}
 
 	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& attenuation, Ray& scatterd) const;
 

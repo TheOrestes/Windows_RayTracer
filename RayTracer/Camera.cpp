@@ -42,8 +42,8 @@ void Camera::InitCamera(const glm::vec3& _position, const glm::vec3& _lookAt, fl
 	// Basic vectors
 	// For OpenGL, order of Cross product changes!
 	w = glm::normalize(position - lookAt);
-	u = glm::normalize(glm::cross(w, Up));
-	v = glm::normalize(glm::cross(u, w));
+	u = glm::normalize(glm::cross(Up, w));
+	v = glm::normalize(glm::cross(w, u));
 
 	switch (projectionType)
 	{

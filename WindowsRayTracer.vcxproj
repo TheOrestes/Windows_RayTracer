@@ -157,6 +157,8 @@
   <ItemGroup>
     <ClInclude Include="header.h" />
     <ClInclude Include="Main\Application.h" />
+    <ClInclude Include="Main\DebugLines.h" />
+    <ClInclude Include="Main\GLLine.h" />
     <ClInclude Include="Main\GLSLShader.h" />
     <ClInclude Include="Main\Profiler.h" />
     <ClInclude Include="Main\ScreenAlignedQuad.h" />
@@ -189,6 +191,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\Application.cpp" />
+    <ClCompile Include="Main\DebugLines.cpp" />
+    <ClCompile Include="Main\GLLine.cpp" />
     <ClCompile Include="Main\GLSLShader.cpp" />
     <ClCompile Include="Main\Main.cpp" />
     <ClCompile Include="Main\Profiler.cpp" />

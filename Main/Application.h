@@ -12,6 +12,7 @@ class Ray;
 class ScreenAlignedQuad;
 class Scene;
 class Sampler;
+class DebugLines;
 
 class Application
 {
@@ -56,9 +57,13 @@ private:
 	ScreenAlignedQuad*		m_pQuad;
 	Sampler*				m_pSampler;
 
+	DebugLines*				m_pDebugLines;
+
 	std::vector<glm::vec3>  m_vecSrcPixels;
 	std::vector<glm::vec3>	m_vecDstPixels;
 
 	oidn::DeviceRef			m_oidnDevice;
 	oidn::FilterRef			m_oidnFilter;
+
+	bool					m_bSinglePixelMode;
 };

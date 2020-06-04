@@ -36,11 +36,7 @@ private:
 public:
 	// Camera vectors
 	glm::vec3		position, lookAt, Up;
-
-private:
-	// basis vectors
-	glm::vec3		u, v, w;
-
+	
 	// screen params
 	float			halfWidth;
 	float			halfHeight;
@@ -49,6 +45,10 @@ private:
 
 	// For Perspective
 	float			viewPlaneDistance;
+
+private:
+	// basis vectors
+	glm::vec3		u, v, w;
 
 	// For Fisheye
 	float			psi_max;

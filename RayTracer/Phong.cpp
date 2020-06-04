@@ -7,7 +7,8 @@ bool Phong::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::v
 {
 	glm::vec3 PerfectReflDir = glm::normalize(Helper::Reflect(r_in.direction, rec.N));
 
-	glm::vec3 direction = Helper::ModifiedPhongImportanceSampling(rec.N, PerfectReflDir, Ks, SpecularPower);
+	//glm::vec3 direction = Helper::ModifiedPhongImportanceSampling(rec.N, PerfectReflDir, Ks, SpecularPower);
+	glm::vec3 direction = Helper::PhongImportanceSampling(rec.N, PerfectReflDir, Ks, SpecularPower);
 
 	glm::vec3 target = rec.P + direction;
 	Ray brdfSampleRay = Ray(rec.P, target - rec.P);

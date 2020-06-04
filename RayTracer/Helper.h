@@ -191,6 +191,45 @@ namespace Helper
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	inline glm::vec3 GGX_ImportanceSampling(glm::vec3 Normal, glm::vec3 Reflection, glm::vec3 Half, float Ks, float Roughness)
+	{
+		float rand1 = GetRandom01();
+		float rand2 = GetRandom01();
+		float rand3 = GetRandom01();
+
+		float phi = rand3 * TWO_PI;
+
+		if (rand1 < 1 - Ks)
+		{
+			// Diffuse
+			float theta = acosf(sqrtf(rand2));
+
+			// Generate random sample
+			float X = sinf(theta) * cosf(phi);
+			float Y = cosf(theta);
+			float Z = sinf(theta) * sinf(phi);
+
+			// This sample is oriented towards Local Y axis instead of oriented as per the normal vector
+			// need to do that before actually using it!
+			return OrientTowards(glm::vec3(X, Y, Z), Normal);
+		}
+		else
+		{
+			// Specular
+			float theta = atanf(Roughness * sqrtf(rand2) / sqrtf(1.0f - rand2));
+
+			// Generate random sample
+			float X = sinf(theta) * cosf(phi);
+			float Y = cosf(theta);
+			float Z = sinf(theta) * sinf(phi);
+
+			glm::vec3 Wm = glm::vec3(X, Y, Z);
+
+			return 2.0f * glm::dot(Reflection, Wm) * Wm - Reflection;
+		}
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	inline glm::vec3 RandomUnitVector()
 	{
 		float z = GetRandom01() * 2.0f - 1.0f;

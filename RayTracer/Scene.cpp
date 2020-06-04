@@ -5,6 +5,7 @@
 #include "FlatColor.h"
 #include "Lambertian.h"
 #include "Phong.h"
+#include "Specular.h"
 #include "Emissive.h"
 #include "Metal.h"
 #include "Transparent.h"
@@ -61,8 +62,8 @@ void Scene::InitSphereScene(float screenWidth, float screenHeight)
 	XZRect* pRect = new XZRect(glm::vec3(0.0f, 2.0f, 0.0f), 2.0f, 2.0f, new Emissive(new ConstantTexture(lightColor)));
 
 	Sphere* pSphereGlass1 = new Sphere(glm::vec3(0.0f, 0.15f, 1.0f), 0.3f, new Emissive(new ConstantTexture(glassColor)));
-	Sphere* pSpherePhong = new Sphere(glm::vec3(1.5f, 0.0f, 0.0f), 0.5f, new Lambertian(new ConstantTexture(matColor)));// , 512.0f, 1.0f));
-	Sphere* pSphereMetal = new Sphere(glm::vec3(-1.5f, 0.0f, 0.0f), 0.5f, new Lambertian(new ConstantTexture(blueColor)));// , 512.0, 1.0f));
+	Sphere* pSpherePhong = new Sphere(glm::vec3(-1.5f, 0.0f, 0.0f), 0.5f, new Lambertian(new ConstantTexture(matColor)));// , 512.0f, 1.0f));
+	Sphere* pSphereMetal = new Sphere(glm::vec3(1.5f, 0.0f, 0.0f), 0.5f, new Metal(new ConstantTexture(greenColor), 0.0f));// , 512.0, 1.0f));
 	//Sphere* pSphereLight = new Sphere(glm::vec3(-0.5f, 0.1f, 2.0f), 0.2f, new Emissive(new ConstantTexture(glm::vec3(10.0f, 10.0f, 10.0f))));
 	Sphere* pSphereEarth = new Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.5f, new Lambertian(new ImageTexture("models/earth.jpg")));
 
@@ -203,8 +204,12 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	// Override miss color to black
 	m_colMiss = glm::vec4(0.2f);
 	
-	glm::vec4 phongColor = glm::vec4(1,0,0,1);
-	Sphere* pPhongSphere = new Sphere(glm::vec3(-1.0f, 0.5f, 0.5f), 0.5f, new Phong(new ConstantTexture(phongColor), 512.0f, 1.0f));
+	glm::vec4 whiteColor = glm::vec4(1,1,1,1);
+	Sphere* pPhongSphere = new Sphere(glm::vec3(1.0f, 0.6f, 0.5f), 0.6f, new Phong(new ConstantTexture(whiteColor), 512.0f, 1.0f));
+	Sphere* pLambertSphere = new Sphere(glm::vec3(-1.0f, 0.6, 0.5f), 0.6f, new Lambertian(new ConstantTexture(whiteColor)));
+
+	//glm::vec4 phongColor = glm::vec4(1, 1, 1, 1);
+	//Sphere* pPhongSphere = new Sphere(glm::vec3(1.0f, 1.0f, 0.5f), 1.0f, new Phong(new ConstantTexture(phongColor), 512.0f, 1.0f));
 
 	glm::vec4 lightColor = glm::vec4(5,5,5,0);
 	Sphere* pLightSphere = new Sphere(glm::vec3(1.0f, 1.0f, 1.5f), 0.5f, new Emissive(new ConstantTexture(lightColor)));// , 512.0f, 0.0f));
@@ -219,30 +224,30 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	TriangleMesh* pRoom = new TriangleMesh(roomInfo);
 
 	// Cube Left Big
-	MeshInfo cubeLeftInfo;
-	cubeLeftInfo.filePath = "models/Cube.fbx";
-	cubeLeftInfo.isLightSource = false;
-	cubeLeftInfo.leafSize = 12;
-	cubeLeftInfo.position = glm::vec3(0.8f, 1.5f, -1.1f);
-	cubeLeftInfo.rotationAxis = glm::vec3(0, 1, 0);
-	cubeLeftInfo.rotationAngle = -20.0f;
-	cubeLeftInfo.scale = glm::vec3(1.6f, 3.0f, 1.6f);
+	MeshInfo cubeBigInfo;
+	cubeBigInfo.filePath = "models/Cube.fbx";
+	cubeBigInfo.isLightSource = false;
+	cubeBigInfo.leafSize = 12;
+	cubeBigInfo.position = glm::vec3(-1.0f, 1.5f, -1.1f);
+	cubeBigInfo.rotationAxis = glm::vec3(0, 1, 0);
+	cubeBigInfo.rotationAngle = 20.0f;
+	cubeBigInfo.scale = glm::vec3(1.6f, 3.0f, 1.6f);
 	//cubeLeftInfo.matInfo.albedoColor = glm::vec4(1,1,1,1);
 	//cubeLeftInfo.matInfo.roughness = 0.5f;
-	TriangleMesh* pLeftCube = new TriangleMesh(cubeLeftInfo);
+	TriangleMesh* pBigCube = new TriangleMesh(cubeBigInfo);
 
 	// Cube Right Small
-	MeshInfo cubeRightInfo;
-	cubeRightInfo.filePath = "models/Cube.fbx";
-	cubeRightInfo.isLightSource = false;
-	cubeRightInfo.leafSize = 12;
-	cubeRightInfo.position = glm::vec3(-0.8f, 0.7f, 1.5f);
-	cubeRightInfo.rotationAxis = glm::vec3(0, 1, 0);
-	cubeRightInfo.rotationAngle = 20.0f;
-	cubeRightInfo.scale = glm::vec3(1.4f, 1.4f, 1.4f);
+	MeshInfo cubeSmallInfo;
+	cubeSmallInfo.filePath = "models/Cube.fbx";
+	cubeSmallInfo.isLightSource = false;
+	cubeSmallInfo.leafSize = 12;
+	cubeSmallInfo.position = glm::vec3(-0.8f, 0.7f, 1.5f);
+	cubeSmallInfo.rotationAxis = glm::vec3(0, 1, 0);
+	cubeSmallInfo.rotationAngle = 20.0f;
+	cubeSmallInfo.scale = glm::vec3(1.4f, 1.4f, 1.4f);
 	//cubeRightInfo.matInfo.albedoColor = glm::vec4(1,1,1,1);
 	//cubeRightInfo.matInfo.roughness = 0.5f;
-	TriangleMesh* pRightCube = new TriangleMesh(cubeRightInfo);
+	TriangleMesh* pSmallCube = new TriangleMesh(cubeSmallInfo);
 
 	// Light Quad
 	MeshInfo lightInfo;
@@ -267,17 +272,18 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	//TriangleMesh* pGlassTiger = new TriangleMesh(glassTigerInfo);
 
 	m_mapHitables.insert(std::make_pair(pRoom, HitableType::GEOMETRY));
-	m_mapHitables.insert(std::make_pair(pLeftCube, HitableType::GEOMETRY));
-	//m_mapHitables.insert(std::make_pair(pRightCube, HitableType::GEOMETRY));
+	//m_mapHitables.insert(std::make_pair(pBigCube, HitableType::GEOMETRY));
+	//m_mapHitables.insert(std::make_pair(pSmallCube, HitableType::GEOMETRY));
 	//m_mapHitables.insert(std::make_pair(pLightSphere, HitableType::GEOMETRY));
 	m_mapHitables.insert(std::make_pair(pPhongSphere, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pLambertSphere, HitableType::GEOMETRY));
 	m_mapHitables.insert(std::make_pair(pRect, HitableType::LIGHT));
 	//m_mapHitables.insert(std::make_pair(pLight, HitableType::LIGHT));
 	//m_mapHitables.push_back(pSphereGlass);
 	//m_mapHitables.push_back(pLightSphere);
 	//m_mapHitables.push_back(pGlassTiger);
 
-	Profiler::getInstance().WriteToProfiler("Triangle Count:", pRoom->GetTriangleCount() + pLight->GetTriangleCount() + pLeftCube->GetTriangleCount());
+	Profiler::getInstance().WriteToProfiler("Triangle Count:", pRoom->GetTriangleCount() + pLight->GetTriangleCount() + pBigCube->GetTriangleCount());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

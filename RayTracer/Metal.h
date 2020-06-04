@@ -8,7 +8,7 @@
 class Metal : public Material
 {
 public:
-	Metal (Texture* _albedo, float f) : Albedo(_albedo), m_bIsLightSource(false)
+	Metal(Texture* _albedo, float f) : Albedo(_albedo), Material(false, MaterialType::METAL)
 	{
 		if (f < 1)
 			fuzz = f;
@@ -24,7 +24,4 @@ private:
 
 	Texture*			Albedo;
 	float				fuzz;
-
-public:
-	bool				m_bIsLightSource;
 };

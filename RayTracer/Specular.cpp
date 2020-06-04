@@ -9,59 +9,6 @@ bool Specular::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm
 {
 	glm::vec3 PerfectReflDir = glm::normalize(Helper::Reflect(r_in.direction, rec.N));
 
-	glm::vec3 direction = Helper::ModifiedPhongImportanceSampling(rec.N, PerfectReflDir, Ks, SpecularPower);
-	scattered = Ray(rec.P, glm::normalize(direction));
-
-	++rayCount;
-
-	glm::vec3 brdf = BRDF(r_in, rec, scattered);
-	outColor = brdf * Albedo->value(rec.uv);
-
-	//!---- PDF
-	// Lambertian PDF
-	float NdotWi = glm::clamp(glm::dot(r_in.direction, rec.N), 0.0f, 1.0f);
-	float lambertPDF = Kd * INV_PI;
-
-	// Specular PDF
-	float alpha = glm::clamp(glm::dot(scattered.direction, PerfectReflDir), 0.0f, PI_OVER_TWO);
-	float specularPDF = Ks * (SpecularPower + 1) / TWO_PI * powf(alpha, SpecularPower);
-
-	pdf = glm::clamp(lambertPDF + specularPDF, 0.0f, 1.0f);
-	//!---- PDF
-
-	bool flag = (glm::dot(scattered.direction, rec.N) > 0);
-	return flag;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-glm::vec3 Specular::BRDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
-{
-	// Diffuse BRDF
-	float diffuseBRDF = Kd * INV_PI; 
-
-	// Specular BRDF
-	glm::vec3 PerfectReflDir = glm::normalize(Helper::Reflect(r_in.direction, rec.N));
-	float alpha = glm::dot(scattered.direction, PerfectReflDir);
-
-	float D; float pdf;
-	NormalDistributionTerm_GGX(r_in, rec, scattered, D, pdf);
-
-	float F = FresnelTerm();
-	float G = GeometricAttenuationTerm();
-
-	float Nr = F * D * G;
-	float Dr = 4.0f * (glm::dot(r_in.direction, rec.N)) * (glm::dot(scattered.direction, rec.N));
-
-	float specBRDF = Nr / Dr;
-
-	return glm::vec3(diffuseBRDF + specBRDF);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Specular::NormalDistributionTerm_GGX(const Ray& r_in, const HitRecord& rec, const Ray& scattered, float& D, float& pdf) const
-{
-	float alphaSqr = Roughness * Roughness;
-
 	//!---- Light Sample Direction Vector
 	std::map<Hitable*, HitableType>::iterator iter = Scene::getInstance().m_mapHitables.begin();
 	std::map<Hitable*, HitableType>::iterator iterEnd = Scene::getInstance().m_mapHitables.end();
@@ -76,6 +23,63 @@ void Specular::NormalDistributionTerm_GGX(const Ray& r_in, const HitRecord& rec,
 	}
 
 	glm::vec3 Half = glm::normalize(lightSampleVector + r_in.direction);
+
+	// PDF
+	float D;
+	NormalDistributionTerm_GGX(r_in, rec, lightSampleVector, D, pdf);
+
+	glm::vec3 direction = Helper::GGX_ImportanceSampling(rec.N, PerfectReflDir, Half, Ks, Roughness);
+	scattered = Ray(rec.P, glm::normalize(direction));
+
+	++rayCount;
+
+	glm::vec3 brdf = BRDF(r_in, rec, scattered);
+	outColor = brdf * Albedo->value(rec.uv);
+	
+
+	bool flag = (glm::dot(scattered.direction, rec.N) > 0);
+	return flag;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+glm::vec3 Specular::BRDF(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
+{
+	// Diffuse BRDF
+	float diffuseBRDF = Kd * INV_PI; 
+
+	// Specular BRDF
+	//!---- Light Sample Direction Vector
+	std::map<Hitable*, HitableType>::iterator iter = Scene::getInstance().m_mapHitables.begin();
+	std::map<Hitable*, HitableType>::iterator iterEnd = Scene::getInstance().m_mapHitables.end();
+
+	glm::vec3 lightSampleVector;
+	for (; iter != iterEnd; ++iter)
+	{
+		if (iter->second == HitableType::LIGHT)
+		{
+			lightSampleVector = iter->first->Sample(rec.P);
+		}
+	}
+
+	float D; float pdf;
+	NormalDistributionTerm_GGX(r_in, rec, lightSampleVector, D, pdf);
+	float G = GeometricAttenuationTerm(r_in, rec, lightSampleVector);
+	float F = FresnelTerm(rec, lightSampleVector);
+	
+	float Nr = F * D *G;
+	float Dr = 4.0f * (glm::dot(r_in.direction, rec.N)) * (glm::dot(lightSampleVector, rec.N));
+
+	float specBRDF = Nr / Dr;
+
+	return glm::vec3(diffuseBRDF + specBRDF);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Specular::NormalDistributionTerm_GGX(const Ray& r_in, const HitRecord& rec, const glm::vec3& lightDir, float& D, float& pdf) const
+{
+	float alphaSqr = Roughness * Roughness;
+
+	glm::vec3 Half = glm::normalize(lightDir + r_in.direction);
 	float NdotH = glm::dot(rec.N, Half);
 	float cosNdotH = std::cosf(NdotH);
 	float tanNdotH = std::tanf(NdotH);
@@ -85,8 +89,8 @@ void Specular::NormalDistributionTerm_GGX(const Ray& r_in, const HitRecord& rec,
 	D = (Nr / Dr);
 
 	// Calculate PDF
-	float NdotWi = glm::dot(rec.N, lightSampleVector);
-	float HdotWi = glm::dot(Half, lightSampleVector);
+	float NdotWi = glm::dot(rec.N, lightDir);
+	float HdotWi = glm::dot(Half, lightDir);
 
 	pdf = (Kd * INV_PI * NdotWi) + (Ks * D * NdotH / 4.0f * HdotWi);
 }
@@ -104,23 +108,10 @@ void Specular::NormalDistributionTerm_Phong(const Ray& r_in, const HitRecord& re
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-float Specular::GeometricAttenuationTerm(const Ray& r_in, const HitRecord& rec, const Ray& scattered) const
+float Specular::GeometricAttenuationTerm(const Ray& r_in, const HitRecord& rec, const glm::vec3& lightDir) const
 {
-	//!---- Light Sample Direction Vector
-	std::map<Hitable*, HitableType>::iterator iter = Scene::getInstance().m_mapHitables.begin();
-	std::map<Hitable*, HitableType>::iterator iterEnd = Scene::getInstance().m_mapHitables.end();
-
-	glm::vec3 lightSampleVector;
-	for (; iter != iterEnd; ++iter)
-	{
-		if (iter->second == HitableType::LIGHT)
-		{
-			lightSampleVector = iter->first->Sample(rec.P);
-		}
-	}
-
 	float NdotV = glm::dot(rec.N, r_in.direction);
-	float NdotL = glm::dot(rec.N, lightSampleVector);
+	float NdotL = glm::dot(rec.N, lightDir);
 
 	float alpha = Roughness + 1.0f;
 	float k = (alpha * alpha) / 8.0f;
@@ -132,8 +123,10 @@ float Specular::GeometricAttenuationTerm(const Ray& r_in, const HitRecord& rec, 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-float Specular::FresnelTerm() const
+float Specular::FresnelTerm(const HitRecord& rec, const glm::vec3& lightDir) const
 {
 	float F0 = 0.03f;
-	return 
+	float NdotL = glm::dot(rec.N, lightDir);
+
+	return F0 + (1.0f - F0) * powf(1.0f - NdotL, 5.0f);
 }

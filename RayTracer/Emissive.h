@@ -8,7 +8,7 @@
 class Emissive : public Material
 {
 public:
-	Emissive(Texture* _emission) : Emission(_emission), m_bIsLightSource(true) {}
+	Emissive(Texture* _emission) : Emission(_emission), Material(true, MaterialType::EMISSIVE){}
 
 	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scatterd, float& pdf) const
 	{
@@ -26,8 +26,5 @@ public:
 	}
 
 private:
-	Texture*	Emission;
-
-public:
-	bool		m_bIsLightSource;
+	Texture*		Emission;
 };

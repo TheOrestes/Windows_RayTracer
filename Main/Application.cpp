@@ -16,6 +16,7 @@
 #include "../RayTracer/Sampler.h"
 #include "Profiler.h"
 #include "ScreenAlignedQuad.h"
+#include "DebugLines.h"
 #include "Application.h"
 
 #include "marl/defer.h"
@@ -39,9 +40,9 @@ Application::Application()
 	m_iBackbufferHeight = 540;
 
 #if defined _DEBUG
-	m_iNumSamples = 1;
+	m_iNumSamples = 16;
 #else 
-	m_iNumSamples = 100;
+	m_iNumSamples = 64;
 #endif
 
 	m_dTotalRenderTime = 0;
@@ -57,6 +58,9 @@ Application::Application()
 
 	m_pQuad = nullptr;
 	m_pSampler = nullptr;
+	m_pDebugLines = nullptr;
+
+	m_bSinglePixelMode = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,8 +81,8 @@ void Application::Initialize(bool _threaded)
 	_threaded ? m_iMaxThreads = std::thread::hardware_concurrency() : 0;
 
 	//m_pScene->InitRefractionScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	Scene::getInstance().InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	//Scene::getInstance().InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//Scene::getInstance().InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	Scene::getInstance().InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//Scene::getInstance().InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//Scene::getInstance().InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
@@ -95,6 +99,8 @@ void Application::Initialize(bool _threaded)
 		m_vecSrcPixels.push_back(col);
 		m_vecDstPixels.push_back(col);
 	}
+
+	m_pDebugLines = new DebugLines();
 
 	// Create Open Image Denoise Device
 	m_oidnDevice = oidn::newDevice();
@@ -218,34 +224,52 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 		if (!rec.mat_ptr->Scatter(r, rec, rayCount, outColor, scatteredRay, materialPDF))
 			return emitted;
 
-		//!---- Light PDF
-		std::map<Hitable*, HitableType>::iterator iter = Scene::getInstance().m_mapHitables.begin();
-		std::map<Hitable*, HitableType>::iterator iterEnd = Scene::getInstance().m_mapHitables.end();
-		
-		float lightPDF = 0.0f;
-		Ray lightSampleRay;
-		
-		for (; iter != iterEnd; ++iter)
+		if (m_bSinglePixelMode)
 		{
-			if (iter->second == HitableType::LIGHT)
-			{
-				glm::vec3 lightSampleVector = iter->first->Sample(rec.P);
-		
-				////glm::vec3 tar = rec.P + lightSampleVector;
-				lightSampleRay = Ray(rec.P, lightSampleVector);
-				lightPDF = iter->first->PDF(rec.P, lightSampleRay.direction);
-			}
+			if(depth == 1)
+				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0, 0.2f, 0.2f, 1));
+			else if(depth == 2)
+				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0, 0.4f, 0.4f, 1));
+			else if(depth == 3)
+				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0, 0.6f, 0.6f, 1));
+			else if(depth == 4)			  
+				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0, 0.8f, 0.8f, 1));
+			else if(depth > 4)
+				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0, 1, 1, 1));
 		}
+			
 
-		Ray finalRay;
-		if (Helper::GetRandom01() < 0.5f)
-			finalRay = scatteredRay;
-		else
-			finalRay = lightSampleRay;
+		//! Light PDF
+		//std::map<Hitable*, HitableType>::iterator iter = Scene::getInstance().m_mapHitables.begin();
+		//std::map<Hitable*, HitableType>::iterator iterEnd = Scene::getInstance().m_mapHitables.end();
+		//
+		//float lightPDF = 0.0f;
+		//Ray lightSampleRay;
+		//
+		//for (; iter != iterEnd; ++iter)
+		//{
+		//	if (iter->second == HitableType::LIGHT)
+		//	{
+		//		glm::vec3 lightSampleVector = iter->first->Sample(rec.P);
+		//
+		//		////glm::vec3 tar = rec.P + lightSampleVector;
+		//		lightSampleRay = Ray(rec.P, lightSampleVector);
+		//		lightPDF = iter->first->PDF(rec.P, lightSampleRay.direction);
+		//	}
+		//}
+		//
+		//Ray finalRay;
+		//if (Helper::GetRandom01() < 0.5f)
+		//	finalRay = scatteredRay;
+		//else
+		//	finalRay = lightSampleRay;
+		//
+		//float finalPDF = 0.5f * materialPDF + 0.5f * lightPDF;
 
-		float finalPDF = 0.5f * materialPDF + 0.5f * lightPDF;
+		//if(rec.mat_ptr->m_eType == MaterialType::METAL && (Helper::GetRandom01() < 0.8f && Helper::GetRandom01() > 0.9f))
+		//	m_pDebugLines->AddToLines(scatteredRay.origin, scatteredRay.origin + scatteredRay.direction, glm::vec4(0.2f, 0.2f, 0.2f, 1));
 
-		traceColor = outColor * TraceColor(finalRay, depth + 1, rayCount) / finalPDF;
+		traceColor = outColor * TraceColor(scatteredRay, depth + 1, rayCount) / materialPDF;
 	}
 	else
 	{
@@ -378,17 +402,19 @@ void Application::ParallelTrace(std::mutex * threadMutex, int i, GLFWwindow* win
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::RenderPixel(int rowIndex, int columnIndex)
 {
+	m_bSinglePixelMode = true;
+
 	glm::vec3 color(0, 0, 0);
 	int rayCount = 0;
 
 	std::vector<glm::vec2> samples = m_pSampler->GetSamples();
 
-	for (int s = 0; s < m_iNumSamples; s++)
+	for (int s = 0; s < 1; s++)
 	{
-		float u = float(columnIndex + samples[s].x);
-		float v = float(rowIndex + samples[s].y);
+		float u = float(rowIndex); //+samples[s].x);
+		float v = float(m_iBackbufferHeight - columnIndex);// +samples[s].y);
 
-		Ray r = Camera::getInstance().get_ray(u, v);
+		Ray r = Camera::getInstance().get_ray(u,v);
 
 		color = color + TraceColor(r, 0, rayCount);
 	}
@@ -396,11 +422,14 @@ void Application::RenderPixel(int rowIndex, int columnIndex)
 	//color = color / float(m_iNumSamples);
 	color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
-	int index = columnIndex + m_iBackbufferWidth * rowIndex;
+	int index = columnIndex * m_iBackbufferHeight + rowIndex;
 	if (index < m_iBackbufferWidth * m_iBackbufferHeight)
 	{
-		m_vecSrcPixels[index] = color;
+		m_vecSrcPixels[index] = glm::vec3(1,0,0);
 	}
+
+	m_pDebugLines->InitializeLines();
+	m_bSinglePixelMode = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -417,6 +446,8 @@ void Application::UpdateGL(GLFWwindow* window)
 	
 		m_pQuad->UpdateTexture(0, 0, m_iBackbufferWidth, m_iBackbufferHeight, glm::value_ptr(m_vecDstPixels[0]));
 		m_pQuad->Render();
+
+		m_pDebugLines->RenderLines();
 	
 		glfwSwapBuffers(window);
 	}
@@ -460,6 +491,7 @@ void Application::Trace(GLFWwindow* window)
 		rowColor.clear();
 	}
 	
+	m_pDebugLines->InitializeLines();
 
 	m_iRayCount += rayCount;
 
