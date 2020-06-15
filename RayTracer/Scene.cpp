@@ -89,31 +89,41 @@ void Scene::InitSphereScene(float screenWidth, float screenHeight)
 void Scene::InitRefractionScene(float screenWidth, float screenHeight)
 {
 	// Initialize Camera first...!!!
-	glm::vec3 cameraPosition = glm::vec3(0.0f, 3.5f, 7.0f);
-	glm::vec3 cameraLookAt = glm::vec3(0.0f, 0.0f, 0.0f);
-	
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 1.5f, 3.5f);
+	glm::vec3 cameraLookAt = glm::vec3(0.0f, 0.5f, 0.0f);
+
 	Camera::getInstance().InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
 
 	// Override miss color to black
-	m_colMiss = glm::vec4(0.78f, 0.88f, 1.0f, 1.0f);
+	m_colMiss = glm::vec4(0.1f);
 
 	// Sphere Ground
-	glm::vec3 center1(0.0f, -200.5f, 0.0f);
-	glm::vec3 albedo1(0.2f, 0.2f, 0.2f);
-	Material* pMatSphereGround = new Lambertian(new ConstantTexture(glm::vec3(0.25f, 0.25f, 0.25f)));
-	Sphere* pSphereGround = new Sphere(center1, 200.0f, pMatSphereGround);
+	glm::vec4 groundColor(0.25f, 0.25f, 0.25f, 1.0f);
+	Sphere* pSphereGround = new Sphere(glm::vec3(0.0f, -200.5f, 0.0f), 200.0f, new Lambertian(new ConstantTexture(groundColor)));
 
-	CheckeredTexture* checksTexture = new CheckeredTexture(glm::vec3(0.2f, 0.9f, 0.5f), glm::vec3(0.03f), 10.0f, 10.0f);
-	glm::vec4 glassColor = glm::vec4(0.5, 1, 0.25, 1);
+	// Area light mesh
+	glm::vec4 lightColor = glm::vec4(5, 5, 5, 0);
+	XZRect* pRect = new XZRect(glm::vec3(0.0f, 2.0f, 0.0f), 2.0f, 2.0f, new Emissive(new ConstantTexture(lightColor)));
 
-	Sphere* pSphereGlass1 = new Sphere(glm::vec3(0.0f, 0.75f, 0.0f), 1.5f, new Transparent(new ConstantTexture(glassColor), 1.5f));
-	Sphere* pSphereMetal = new Sphere(glm::vec3(0.75f, 0.5f, -5.0f), 1.0f, new Metal(checksTexture, 0.1f));
+	// Spheres
+	glm::vec4 phongColorSmall = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	
-	//Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
+	Sphere* pPhongSphereSmall1 = new Sphere(glm::vec3(-2.0f, 0.0f, -2.0f), 0.3f, new Transparent(new ConstantTexture(phongColorSmall), 1.0f));
+	Sphere* pPhongSphereSmall2 = new Sphere(glm::vec3(-1.2f, 0.0f, -2.0f), 0.3f, new Transparent(new ConstantTexture(phongColorSmall), 1.1f));
+	Sphere* pPhongSphereSmall3 = new Sphere(glm::vec3(-0.4f, 0.0f, -2.0f), 0.3f, new Transparent(new ConstantTexture(phongColorSmall), 1.2f));
+	Sphere* pPhongSphereSmall4 = new Sphere(glm::vec3(0.4f,  0.0f, -2.0f), 0.3f,  new Transparent(new ConstantTexture(phongColorSmall), 1.3f));
+	Sphere* pPhongSphereSmall5 = new Sphere(glm::vec3(1.2f,  0.0f, -2.0f), 0.3f,  new Transparent(new ConstantTexture(phongColorSmall), 1.4f));
+	Sphere* pPhongSphereSmall6 = new Sphere(glm::vec3(2.0f,  0.0f, -2.0f), 0.3f,  new Transparent(new ConstantTexture(phongColorSmall), 1.5f));
 
 	m_mapHitables.insert(std::make_pair(pSphereGround, HitableType::GEOMETRY));
-	m_mapHitables.insert(std::make_pair(pSphereGlass1, HitableType::GEOMETRY));
-	m_mapHitables.insert(std::make_pair(pSphereMetal, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereSmall1, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereSmall2, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereSmall3, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereSmall4, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereSmall5, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereSmall6, HitableType::GEOMETRY));
+
+	m_mapHitables.insert(std::make_pair(pRect, HitableType::LIGHT));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -202,16 +212,16 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	Camera::getInstance().InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
 
 	// Override miss color to black
-	m_colMiss = glm::vec4(0.2f);
+	m_colMiss = glm::vec4(0.1f);
 	
-	glm::vec4 whiteColor = glm::vec4(1,1,1,1);
-	Sphere* pPhongSphere = new Sphere(glm::vec3(1.0f, 0.6f, 0.5f), 0.6f, new Phong(new ConstantTexture(whiteColor), 512.0f, 1.0f));
-	Sphere* pLambertSphere = new Sphere(glm::vec3(-1.0f, 0.6, 0.5f), 0.6f, new Lambertian(new ConstantTexture(whiteColor)));
+	glm::vec4 phongColor = glm::vec4(0.75f, 0.45f, 0.1f, 1.0f);
+	Sphere* pPhongSphere = new Sphere(glm::vec3(1.0f, 0.6f, 0.5f), 0.6f, new Phong(new ConstantTexture(phongColor), 1024.0f, 0.5f));
+	Sphere* pLambertSphere = new Sphere(glm::vec3(-1.0f, 0.6, 0.5f), 0.6f, new Lambertian(new ConstantTexture(phongColor)));
 
 	//glm::vec4 phongColor = glm::vec4(1, 1, 1, 1);
 	//Sphere* pPhongSphere = new Sphere(glm::vec3(1.0f, 1.0f, 0.5f), 1.0f, new Phong(new ConstantTexture(phongColor), 512.0f, 1.0f));
 
-	glm::vec4 lightColor = glm::vec4(5,5,5,0);
+	glm::vec4 lightColor = glm::vec4(10,10,10,0);
 	Sphere* pLightSphere = new Sphere(glm::vec3(1.0f, 1.0f, 1.5f), 0.5f, new Emissive(new ConstantTexture(lightColor)));// , 512.0f, 0.0f));
 
 	XZRect* pRect = new XZRect(glm::vec3(0.0f, 4.99f, 0.0f), 3.0f, 3.0f, new Emissive(new ConstantTexture(lightColor)));
@@ -263,7 +273,7 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	//MeshInfo glassTigerInfo;
 	//glassTigerInfo.filePath = "models/tigerTransparent.fbx";
 	//glassTigerInfo.leafSize = 512;
-	//glassTigerInfo.position = glm::vec3(-2.0f, 0.0f, 1.0f);
+	//glassTigerInfo.position = glm::vec3(0.0f, 0.0f, 1.0f);
 	//glassTigerInfo.rotationAxis = glm::vec3(0, 1, 0);
 	//glassTigerInfo.rotationAngle = -45.0f;
 	//glassTigerInfo.scale = glm::vec3(0.5f);
@@ -281,9 +291,63 @@ void Scene::InitCornellScene(float screenWidth, float screenHeight)
 	//m_mapHitables.insert(std::make_pair(pLight, HitableType::LIGHT));
 	//m_mapHitables.push_back(pSphereGlass);
 	//m_mapHitables.push_back(pLightSphere);
-	//m_mapHitables.push_back(pGlassTiger);
+	//m_mapHitables.insert(std::make_pair(pGlassTiger, HitableType::GEOMETRY));
 
 	Profiler::getInstance().WriteToProfiler("Triangle Count:", pRoom->GetTriangleCount() + pLight->GetTriangleCount() + pBigCube->GetTriangleCount());
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Scene::InitMaterialTestScene(float screenWidth, float screenHeight)
+{
+	// Initialize Camera first...!!!
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 2.5f, 8.5f);
+	glm::vec3 cameraLookAt = glm::vec3(0.0f, 2.5f, 0.0f);
+
+	Camera::getInstance().InitCamera(cameraPosition, cameraLookAt, screenWidth, screenHeight);
+
+	// Override miss color to black
+	m_colMiss = glm::vec4(0.1f);
+
+	// Room Mesh
+	MeshInfo roomInfo;
+	roomInfo.filePath = "models/Cornell.fbx";
+	roomInfo.isLightSource = false;
+	roomInfo.leafSize = 10;
+	TriangleMesh* pRoom = new TriangleMesh(roomInfo);
+
+	// Area light mesh
+	glm::vec4 lightColor = glm::vec4(5, 5, 5, 0);
+	XZRect* pRect = new XZRect(glm::vec3(0.0f, 4.99f, 0.0f), 3.0f, 3.0f, new Emissive(new ConstantTexture(lightColor)));
+
+	// Spheres
+	glm::vec4 phongColorSmall = glm::vec4(1.0f, 0.34f, 0.13f, 1.0f);
+	glm::vec4 phongColorBig = glm::vec4(0.67f, 0.28f, 0.74f, 1.0f);
+
+	Sphere* pPhongSphereSmall1 = new Sphere(glm::vec3(-2.0f, 2.5f, -2.0f), 0.3f, new Phong(new ConstantTexture(phongColorSmall), 1024.0f, 1.0f));
+	Sphere* pPhongSphereSmall2 = new Sphere(glm::vec3(-1.2f, 2.5f, -2.0f), 0.3f, new Phong(new ConstantTexture(phongColorSmall), 1024.0f, 0.8f));
+	Sphere* pPhongSphereSmall3 = new Sphere(glm::vec3(-0.4f, 2.5f, -2.0f), 0.3f, new Phong(new ConstantTexture(phongColorSmall), 1024.0f, 0.6f));
+	Sphere* pPhongSphereSmall4 = new Sphere(glm::vec3(0.4f,  2.5f, -2.0f), 0.3f, new Phong(new ConstantTexture(phongColorSmall), 1024.0f, 0.4f));
+	Sphere* pPhongSphereSmall5 = new Sphere(glm::vec3(1.2f,  2.5f, -2.0f), 0.3f, new Phong(new ConstantTexture(phongColorSmall), 1024.0f, 0.2f));
+	Sphere* pPhongSphereSmall6 = new Sphere(glm::vec3(2.0f,  2.5f, -2.0f), 0.3f, new Phong(new ConstantTexture(phongColorSmall), 1024.0f, 0.0f));
+
+	Sphere* pPhongSphereBig1 = new Sphere(glm::vec3(-1.5f, 0.4f, 1.0f), 0.4f, new Phong(new ConstantTexture(phongColorBig), 1024.0f, 0.95f));
+	Sphere* pPhongSphereBig2 = new Sphere(glm::vec3(0.0f,  0.4f, 1.0f), 0.4f, new Phong(new ConstantTexture(phongColorBig), 512.0f, 0.95f));
+	Sphere* pPhongSphereBig3 = new Sphere(glm::vec3(1.5f,  0.4f, 1.0f), 0.4f, new Phong(new ConstantTexture(phongColorBig), 16.0f, 0.95f));
+	
+	m_mapHitables.insert(std::make_pair(pRoom, HitableType::GEOMETRY));
+
+	m_mapHitables.insert(std::make_pair(pPhongSphereSmall1, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereSmall2, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereSmall3, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereSmall4, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereSmall5, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereSmall6, HitableType::GEOMETRY));
+
+	m_mapHitables.insert(std::make_pair(pPhongSphereBig1, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereBig2, HitableType::GEOMETRY));
+	m_mapHitables.insert(std::make_pair(pPhongSphereBig3, HitableType::GEOMETRY));
+	
+	m_mapHitables.insert(std::make_pair(pRect, HitableType::LIGHT));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

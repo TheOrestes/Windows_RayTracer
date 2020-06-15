@@ -8,7 +8,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool Lambertian::Scatter(const Ray& r_in, const HitRecord& rec, int& rayCount, glm::vec3& outColor, Ray& scatterd, float& pdf) const
 {
-	glm::vec3 direction = Helper::CosineSamplingUpperHemisphere(glm::normalize(rec.N));
+	glm::vec3 direction = Helper::CosineWeightedHemisphereSampling(glm::normalize(rec.N));
 
 	glm::vec3 target = rec.P + direction;
 	Ray brdfSampleRay = Ray(rec.P, target - rec.P);

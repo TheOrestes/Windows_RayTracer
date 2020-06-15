@@ -36,13 +36,13 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 960;
-	m_iBackbufferHeight = 540;
+	m_iBackbufferWidth = 512;
+	m_iBackbufferHeight = 512;
 
 #if defined _DEBUG
-	m_iNumSamples = 16;
+	m_iNumSamples = 1;
 #else 
-	m_iNumSamples = 64;
+	m_iNumSamples = 512;
 #endif
 
 	m_dTotalRenderTime = 0;
@@ -80,9 +80,10 @@ void Application::Initialize(bool _threaded)
 
 	_threaded ? m_iMaxThreads = std::thread::hardware_concurrency() : 0;
 
-	//m_pScene->InitRefractionScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	Scene::getInstance().InitRefractionScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//Scene::getInstance().InitSphereScene(m_iBackbufferWidth, m_iBackbufferHeight);
-	Scene::getInstance().InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//Scene::getInstance().InitCornellScene(m_iBackbufferWidth, m_iBackbufferHeight);
+	//Scene::getInstance().InitMaterialTestScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//Scene::getInstance().InitTigerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 	//Scene::getInstance().InitTowerScene(m_iBackbufferWidth, m_iBackbufferHeight);
 
@@ -227,15 +228,15 @@ glm::vec3 Application::TraceColor(const Ray & r, int depth, int& rayCount)
 		if (m_bSinglePixelMode)
 		{
 			if(depth == 1)
-				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0, 0.2f, 0.2f, 1));
+				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(1, 0.85f, 0, 1));
 			else if(depth == 2)
-				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0, 0.4f, 0.4f, 1));
+				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0.5f, 1, 0, 1));
 			else if(depth == 3)
-				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0, 0.6f, 0.6f, 1));
+				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(1, 0.27f, 0, 1));
 			else if(depth == 4)			  
-				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0, 0.8f, 0.8f, 1));
+				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0.11f, 0.56f, 1.0f, 1));
 			else if(depth > 4)
-				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0, 1, 1, 1));
+				m_pDebugLines->AddToLines(r.origin, rec.P, glm::vec4(0.73f, 0.33f, 0.83f, 1));
 		}
 			
 
@@ -420,13 +421,13 @@ void Application::RenderPixel(int rowIndex, int columnIndex)
 	}
 
 	//color = color / float(m_iNumSamples);
-	color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
-
-	int index = columnIndex * m_iBackbufferHeight + rowIndex;
-	if (index < m_iBackbufferWidth * m_iBackbufferHeight)
-	{
-		m_vecSrcPixels[index] = glm::vec3(1,0,0);
-	}
+	//color = glm::vec3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
+	//
+	//int index = columnIndex * m_iBackbufferHeight + rowIndex;
+	//if (index < m_iBackbufferWidth * m_iBackbufferHeight)
+	//{
+	//	m_vecSrcPixels[index] = glm::vec3(1,0,0);
+	//}
 
 	m_pDebugLines->InitializeLines();
 	m_bSinglePixelMode = false;

@@ -75,7 +75,7 @@ namespace Helper
 		// This sample is oriented towards Local Y axis instead of oriented as per the hitpoint normal
 		// need to do that before actually using it!
 		glm::vec3 Up;
-		if (fabsf(towardsVector.y) > 0.9f)
+		if (fabsf(towardsVector.y) > 0.95f)
 			Up = glm::vec3(1.0f, 0, 0);
 		else
 			Up = glm::vec3(0, 1.0f, 0);
@@ -108,7 +108,7 @@ namespace Helper
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	inline glm::vec3 CosineSamplingUpperHemisphere(glm::vec3 Normal)
+	inline glm::vec3 CosineWeightedHemisphereSampling(glm::vec3 Normal)
 	{
 		float rand1 = GetRandom01();
 		float rand2 = GetRandom01();
@@ -116,7 +116,7 @@ namespace Helper
 		float phi = TWO_PI * rand2;	// phi = 2PI * esp2
 		float y = sqrtf(rand1);		// y = sqrt(eps1)
 
-		float theta = acosf(y);
+		float theta = asinf(y);
 
 		// Generate random sample
 		float X = sinf(theta) * cosf(phi);
@@ -163,7 +163,7 @@ namespace Helper
 		if (rand1 < 1-Ks)
 		{
 			// Diffuse
-			float theta = acosf(sqrtf(rand2));
+			float theta = asinf(sqrtf(rand2));
 
 			// Generate random sample
 			float X = sinf(theta) * cosf(phi);
@@ -191,13 +191,15 @@ namespace Helper
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	inline glm::vec3 GGX_ImportanceSampling(glm::vec3 Normal, glm::vec3 Reflection, glm::vec3 Half, float Ks, float Roughness)
+	inline glm::vec3 GGX_ImportanceSampling(glm::vec3 Normal, float Ks, float Roughness)
 	{
 		float rand1 = GetRandom01();
 		float rand2 = GetRandom01();
 		float rand3 = GetRandom01();
 
 		float phi = rand3 * TWO_PI;
+
+		float a2 = Roughness * Roughness;
 
 		if (rand1 < 1 - Ks)
 		{
@@ -216,16 +218,16 @@ namespace Helper
 		else
 		{
 			// Specular
-			float theta = atanf(Roughness * sqrtf(rand2) / sqrtf(1.0f - rand2));
+			float theta = acosf(sqrtf((1.0f - rand2) / ((a2 - 1.0f) * rand2 + 1.0f)));
 
 			// Generate random sample
 			float X = sinf(theta) * cosf(phi);
 			float Y = cosf(theta);
 			float Z = sinf(theta) * sinf(phi);
 
-			glm::vec3 Wm = glm::vec3(X, Y, Z);
-
-			return 2.0f * glm::dot(Reflection, Wm) * Wm - Reflection;
+			glm::vec3 Half = OrientTowards(glm::vec3(X, Y, Z), Normal);
+		
+			return Half;
 		}
 	}
 

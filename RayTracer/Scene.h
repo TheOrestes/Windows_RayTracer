@@ -23,7 +23,7 @@ public:
 	void					InitRefractionScene(float screenWidth, float screenHeight);
 	void					InitTigerScene(float screenWidth, float screenHeight);
 	void					InitCornellScene(float screenWidth, float screenHeight);
-	void					InitTowerScene(float screenWidth, float screenHeight);
+	void					InitMaterialTestScene(float screenWidth, float screenHeight);
 	void					InitRandomScene(float screenWidth, float screenHeight);
 	
 	glm::vec3				CalculateMissColor(glm::vec3 rayDirection);
