@@ -50,6 +50,8 @@ struct MaterialInfo
 	glm::vec4		albedoColor;
 	float			roughness;
 	float			refrIndex;
+	float			refractionRoughness;
+	float			refrColAbsorptionScale;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

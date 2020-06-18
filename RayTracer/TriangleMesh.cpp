@@ -219,7 +219,7 @@ void TriangleMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 				}
 
 				textureInfo = new ConstantTexture(albedoCol);
-				m_ptrMaterial = new Transparent(textureInfo, r_i);
+				m_ptrMaterial = new Transparent(textureInfo, r_i, m_ptrMeshInfo->matInfo.refractionRoughness, m_ptrMeshInfo->matInfo.refrColAbsorptionScale);
 			}
 			else
 			{

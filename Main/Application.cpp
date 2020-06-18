@@ -30,14 +30,14 @@
 #define CPLUSPLUS_THREADING 
 #define ACCUM_BUFFER_RENDERING 
 #define SAVE_IMAGE
-//#define DENOISE_IMAGE
+#define DENOISE_IMAGE
 //#define MARL_SCHEDULING 1
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
-	m_iBackbufferWidth = 512;
-	m_iBackbufferHeight = 512;
+	m_iBackbufferWidth = 960;
+	m_iBackbufferHeight = 540;
 
 #if defined _DEBUG
 	m_iNumSamples = 1;
