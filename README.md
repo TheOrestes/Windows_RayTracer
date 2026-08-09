@@ -2,6 +2,16 @@
 * Peter Shierly's ray tracer with GDI 
 * Working version for both Single threaded & multi-threaded using WinGDI SetPixel()
 
+## Building
+
+Requires Windows x64 and Visual Studio 2022 with the *Desktop development with C++* workload. From the repository root:
+
+```powershell
+.\build.ps1
+```
+
+Every dependency (glm, stb, assimp, Intel Open Image Denoise) is downloaded, built and linked by the configure step — nothing to install by hand. See [BUILDING.md](BUILDING.md) for options, dependency pins and troubleshooting.
+
 ## Render Output
 ![Render Output1](https://pbs.twimg.com/media/DvuZOUmWsAAg9oR.jpg)
 ![Render Output2](https://pbs.twimg.com/media/DvuZOUFXQAAOCPm.jpg)
