@@ -1,0 +1,29 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": { "major": 3, "minor": 24, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "vs2022",
+      "displayName": "Visual Studio 2022 (x64)",
+      "description": "Generates WindowsRayTracer.sln under build/vs2022. Debug and Release share one build tree, so dependencies are downloaded and built once.",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build/vs2022",
+      "warnings": { "dev": false }
+    },
+    {
+      "name": "ninja",
+      "displayName": "Ninja Multi-Config (x64)",
+      "description": "Command-line build under build/ninja. Requires running from a Developer Command Prompt (or use build.ps1, which sets one up).",
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/ninja",
+      "warnings": { "dev": false }
+    }
+  ],
+  "buildPresets": [
+    { "name": "vs2022-debug",   "configurePreset": "vs2022", "configuration": "Debug" },
+    { "name": "vs2022-release", "configurePreset": "vs2022", "configuration": "Release" },
+    { "name": "ninja-debug",    "configurePreset": "ninja",  "configuration": "Debug" },
+    { "name": "ninja-release",  "configurePreset": "ninja",  "configuration": "Release" }
+  ]
+}

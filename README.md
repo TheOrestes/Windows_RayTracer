@@ -4,6 +4,17 @@
 * Added optional Marl Scheduler based task system.
 * Intel's Denoiser integration. 
 * Various samplers from RTFGU book. 
+
+## Building
+
+Requires Windows x64 and Visual Studio 2022 with the *Desktop development with C++* workload. From the repository root:
+
+```powershell
+.\build.ps1
+```
+
+Every dependency (glm, stb, GLFW, GLEW, assimp, marl, Intel Open Image Denoise) is downloaded, built and linked by the configure step — nothing to install by hand. See [BUILDING.md](BUILDING.md) for options, dependency pins and troubleshooting.
+
 ## Render Output
 ![Render Output1](https://pbs.twimg.com/media/DvuZOUmWsAAg9oR.jpg)
 ![Render Output2](https://pbs.twimg.com/media/DvuZOUFXQAAOCPm.jpg)
@@ -27,7 +38,7 @@
   * Barbarian : https://assetstore.unity.com/packages/3d/characters/humanoids/barbarian-warrior-75519
   * Car : https://assetstore.unity.com/packages/3d/vehicles/land/retro-cartoon-cars-cicada-96158
 
-##### Compiled libs to run samples can be found at : [Libs](https://drive.google.com/drive/folders/12YA0c78YrrAOwK97uqeYieTNGlAK-te5?usp=sharing)
+##### Compiled libs are no longer needed — the build system fetches and builds them. The old prebuilt drop is archived at [Libs](https://drive.google.com/drive/folders/12YA0c78YrrAOwK97uqeYieTNGlAK-te5?usp=sharing).
 
 Asset Credits:
  * Barbarian : https://assetstore.unity.com/packages/3d/characters/humanoids/barbarian-warrior-75519
