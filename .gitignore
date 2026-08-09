@@ -44,10 +44,18 @@ compileData.scor*
 *.exe
 *.out
 *.app
+
+# Render output dumped at the repository root
 *.ppm
 *.bmp
 *.hdr
 *.dat
 *.jpg
 *.png
-/models
+
+# models/ holds scene assets the renderer loads at run time, so they must be
+# committed even though the textures match the image rules above. Excluding the
+# whole directory is how models/deer2_transparent.fbx went missing while
+# InitRefractionScene still referenced it.
+!models/**
+models/.mayaSwatches/
