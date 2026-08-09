@@ -87,6 +87,10 @@ void Camera::InitCamera(const glm::vec3& _position, const glm::vec3& _lookAt, fl
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+/// Both s & t are random samples for a particular pixel, multiplied by it's index which is dependent
+///	on window resolution. In this funtion, we take into account the type of projection.
+///	Considering our origin is at the center of this image, we need to shift the point taking into account
+///	halfWidth & halfHeight!
 Ray Camera::get_ray(float s, float t)
 {
 	Ray ray;
@@ -158,6 +162,7 @@ Ray Camera::get_ray(float s, float t)
 			break;
 		}
 
+		// Notice how ray origin is different for each ray since all the rays are shot in parallel! 
 		case eProjectionType::OTHOGRAPHIC:
 		{
 			float pixelScale = 1.0f; // controls zoom level
