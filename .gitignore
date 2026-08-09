@@ -44,12 +44,20 @@ compileData.scor*
 *.exe
 *.out
 *.app
+
+# Render output dumped at the repository root
 *.ppm
 *.bmp
-/models
 /RenderImage1.jpg
 /carRender.jpg
 /carReflection.jpg
 *.hdr
 *.jpg
 *.dat
+
+# models/ holds scene assets the renderer loads at run time, so they must be
+# committed even though the textures match the image rules above. Excluding the
+# whole directory silently drops every asset added after the tracked ones.
+!models/**
+models/.mayaSwatches/
+>>>>>>> c846162 (Stop ignoring models/, so scene assets can be committed)
