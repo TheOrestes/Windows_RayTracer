@@ -124,7 +124,7 @@ void Scene::InitRefractionScene(float screenWidth, float screenHeight)
 
 	// Glass Mesh
 	MeshInfo glassBarbInfo2;
-	glassBarbInfo2.filePath = "models/deer2_transparent.fbx";
+	glassBarbInfo2.filePath = "models/tigerTransparent.fbx";
 	glassBarbInfo2.leafSize = 200;
 	glassBarbInfo2.position = glm::vec3(0.0f, 0.0, -2.0f);
 	glassBarbInfo2.rotationAxis = glm::vec3(0, 1, 0);
