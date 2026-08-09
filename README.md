@@ -34,3 +34,11 @@ Every dependency (glm, stb, assimp, Intel Open Image Denoise) is downloaded, bui
 #### Asset Credits:
   * Barbarian : https://assetstore.unity.com/packages/3d/characters/humanoids/barbarian-warrior-75519
   * Car : https://assetstore.unity.com/packages/3d/vehicles/land/retro-cartoon-cars-cicada-96158
+
+## License
+
+Source code is [MIT](LICENSE) licensed — use it for anything, just keep the copyright notice.
+
+The models and textures under `models/` are **not** covered by that license; they come from third parties under their own terms, credited above. Dependencies are fetched at build time rather than vendored, and each keeps its own license — see [LICENSE](LICENSE) for the list.
+
+Built on Peter Shirley's *Ray Tracing in One Weekend* series (code released CC0 / public domain) and Kevin Suffern's *Ray Tracing from the Ground Up*.
