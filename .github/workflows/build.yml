@@ -1,0 +1,50 @@
+name: Build
+
+# Proves the claim in BUILDING.md: a clean clone of this branch configures,
+# fetches every dependency, and builds -- with nothing preinstalled beyond what
+# the GitHub Windows runner already has.
+
+on:
+  push:
+    branches: [master, OpenGL, IntelDenoiser]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    name: ${{ matrix.config }}
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [Debug, Release]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # No cache on purpose: the point of this job is to exercise the
+      # from-scratch path, including the dependency downloads.
+      - name: Configure
+        run: cmake --preset vs2022
+
+      - name: Build
+        run: cmake --build build/vs2022 --config ${{ matrix.config }} --parallel
+
+      - name: Check the executable and its runtime DLLs landed
+        shell: pwsh
+        run: |
+          $dir = "build/vs2022/${{ matrix.config }}"
+          foreach ($f in 'WindowsRayTracer.exe', 'OpenImageDenoise.dll', 'tbb.dll', 'tbbmalloc.dll') {
+            if (-not (Test-Path "$dir/$f")) { throw "missing $dir/$f" }
+          }
+          Get-ChildItem $dir | Select-Object Name, Length
+
+      - uses: actions/upload-artifact@v4
+        if: matrix.config == 'Release'
+        with:
+          name: WindowsRayTracer-Release
+          path: |
+            build/vs2022/Release/*.exe
+            build/vs2022/Release/*.dll
+          if-no-files-found: error
