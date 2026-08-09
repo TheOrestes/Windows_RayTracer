@@ -6,6 +6,15 @@
 /x64
 /.vs
 
+# CMake build trees (fetched dependencies live in build/<preset>/_deps)
+/build
+/out
+CMakeUserPresets.json
+
+# Visual Studio build-insights / profiling dumps
+compileData.scor*
+*.aps
+
 # Compiled Object files
 *.slo
 *.lo

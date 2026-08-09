@@ -7,6 +7,16 @@ Added Intel's Denoiser Support (https://openimagedenoise.github.io/)
 ![Render Output](https://i.ibb.co/6WPVMF3/Output2.jpg)
 ![Render Output](https://i.ibb.co/m5vvNBB/Output3.jpg)
 
+## Building
+
+Requires Windows x64 and Visual Studio 2022 with the *Desktop development with C++* workload. From the repository root:
+
+```powershell
+.\build.ps1
+```
+
+Every dependency (glm, stb, assimp, Intel Open Image Denoise) is downloaded, built and linked by the configure step — nothing to install by hand. See [BUILDING.md](BUILDING.md) for options, dependency pins and troubleshooting.
+
 Asset Credits:
  * Barbarian : https://assetstore.unity.com/packages/3d/characters/humanoids/barbarian-warrior-75519
  * Car : https://assetstore.unity.com/packages/3d/vehicles/land/retro-cartoon-cars-cicada-96158
