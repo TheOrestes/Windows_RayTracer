@@ -15,6 +15,12 @@ There is nothing to install by hand and nothing to copy into `external/`.
 CMake 3.24 or newer is required. If you have your own CMake on `PATH` it will be
 used; otherwise the copy bundled with Visual Studio is found automatically.
 
+Visual Studio 2022 is what this project is developed and tested against, and it
+is what CI builds on. `CMakePresets.json` asks for the `Visual Studio 17 2022`
+generator by name, so that is the version guaranteed to work. Newer Visual
+Studio releases may build it fine — nothing here has verified that, and the
+`vs2022` preset would need its generator changed to try.
+
 ## Build
 
 From a normal PowerShell prompt in the repository root:
