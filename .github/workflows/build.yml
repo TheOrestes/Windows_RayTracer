@@ -13,7 +13,16 @@ on:
 jobs:
   windows:
     name: ${{ matrix.config }}
-    runs-on: windows-latest
+    # Pinned rather than windows-latest on purpose. The build needs Visual
+    # Studio 2022: CMakePresets.json asks for the "Visual Studio 17 2022"
+    # generator, and windows-latest stopped providing an instance CMake could
+    # find -- it failed with "could not find any instance of Visual Studio".
+    # windows-2022 is the image that carries VS 2022, which is exactly what
+    # BUILDING.md tells a human to install.
+    #
+    # This is the configuration the project is tested on. Newer Visual Studio
+    # versions may well work, but nothing here verifies that.
+    runs-on: windows-2022
 
     strategy:
       fail-fast: false
