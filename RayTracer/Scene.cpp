@@ -55,18 +55,21 @@ void Scene::InitScene(float screenWidth, float screenHeight)
 	//Material* pMatMesh = new FlatColor (new ConstantTexture(glm::vec3(1,1,0)));
 	//TriangleMesh* pMesh0 = new TriangleMesh("models/UVCube5.fbx", pMatSphere0);
 
-	Texture* baseTexture = new ImageTexture("models/Body_Color.jpg");
-	Material* pMatMesh = new Lambertian(baseTexture);
-	TriangleMesh* pMesh0 = new TriangleMesh("models/barb1.fbx", pMatMesh, 1024);
+	// The Barbarian Warrior mesh is no longer in the repository: it came from a
+	// Unity Asset Store package that cannot be redistributed. Point these at a
+	// model under models/ to put a mesh back in this scene.
+	//Texture* baseTexture = new ImageTexture("models/Body_Color.jpg");
+	//Material* pMatMesh = new Lambertian(baseTexture);
+	//TriangleMesh* pMesh0 = new TriangleMesh("models/barb1.fbx", pMatMesh, 1024);
 
-	Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
+	//Profiler::getInstance().WriteToProfiler("Triangle Count:", pMesh0->GetTriangleCount());
 
 	vecHitables.push_back(pSphereGround);
 	vecHitables.push_back(pSphereGlass1);
 	vecHitables.push_back(pSphereMetal);
 	vecHitables.push_back(pSphereEarth);
 	vecHitables.push_back(pSphereLight);
-	vecHitables.push_back(pMesh0);
+	//vecHitables.push_back(pMesh0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
