@@ -24,6 +24,32 @@ foreach(_dir IN LISTS _rt_source_dirs)
     list(APPEND RT_HEADERS ${_rt_hdr})
 endforeach()
 
+# A glob compiles everything present, but some commits leave a file in the tree
+# after dropping it from the build. At 6064703 the old GDI entry point
+# WindowsRayTracer.cpp still sits next to the new Main/Main.cpp, and the
+# .vcxproj of the day compiled only the latter; globbing both defines Trace,
+# SaveImage and TraceColor twice and the link fails. Nothing in the tree records
+# that intent, so it has to be stated:
+#
+#   cmake --preset vs2022 -DRT_EXCLUDE_SOURCES="WindowsRayTracer.cpp;RayTracer/Vector3.cpp"
+#
+# Paths are relative to the repository root. See BUILDING.md.
+set(RT_EXCLUDE_SOURCES "" CACHE STRING
+    "Repo-relative source/header paths to drop from the globs (';'-separated)")
+
+foreach(_ex IN LISTS RT_EXCLUDE_SOURCES)
+    file(TO_CMAKE_PATH "${_ex}" _ex_path)
+    get_filename_component(_ex_abs "${_ex_path}" ABSOLUTE BASE_DIR "${CMAKE_SOURCE_DIR}")
+
+    if(NOT "${_ex_abs}" IN_LIST RT_SOURCES AND NOT "${_ex_abs}" IN_LIST RT_HEADERS)
+        # Loud on purpose: a typo here silently builds the thing you meant to drop.
+        message(WARNING "RT_EXCLUDE_SOURCES: '${_ex}' matched no globbed file")
+    endif()
+
+    list(REMOVE_ITEM RT_SOURCES "${_ex_abs}")
+    list(REMOVE_ITEM RT_HEADERS "${_ex_abs}")
+endforeach()
+
 list(LENGTH RT_SOURCES RT_SOURCE_COUNT)
 if(RT_SOURCE_COUNT EQUAL 0)
     message(FATAL_ERROR
