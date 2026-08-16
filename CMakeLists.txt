@@ -73,11 +73,19 @@ set_target_properties(WindowsRayTracer PROPERTIES
 set_property(DIRECTORY "${CMAKE_SOURCE_DIR}" PROPERTY VS_STARTUP_PROJECT WindowsRayTracer)
 
 # Put the shared libraries the app needs next to the executable.
-add_custom_command(TARGET WindowsRayTracer POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E copy_if_different
-            "$<TARGET_RUNTIME_DLLS:WindowsRayTracer>" "$<TARGET_FILE_DIR:WindowsRayTracer>"
-    COMMAND_EXPAND_LISTS
-    VERBATIM)
+#
+# Only Open Image Denoise ships DLLs -- everything else is linked statically --
+# so this is skipped entirely when it is absent. That matters for the early
+# commits: they have no dependencies at all, TARGET_RUNTIME_DLLS expands to
+# nothing, and `cmake -E copy_if_different <destination>` with no sources is an
+# error that fails the build after the executable has already linked.
+if(RT_USE_OIDN)
+    add_custom_command(TARGET WindowsRayTracer POST_BUILD
+        COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+                "$<TARGET_RUNTIME_DLLS:WindowsRayTracer>" "$<TARGET_FILE_DIR:WindowsRayTracer>"
+        COMMAND_EXPAND_LISTS
+        VERBATIM)
+endif()
 
 # Mirror the source tree in the Visual Studio solution explorer.
 source_group(TREE "${CMAKE_SOURCE_DIR}" FILES ${RT_SOURCES} ${RT_HEADERS} ${RT_RESOURCES})
@@ -92,6 +100,10 @@ string(REPLACE ";" "\n                  " _rt_dep_list "${RT_ENABLED_DEPENDENCIE
 message(STATUS "")
 message(STATUS "WindowsRayTracer configured")
 message(STATUS "  sources found : ${RT_SOURCE_COUNT}")
+if(RT_EXCLUDE_SOURCES)
+    string(REPLACE ";" "\n                  " _rt_excl_list "${RT_EXCLUDE_SOURCES}")
+    message(STATUS "  excluded      : ${_rt_excl_list}")
+endif()
 message(STATUS "  entry point   : ${_rt_entry}")
 message(STATUS "  dependencies  : ${_rt_dep_list}")
 message(STATUS "  run from      : ${CMAKE_SOURCE_DIR}")
