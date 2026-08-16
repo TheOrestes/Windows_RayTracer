@@ -131,10 +131,39 @@ The configure summary reports what was detected:
                     Open Image Denoise 0.8.2 (prebuilt)
 ```
 
-One caveat: the build files themselves have to exist in the checkout. Checking
-out a commit from before they were added gets you that commit's sources without
-a `CMakeLists.txt`. Merge or cherry-pick this commit into each branch you want
-to build.
+Two caveats.
+
+**The build files have to exist in the checkout.** Checking out a commit from
+before they were added gets you that commit's sources without a `CMakeLists.txt`.
+Merge or cherry-pick this commit into each branch you want to build, or overlay
+the build files onto a detached checkout of the old commit:
+
+```powershell
+git worktree add --detach ..\rt-<sha> <sha>
+git -C ..\rt-<sha> checkout <this-commit> -- CMakeLists.txt CMakePresets.json cmake build.ps1
+cd ..\rt-<sha>
+.\build.ps1 -Run
+```
+
+Use `git -C <worktree>`; `git --work-tree=<path> checkout` writes into the main
+checkout as well.
+
+**A glob compiles every file present, which is not always what the commit
+built.** Some revisions leave a source in the tree after dropping it from the
+project. At `6064703` the old GDI entry point `WindowsRayTracer.cpp` still sits
+beside the new `Main/Main.cpp`, and that commit's `.vcxproj` compiled only the
+latter — globbing both defines `Trace`, `SaveImage` and `TraceColor` twice and
+the link fails. Nothing in the tree records the exclusion, so name it:
+
+```powershell
+cmake --preset vs2022 -DRT_EXCLUDE_SOURCES="WindowsRayTracer.cpp;RayTracer/Vector3.cpp"
+```
+
+Paths are relative to the repository root, `;`-separated, and apply to headers
+as well as sources. An entry matching nothing warns rather than failing, so a
+typo is visible instead of silently building the file you meant to drop. Unlike
+the `RT_WITH_*` switches this value is cached as given, so clear it when moving
+to a commit that does not need it.
 
 ## Troubleshooting
 
